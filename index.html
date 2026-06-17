@@ -1,1 +1,491 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الخدمات الشامل المطور</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0f2b4b;
+            --primary-light: #4f8bc9;
+            --accent: #e94560;
+            --whatsapp: #25D366;
+            --whatsapp-hover: #1eaf53;
+            --bg-gradient: linear-gradient(145deg, #f1f5f9 0%, #e6ecf3 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #0b1c2e;
+            --text-muted: #50647b;
+            --gold: #c9a73c;
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --shadow-sm: 0 6px 20px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 25px 45px rgba(0, 0, 0, 0.08);
+            --shadow-glow: 0 0 20px rgba(79, 139, 201, 0.2);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #e9f0f9, #d9e2ee);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-main);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1450px;
+            width: 100%;
+        }
+
+        /* هيدر فاخر */
+        .header {
+            text-align: center;
+            padding: 2.5rem 0 3.5rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0a2647, #1e4b7a, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.5px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .header p {
+            color: #2c3e50;
+            font-size: 1.25rem;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            display: inline-block;
+            padding: 0.55rem 3rem;
+            border-radius: 60px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+            letter-spacing: 0.3px;
+        }
+
+        .badge-offer {
+            background: linear-gradient(115deg, #d32f2f, #f05454);
+            color: #fff;
+            padding: 0.5rem 2.6rem;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-top: 1.3rem;
+            font-weight: 700;
+            box-shadow: 0 12px 28px rgba(233, 69, 96, 0.4);
+            animation: softPulse 2.3s infinite;
+            letter-spacing: 0.4px;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+
+        @keyframes softPulse {
+            0% { transform: scale(1); box-shadow: 0 10px 25px rgba(233, 69, 96, 0.35); }
+            50% { transform: scale(1.04); box-shadow: 0 18px 35px rgba(233, 69, 96, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 10px 25px rgba(233, 69, 96, 0.35); }
+        }
+
+        /* شبكة الخدمات */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 2.8rem;
+            margin-top: 2.2rem;
+        }
+
+        /* كارت زجاجي بتصميم راقي */
+        .service-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 36px;
+            padding: 2.2rem 1.8rem;
+            box-shadow: 0 20px 40px rgba(11, 28, 46, 0.08), inset 0 0 0 1px rgba(255,255,255,0.7);
+            transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #1e4b7a, #c9a73c, #e94560);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .service-card:hover {
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 32px 55px rgba(11, 28, 46, 0.15), 0 0 0 1px rgba(79, 139, 201, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-wrapper {
+            background: linear-gradient(145deg, #eef4fc, #d9e7fa);
+            width: 90px;
+            height: 90px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.7rem;
+            color: #0f2b4b;
+            margin-bottom: 1.7rem;
+            transition: all 0.35s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03), inset 0 -3px 8px rgba(0,0,0,0.03);
+        }
+
+        .service-card:hover .icon-wrapper {
+            background: linear-gradient(135deg, #0a2647, #1f4f7a);
+            color: #ffffff;
+            transform: rotate(4deg) scale(1.06);
+            box-shadow: 0 18px 28px rgba(15, 43, 75, 0.4);
+        }
+
+        .service-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #0b1c2e;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.2px;
+        }
+
+        .service-desc {
+            color: #4a5c73;
+            font-size: 0.98rem;
+            margin-bottom: 1.6rem;
+            line-height: 1.7;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 3.2rem;
+        }
+
+        .price-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+            margin-bottom: 1.6rem;
+            background: rgba(241, 245, 250, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+
+        .price-old {
+            font-size: 1.15rem;
+            color: #8a99ae;
+            text-decoration: line-through;
+            text-decoration-color: #e94560;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+        }
+
+        .price-new {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0b1c2e;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .price-new small {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0f5132;
+            background: #d1f2e2;
+            padding: 0.15rem 0.8rem;
+            border-radius: 40px;
+            margin-right: 0.3rem;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #1da851, #25D366);
+            color: #fff;
+            border: none;
+            padding: 0.95rem 1.6rem;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            box-shadow: 0 8px 22px rgba(37, 211, 102, 0.3);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-whatsapp:hover {
+            background: linear-gradient(135deg, #169143, #20c058);
+            transform: scale(1.03);
+            box-shadow: 0 14px 30px rgba(37, 211, 102, 0.5);
+        }
+
+        /* قسم الخدمات الفرعية */
+        .extra-services {
+            margin-top: 5.5rem;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border-radius: 40px;
+            padding: 2.8rem 2.8rem;
+            box-shadow: 0 30px 55px rgba(0, 0, 0, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+        }
+
+        .extra-services h2 {
+            font-size: 2.2rem;
+            color: #0b1c2e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            font-weight: 800;
+        }
+
+        .extra-services h2 i {
+            color: #c9a73c;
+            text-shadow: 0 2px 8px rgba(201,167,60,0.3);
+        }
+
+        .extra-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.3rem;
+            margin-top: 2.2rem;
+        }
+
+        .extra-item {
+            background: #ffffff;
+            padding: 1.1rem 1.6rem;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            font-weight: 700;
+            color: #0b1c2e;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        .extra-item i {
+            color: #1e4b7a;
+            font-size: 1.35rem;
+            background: #eef3fc;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .extra-item:hover {
+            background: #0f2b4b;
+            color: #fff;
+            border-color: #0f2b4b;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 28px rgba(15, 43, 75, 0.25);
+        }
+
+        .extra-item:hover i {
+            background: rgba(255,255,255,0.18);
+            color: #ffffff;
+        }
+
+        .footer-note {
+            margin-top: 4.5rem;
+            text-align: center;
+            font-size: 1.15rem;
+            color: #334155;
+            border-top: 1px solid rgba(0,0,0,0.07);
+            padding-top: 2.7rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .footer-note .phone-badge {
+            background: #0f2b4b;
+            color: #fff;
+            padding: 0.25rem 1.2rem;
+            border-radius: 12px;
+            font-family: 'Cairo', monospace;
+            font-size: 1.25rem;
+            margin-left: 0.3rem;
+            display: inline-block;
+            direction: ltr;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-note i {
+            color: #25D366;
+            font-size: 1.4rem;
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.3rem; }
+            .services-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .extra-grid { grid-template-columns: 1fr; }
+            body { padding: 1.5rem 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1><i class="fas fa-shapes" style="color: #1e4b7a;"></i> متجر النوايف الرقمي (علي المالكي)</h1>
+        <p><i class="fas fa-bolt" style="color: #c9a73c;"></i> نفذ خدماتك بكبسة زر واحدة عبر الواتساب</p>
+        <br>
+        <div class="badge-offer"><i class="fas fa-gift"></i> عروض الصيف: خصم خاص على جميع الخدمات!</div>
+    </div>
+
+    <div class="services-grid" id="serviceGrid">
+        </div>
+
+    <div class="extra-services">
+        <h2><i class="fas fa-plus-circle"></i> خدمات فرعية سريعة</h2>
+        <p style="color: #4a5c73; margin-bottom: 0.5rem; font-weight: 500;">جميع الخدمات الفرعية متوفرة بسعر رمزي وموحد: <span style="font-weight:800; color: #0b1c2e;">39 ريال</span> <span style="text-decoration:line-through; color:#8a99ae; margin-right:0.6rem;">60 ريال</span></p>
+        <div class="extra-grid" id="extraGrid">
+            </div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fab fa-whatsapp"></i> سيتم تحويلك مباشرة للمحادثة لإتمام طلبك مع الرقم: <strong class="phone-badge">0505113747</strong>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const WA_NUMBER = '+966505113747';
+
+        const services = [
+            { title: 'إنشاء سيرة ذاتية (CV)', icon: 'fa-file-user', desc: 'تصميم سيرة ذاتية احترافية باللغتين متوافقة مع أنظمة ATS' },
+            { title: 'إنشاء حساب بريد إلكتروني', icon: 'fa-envelope-open-text', desc: 'إنشاء إيميل رسمي (Gmail/Outlook) مع تأمينه بالكامل' },
+            { title: 'تسجيل حساب المواطن', icon: 'fa-user-check', desc: 'تسجيل جديد، تحديث بيانات، ومتابعة الاعتراضات بدقة' },
+            { title: 'الضمان الاجتماعي المطور', icon: 'fa-hand-holding-heart', desc: 'دراسة الأهلية، رفع الملفات، وتقديم طلبات الدعم كاملة' },
+            { title: 'حجز طيران وفنادق', icon: 'fa-plane', desc: 'البحث عن أفضل الأسعار وحجز التذاكر والفنادق داخلياً وخارجياً' },
+            { title: 'تقديم اعتراض رسمي', icon: 'fa-gavel', desc: 'صياغة وتقديم اعتراض قانوني على المخالفات أو عدم الأهلية' },
+            { title: 'رفع شكوى إلكترونية', icon: 'fa-file-signature', desc: 'صياغة الشكاوى ورفعها للجهات الحكومية والمنصات الرسمية' },
+            { title: 'تأمين المركبات فورياً', icon: 'fa-car-burst', desc: 'مقارنة أسعار التأمين وإصدار الوثيقة فوراً بأقل سعر' },
+            { title: 'تجديد رخصة واستمارة', icon: 'fa-id-card', desc: 'تجديد استمارات وسيارات عبر منصة أبشر وبوابة المرور' },
+            { title: 'تأسيس سجل تجاري', icon: 'fa-briefcase', desc: 'إصدار وتجديد السجلات التجارية وحجز الأسماء الفورية للشركات' },
+            { title: 'تأمين طبي وصحي', icon: 'fa-heart-pulse', desc: 'شراء وتجديد وثائق التأمين الطبي للأفراد والعمالة والمؤسسات' },
+            { title: 'حجز المواعيد الحكومية', icon: 'fa-calendar-days', desc: 'حجز فوري في الأحوال المدنية، الجوازات، والوزارات المختلفة' },
+            { title: 'طلب بدل فاقد رسمي', icon: 'fa-id-badge', desc: 'إنهاء إجراءات بدل فاقد للهويات، الرخص، وجوازات السفر' },
+            { title: 'خدمات أبشر المتكاملة', icon: 'fa-user-shield', desc: 'تحديث الجوال، تفعيل الحسابات، وحل كافة مشكلات المنصة' },
+            { title: 'توثيق عقود إيجار', icon: 'fa-file-contract', desc: 'توثيق العقد الموحد عبر شبكة إيجار السكنية والتجارية' },
+            { title: 'خدمات الزكاة والدخل', icon: 'fa-receipt', desc: 'تقديم الإقرارات وضريبة القيمة المضافة والتسجيل لقطاع الأعمال' }
+        ];
+
+        const extraServices = [
+            { name: 'نقل ملكية مركبة', icon: 'fa-arrow-right-arrow-left' },
+            { name: 'إصدار إذن سفر وتأشيرات', icon: 'fa-passport' },
+            { name: 'تعديل وتحديث المهنة', icon: 'fa-user-gear' },
+            { name: 'تحديث العنوان الوطني المطور', icon: 'fa-map-location-dot' },
+            { name: 'طلب تأشيرة خروج وعودة', icon: 'fa-plane-departure' },
+            { name: 'الاستعلام الشامل للمخالفات', icon: 'fa-magnifying-glass' },
+            { name: 'طباعة وتصوير ملفات', icon: 'fa-print' },
+            { name: 'تسجيل في نظام جدارة / مسار', icon: 'fa-graduation-cap' }
+        ];
+
+        function getWhatsAppLink(serviceName) {
+            const message = `مرحباً، أود طلب خدمة: "${serviceName}" من خلال العرض المتاح بـ 39 ريال فقط.`;
+            return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+        }
+
+        const grid = document.getElementById('serviceGrid');
+        if (grid) {
+            grid.innerHTML = '';
+            services.forEach((svc) => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.innerHTML = `
+                    <div class="icon-wrapper"><i class="fa-solid ${svc.icon}"></i></div>
+                    <div class="service-title">${svc.title}</div>
+                    <div class="service-desc">${svc.desc}</div>
+                    <div class="price-box">
+                        <span class="price-old">60 ريال</span>
+                        <span class="price-new">39 <small>ريال فقط</small></span>
+                    </div>
+                    <a href="${getWhatsAppLink(svc.title)}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> اطلب الخدمة الآن
+                    </a>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const extraContainer = document.getElementById('extraGrid');
+        if (extraContainer) {
+            extraContainer.innerHTML = '';
+            extraServices.forEach((item) => {
+                const div = document.createElement('div');
+                div.className = 'extra-item';
+                div.style.cursor = 'pointer';
+                div.innerHTML = `<i class="fa-solid ${item.icon}"></i> <span>${item.name}</span>`;
+                div.addEventListener('click', function() {
+                    window.open(getWhatsAppLink(item.name), '_blank');
+                });
+                div.title = 'اضغط للطلب الفوري عبر الواتساب';
+                extraContainer.appendChild(div);
+            });
+        }
+    })();
+</script>
+
+</body>
+</html>
