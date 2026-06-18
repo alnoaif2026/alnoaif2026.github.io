@@ -115,7 +115,7 @@
         <div class="gradient-bg rounded-2xl shadow-2xl p-6 text-white mb-6 text-center">
             <i class="fa-solid fa-gas-pump text-4xl mb-2 block text-amber-300"></i>
             <h1 class="text-2xl font-bold">تسجيل مصروفات البنزين</h1>
-            <p class="text-white/80 text-sm">اختر اسمك وأدخل الرقم السري لتسجيل التعبئة</p>
+            <p class="text-white/80 text-sm">اختر اسمك من القائمة وأدخل الرقم السري لتسجيل التعبئة</p>
         </div>
 
         <!-- نموذج الإدخال -->
@@ -124,13 +124,26 @@
             <!-- اختيار الشخص -->
             <div class="mb-6">
                 <label class="block text-sm font-bold text-slate-700 mb-2">
-                    <i class="fa-solid fa-user text-indigo-500"></i> اختر اسمك
+                    <i class="fa-solid fa-user text-indigo-500"></i> اختر الاسم من القائمة
                 </label>
                 <select id="personSelect" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none bg-white">
-                    <option value="">-- اختر اسمك من القائمة --</option>
+                    <option value="">-- جاري تحميل الأسماء المسجلة... --</option>
                 </select>
                 <div id="loadingIndicator" class="text-center text-sm text-slate-400 mt-2 hidden">
-                    <span class="loading-spinner"></span> جاري تحميل الأسماء...
+                    <span class="loading-spinner"></span> جاري جلب البيانات...
+                </div>
+            </div>
+
+            <!-- معلومات الشخص المختارة -->
+            <div id="personInfo" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                <div class="text-sm">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-user text-indigo-500"></i>
+                        <span class="font-bold text-slate-700" id="displayName">-</span>
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        <span id="displayCarsCount">0</span> سيارات مسجلة
+                    </div>
                 </div>
             </div>
 
@@ -169,19 +182,6 @@
                     <div id="pinSuccess" class="text-xs text-green-600 mt-2 hidden text-center">
                         <i class="fa-solid fa-check-circle"></i>
                         <span>✅ تم التحقق من الرقم السري بنجاح</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- معلومات الشخص -->
-            <div id="personInfo" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
-                <div class="text-sm">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fa-solid fa-user text-indigo-500"></i>
-                        <span class="font-bold text-slate-700" id="displayName">-</span>
-                    </div>
-                    <div class="text-xs text-slate-500">
-                        <span id="displayCarsCount">0</span> سيارات مسجلة
                     </div>
                 </div>
             </div>
@@ -249,13 +249,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- زر العودة -->
-        <div class="mt-4 text-center">
-            <a href="#" onclick="history.back()" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                <i class="fa-solid fa-arrow-right ml-1"></i> العودة
-            </a>
-        </div>
     </div>
 
     <script>
@@ -267,7 +260,6 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const bnzimRef = database.ref('bnzim');
-        const usersRef = database.ref('users'); // مسار جديد للمستخدمين
 
         // متغيرات عامة
         let selectedPerson = null;
@@ -283,180 +275,59 @@
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('datetime').value = now.toISOString().slice(0, 16);
 
-        // تحميل قائمة الأشخاص من المسار الجديد
-        function loadPersons() {
+        // تحميل القائمة من مسار bnzim مباشرة وبناء هيكلة البيانات تلقائياً
+        function loadUsersFromBnzim() {
             const select = document.getElementById('personSelect');
             const loadingIndicator = document.getElementById('loadingIndicator');
             
-            select.innerHTML = '<option value="">-- اختر اسمك من القائمة --</option>';
+            select.innerHTML = '<option value="">-- اختر الاسم من القائمة --</option>';
             loadingIndicator.classList.remove('hidden');
 
-            // جلب المستخدمين من المسار الجديد
-            usersRef.once('value').then((snapshot) => {
-                loadingIndicator.classList.add('hidden');
-                
-                if (!snapshot.exists()) {
-                    select.innerHTML = '<option value="" disabled>⚠️ لا يوجد مستخدمين مسجلين</option>';
-                    // محاولة جلب من المسار القديم كحل بديل
-                    loadFromOldPath();
-                    return;
-                }
-
-                const users = [];
-                snapshot.forEach((userSnapshot) => {
-                    const userData = userSnapshot.val();
-                    if (userData && userData.fullName) {
-                        users.push({
-                            id: userSnapshot.key,
-                            fullName: userData.fullName,
-                            cars: userData.cars || [],
-                            pin: userData.pin || ''
-                        });
-                    }
-                });
-
-                if (users.length === 0) {
-                    select.innerHTML = '<option value="" disabled>⚠️ لا يوجد مستخدمين مسجلين</option>';
-                    loadFromOldPath();
-                    return;
-                }
-
-                // ترتيب المستخدمين أبجدياً
-                users.sort((a, b) => a.fullName.localeCompare(b.fullName));
-
-                users.forEach((user) => {
-                    const option = document.createElement('option');
-                    option.value = user.id;
-                    option.textContent = user.fullName;
-                    option.dataset.userData = JSON.stringify(user);
-                    select.appendChild(option);
-                });
-
-                console.log(`✅ تم تحميل ${users.length} مستخدم من المسار الجديد`);
-                
-            }).catch((error) => {
-                console.error('❌ خطأ في تحميل المستخدمين:', error);
-                loadingIndicator.classList.add('hidden');
-                select.innerHTML = '<option value="" disabled>⚠️ حدث خطأ في التحميل</option>';
-                // محاولة جلب من المسار القديم
-                loadFromOldPath();
-            });
-        }
-
-        // دالة احتياطية للتحميل من المسار القديم
-        function loadFromOldPath() {
-            console.log('🔄 محاولة التحميل من المسار القديم...');
-            const select = document.getElementById('personSelect');
-            
             bnzimRef.once('value').then((snapshot) => {
+                loadingIndicator.classList.add('hidden');
+                
                 if (!snapshot.exists()) {
-                    select.innerHTML = '<option value="" disabled>⚠️ لا يوجد مستخدمين مسجلين</option>';
+                    select.innerHTML = '<option value="" disabled>⚠️ لا يوجد مستخدمين مسجلين في قاعدة البيانات</option>';
                     return;
                 }
 
-                const persons = [];
-                snapshot.forEach((userSnapshot) => {
-                    persons.push(userSnapshot.key);
+                const names = [];
+                snapshot.forEach((childSnapshot) => {
+                    names.push(childSnapshot.key);
                 });
-                persons.sort();
 
-                if (persons.length === 0) {
-                    select.innerHTML = '<option value="" disabled>⚠️ لا يوجد مستخدمين مسجلين</option>';
-                    return;
-                }
+                // ترتيب الأسماء أبجدياً
+                names.sort((a, b) => a.localeCompare(b));
 
-                persons.forEach((name) => {
+                names.forEach((name) => {
                     const option = document.createElement('option');
                     option.value = name;
                     option.textContent = name;
                     select.appendChild(option);
                 });
 
-                console.log(`✅ تم تحميل ${persons.length} مستخدم من المسار القديم`);
+                console.log(`✅ تم تحميل ${names.length} اسم من مسار bnzim بنجاح.`);
+                
             }).catch((error) => {
-                console.error('❌ خطأ في التحميل من المسار القديم:', error);
-                select.innerHTML = '<option value="" disabled>⚠️ حدث خطأ في التحميل</option>';
+                console.error('❌ خطأ في تحميل القائمة:', error);
+                loadingIndicator.classList.add('hidden');
+                select.innerHTML = '<option value="" disabled>⚠️ حدث خطأ أثناء جلب القائمة</option>';
             });
         }
 
-        // عند اختيار شخص
+        // الاستماع لحدث تغيير الخيار من القائمة المنسدلة
         document.getElementById('personSelect').addEventListener('change', function() {
-            const selectedId = this.value;
-            const selectedOption = this.options[this.selectedIndex];
-            
-            if (!selectedId) {
+            const userName = this.value;
+            if (!userName) {
                 resetAll();
                 return;
             }
 
-            console.log('📌 تم اختيار: ' + selectedId);
-
-            // محاولة الحصول على البيانات من الـ option
-            let userData = null;
-            if (selectedOption && selectedOption.dataset.userData) {
-                try {
-                    userData = JSON.parse(selectedOption.dataset.userData);
-                } catch (e) {
-                    console.error('خطأ في تحليل البيانات:', e);
-                }
-            }
-
-            if (userData) {
-                // استخدام البيانات من المسار الجديد
-                handleUserData(userData);
-            } else {
-                // جلب البيانات من المسار القديم
-                fetchUserDataFromOldPath(selectedId);
-            }
+            fetchUserDataFromBnzim(userName);
         });
 
-        // دالة معالجة بيانات المستخدم
-        function handleUserData(userData) {
-            selectedPerson = userData.fullName || userData.id;
-            const cars = userData.cars || [];
-            const pin = userData.pin || '';
-
-            personData = { cars, pin };
-            
-            // إظهار قسم الرقم السري
-            document.getElementById('pinSection').classList.remove('hidden');
-            document.getElementById('pinInput').focus();
-            document.getElementById('pinInput').value = '';
-            updatePinDots('');
-            document.getElementById('pinError').classList.add('hidden');
-            document.getElementById('pinSuccess').classList.add('hidden');
-            document.getElementById('expenseForm').classList.add('hidden');
-            document.getElementById('carSelection').classList.add('hidden');
-            pinAttempts = 0;
-            document.getElementById('pinInput').disabled = false;
-            document.getElementById('pinInput').classList.remove('opacity-50');
-            document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
-            document.getElementById('pinStatus').className = 'text-xs text-slate-500';
-            
-            // عرض معلومات الشخص
-            document.getElementById('displayName').textContent = selectedPerson;
-            document.getElementById('displayCarsCount').textContent = cars.length;
-            document.getElementById('personInfo').classList.remove('hidden');
-            
-            // عرض السيارات للاختيار
-            if (cars.length > 0) {
-                renderCars(cars);
-                document.getElementById('carSelection').classList.remove('hidden');
-            } else {
-                // إذا لم يكن هناك سيارات، نستخدم بيانات افتراضية
-                const defaultCars = [{
-                    type: 'سيارة غير محددة',
-                    model: 'غير محدد',
-                    fuelType: '91'
-                }];
-                personData.cars = defaultCars;
-                renderCars(defaultCars);
-                document.getElementById('carSelection').classList.remove('hidden');
-            }
-        }
-
-        // جلب البيانات من المسار القديم
-        function fetchUserDataFromOldPath(userName) {
+        // جلب تفاصيل السيارات والرقم السري للاسم المختار
+        function fetchUserDataFromBnzim(userName) {
             bnzimRef.child(userName).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
                     let cars = [];
@@ -465,12 +336,14 @@
                     snapshot.forEach((recordSnapshot) => {
                         const data = recordSnapshot.val();
                         
-                        // محاولة استخراج السيارات
+                        // استخراج مصفوفة السيارات إذا وجدت
                         if (data.cars && Array.isArray(data.cars) && data.cars.length > 0) {
                             cars = data.cars;
                         } else if (data.car && data.model) {
+                            // إذا كانت البيانات مسجلة بشكل حقول منفصلة، نقوم بجمعها
                             const fuelType = data.fuelType || '91';
-                            if (cars.length === 0) {
+                            const isCarExists = cars.some(c => c.type === data.car && c.model === data.model);
+                            if (!isCarExists) {
                                 cars.push({
                                     type: data.car,
                                     model: data.model,
@@ -482,10 +355,9 @@
                         if (data.pin) {
                             pin = data.pin;
                         }
-                        return true;
                     });
 
-                    // إذا لم يتم العثور على سيارات
+                    // افتراضي في حال لم يتم العثور على سيارات مسجلة
                     if (cars.length === 0) {
                         cars = [{
                             type: 'سيارة غير محددة',
@@ -497,7 +369,7 @@
                     personData = { cars, pin };
                     selectedPerson = userName;
                     
-                    // إظهار قسم الرقم السري
+                    // تحضير واجهة الإدخال
                     document.getElementById('pinSection').classList.remove('hidden');
                     document.getElementById('pinInput').focus();
                     document.getElementById('pinInput').value = '';
@@ -505,50 +377,35 @@
                     document.getElementById('pinError').classList.add('hidden');
                     document.getElementById('pinSuccess').classList.add('hidden');
                     document.getElementById('expenseForm').classList.add('hidden');
-                    document.getElementById('carSelection').classList.add('hidden');
                     pinAttempts = 0;
                     document.getElementById('pinInput').disabled = false;
                     document.getElementById('pinInput').classList.remove('opacity-50');
                     document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
                     document.getElementById('pinStatus').className = 'text-xs text-slate-500';
                     
-                    // عرض معلومات الشخص
+                    // عرض البطاقة التعريفية والسيارات
                     document.getElementById('displayName').textContent = selectedPerson;
                     document.getElementById('displayCarsCount').textContent = cars.length;
                     document.getElementById('personInfo').classList.remove('hidden');
                     
-                    // عرض السيارات للاختيار
-                    if (cars.length > 0) {
-                        renderCars(cars);
-                        document.getElementById('carSelection').classList.remove('hidden');
-                    }
+                    renderCars(cars);
+                    document.getElementById('carSelection').classList.remove('hidden');
                 } else {
-                    alert('⚠️ لم يتم العثور على بيانات لهذا الشخص');
-                    document.getElementById('personSelect').value = '';
+                    alert('⚠️ لم يتم العثور على تفاصيل لهذا الشخص');
                     resetAll();
                 }
             }).catch((error) => {
-                console.error('❌ خطأ في جلب البيانات:', error);
-                alert('حدث خطأ في جلب بيانات الشخص: ' + error.message);
+                console.error('❌ خطأ:', error);
+                alert('حدث خطأ في جلب تفاصيل الاسم: ' + error.message);
             });
         }
 
-        // عرض السيارات للاختيار
         function renderCars(cars) {
             const container = document.getElementById('carsList');
             container.innerHTML = '';
             
-            const fuelNames = {
-                '95': 'أحمر',
-                '91': 'أخضر',
-                '98': 'أزرق'
-            };
-            
-            const fuelColors = {
-                '95': 'fuel-95',
-                '91': 'fuel-91',
-                '98': 'fuel-98'
-            };
+            const fuelNames = { '95': 'أحمر', '91': 'أخضر', '98': 'أزرق' };
+            const fuelColors = { '95': 'fuel-95', '91': 'fuel-91', '98': 'fuel-98' };
 
             cars.forEach((car, index) => {
                 const div = document.createElement('div');
@@ -572,43 +429,33 @@
                         <i class="fa-regular fa-circle"></i>
                     </div>
                 `;
-                
                 container.appendChild(div);
             });
             
-            // اختيار أول سيارة افتراضياً
             if (cars.length > 0) {
                 selectCar(0);
             }
         }
 
-        // اختيار سيارة
         function selectCar(index) {
             const carOptions = document.querySelectorAll('.car-option');
             carOptions.forEach((el, i) => {
                 if (i === index) {
                     el.classList.add('selected');
                     const icon = el.querySelector('.fa-regular');
-                    if (icon) {
-                        icon.className = 'fa-regular fa-circle-check text-indigo-500';
-                    }
+                    if (icon) icon.className = 'fa-regular fa-circle-check text-indigo-500';
                 } else {
                     el.classList.remove('selected');
                     const icon = el.querySelector('.fa-regular');
-                    if (icon) {
-                        icon.className = 'fa-regular fa-circle text-slate-400';
-                    }
+                    if (icon) icon.className = 'fa-regular fa-circle text-slate-400';
                 }
             });
-            
             selectedCar = index;
             calculateLiters();
         }
 
-        // تحديث النقاط فقط - بدون تحقق فوري
         document.getElementById('pinInput').addEventListener('input', function() {
-            const pin = this.value;
-            this.value = pin.replace(/\D/g, '');
+            this.value = this.value.replace(/\D/g, '');
             updatePinDots(this.value);
             document.getElementById('pinError').classList.add('hidden');
             document.getElementById('pinSuccess').classList.add('hidden');
@@ -623,30 +470,21 @@
             }
         });
 
-        // منع اللصق في حقل الرقم السري
-        document.getElementById('pinInput').addEventListener('paste', function(e) {
-            e.preventDefault();
-        });
+        document.getElementById('pinInput').addEventListener('paste', e => e.preventDefault());
 
         function updatePinDots(pin) {
             const dots = document.querySelectorAll('.pin-dot');
             const length = pin.length;
-            
             dots.forEach((dot, index) => {
-                if (index < length) {
-                    dot.classList.add('filled');
-                } else {
-                    dot.classList.remove('filled');
-                }
+                if (index < length) dot.classList.add('filled');
+                else dot.classList.remove('filled');
             });
         }
 
-        // دالة التحقق من الرقم السري
         function verifyPin(pin) {
             if (!personData || !personData.pin) {
                 document.getElementById('pinError').classList.remove('hidden');
-                document.getElementById('pinErrorMessage').textContent = 'لم يتم العثور على الرقم السري لهذا الشخص';
-                document.getElementById('expenseForm').classList.add('hidden');
+                document.getElementById('pinErrorMessage').textContent = 'لم يتم تعيين رقم سري لهذا الحساب';
                 return;
             }
 
@@ -659,7 +497,6 @@
                 document.getElementById('pinStatus').className = 'text-xs text-green-600';
                 pinAttempts = 0;
                 document.getElementById('amount').focus();
-                
             } else {
                 isPinVerified = false;
                 pinAttempts++;
@@ -667,18 +504,14 @@
                 
                 document.getElementById('pinError').classList.remove('hidden');
                 document.getElementById('pinErrorMessage').textContent = `الرقم السري غير صحيح (${remaining} محاولات متبقية)`;
-                document.getElementById('pinSuccess').classList.add('hidden');
                 document.getElementById('pinStatus').textContent = '❌ رقم سري خاطئ';
                 document.getElementById('pinStatus').className = 'text-xs text-red-600';
-                document.getElementById('expenseForm').classList.add('hidden');
                 
                 document.getElementById('pinInput').classList.add('shake');
-                setTimeout(() => {
-                    document.getElementById('pinInput').classList.remove('shake');
-                }, 500);
+                setTimeout(() => document.getElementById('pinInput').classList.remove('shake'), 500);
                 
                 if (pinAttempts >= MAX_PIN_ATTEMPTS) {
-                    document.getElementById('pinErrorMessage').textContent = `⚠️ تم تجاوز عدد المحاولات المسموحة. انتظر ${PIN_LOCK_DURATION/1000} ثواني`;
+                    document.getElementById('pinErrorMessage').textContent = `⚠️ تم القفل المحتوم. انتظر ${PIN_LOCK_DURATION/1000} ثواني`;
                     document.getElementById('pinInput').disabled = true;
                     document.getElementById('pinInput').classList.add('opacity-50');
                     setTimeout(() => {
@@ -688,7 +521,7 @@
                         updatePinDots('');
                         pinAttempts = 0;
                         document.getElementById('pinError').classList.add('hidden');
-                        document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
+                        document.getElementById('pinStatus').textContent = 'أدخل الرقم السري ثم اضغط Enter';
                         document.getElementById('pinStatus').className = 'text-xs text-slate-500';
                         document.getElementById('pinInput').focus();
                     }, PIN_LOCK_DURATION);
@@ -702,16 +535,12 @@
             document.getElementById('pinError').classList.add('hidden');
             document.getElementById('pinSuccess').classList.add('hidden');
             document.getElementById('expenseForm').classList.add('hidden');
-            document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
-            document.getElementById('pinStatus').className = 'text-xs text-slate-500';
             document.getElementById('pinInput').focus();
             isPinVerified = false;
         }
 
-        // حساب اللترات تلقائياً
         function calculateLiters() {
             const amount = parseFloat(document.getElementById('amount').value);
-            
             let fuelType = '91';
             if (personData && personData.cars && selectedCar !== null && personData.cars[selectedCar]) {
                 fuelType = personData.cars[selectedCar].fuelType || '91';
@@ -730,10 +559,8 @@
             }
         }
 
-        // ربط حساب اللترات عند تغيير المبلغ
         document.getElementById('amount').addEventListener('input', calculateLiters);
 
-        // التحقق من الرقم السري عند الضغط على Enter
         document.getElementById('pinInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const pin = this.value;
@@ -741,28 +568,14 @@
                     verifyPin(pin);
                 } else {
                     document.getElementById('pinError').classList.remove('hidden');
-                    document.getElementById('pinErrorMessage').textContent = `الرجاء إدخال 4-8 أرقام (حالياً ${pin.length} رقم)`;
-                    document.getElementById('expenseForm').classList.add('hidden');
-                    document.getElementById('pinSuccess').classList.add('hidden');
+                    document.getElementById('pinErrorMessage').textContent = `الرجاء إدخال من 4 إلى 8 أرقام`;
                 }
             }
         });
 
-        // حفظ التعبئة
         function saveExpense() {
-            if (!isPinVerified) {
-                alert('⚠️ لا يمكنك تسجيل التعبئة. الرجاء إدخال الرقم السري الصحيح أولاً.');
-                document.getElementById('pinInput').focus();
-                return;
-            }
-
-            if (!selectedPerson) {
-                alert('الرجاء اختيار شخص أولاً');
-                return;
-            }
-
-            if (selectedCar === null || !personData.cars[selectedCar]) {
-                alert('الرجاء اختيار السيارة');
+            if (!isPinVerified || !selectedPerson || selectedCar === null) {
+                alert('⚠️ يرجى التحقق من الرقم السري واختيار السيارة');
                 return;
             }
 
@@ -771,7 +584,7 @@
             const datetime = document.getElementById('datetime').value;
 
             if (!amount || parseFloat(amount) <= 0) {
-                alert('الرجاء إدخال مبلغ صحيح (أكبر من صفر)');
+                alert('الرجاء إدخال مبلغ صحيح');
                 document.getElementById('amount').focus();
                 return;
             }
@@ -779,8 +592,7 @@
             const selectedCarData = personData.cars[selectedCar];
             const fuelType = selectedCarData.fuelType || '91';
             
-            let pricePerLiter = 0;
-            let fuelName = '';
+            let pricePerLiter = 0, fuelName = '';
             if (fuelType === '95') { pricePerLiter = 2.33; fuelName = 'أحمر (95)'; }
             else if (fuelType === '91') { pricePerLiter = 2.18; fuelName = 'أخضر (91)'; }
             else if (fuelType === '98') { pricePerLiter = 4.51; fuelName = 'أزرق (98)'; }
@@ -802,27 +614,18 @@
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
                 document.getElementById('successMessage').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('successMessage').classList.add('hidden');
-                }, 5000);
+                setTimeout(() => document.getElementById('successMessage').classList.add('hidden'), 5000);
 
                 document.getElementById('amount').value = '';
                 document.getElementById('odometer').value = '';
                 document.getElementById('litersDisplay').value = '';
-
-                const now = new Date();
-                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-                document.getElementById('datetime').value = now.toISOString().slice(0, 16);
-
                 clearPin();
                 document.getElementById('personSelect').value = '';
                 resetAll();
                 
-                alert('✅ تم تسجيل التعبئة بنجاح!');
-
+                alert('✅ تم حفظ تعبئة الوقود بنجاح!');
             }).catch((error) => {
-                console.error('❌ خطأ في الحفظ:', error);
-                alert('حدث خطأ أثناء حفظ البيانات: ' + error.message);
+                alert('حدث خطأ أثناء الحفظ: ' + error.message);
             });
         }
 
@@ -833,7 +636,6 @@
             document.getElementById('expenseForm').classList.add('hidden');
             document.getElementById('pinError').classList.add('hidden');
             document.getElementById('pinSuccess').classList.add('hidden');
-            document.getElementById('successMessage').classList.add('hidden');
             document.getElementById('pinInput').value = '';
             updatePinDots('');
             pinAttempts = 0;
@@ -843,21 +645,15 @@
             selectedCar = null;
         }
 
-        // تحميل الأشخاص عند بدء الصفحة
-        console.log('🚀 بدء تحميل الصفحة...');
-        loadPersons();
+        // تحميل القائمة فور فتح الصفحة
+        loadUsersFromBnzim();
 
-        // التنقل بين الحقول بالضغط على Enter
         document.getElementById('amount').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('odometer').focus();
-            }
+            if (e.key === 'Enter') document.getElementById('odometer').focus();
         });
 
         document.getElementById('odometer').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                saveExpense();
-            }
+            if (e.key === 'Enter') saveExpense();
         });
     </script>
 </body>
