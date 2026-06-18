@@ -44,28 +44,55 @@
         .shake {
             animation: shake 0.5s ease-in-out;
         }
-        .disabled-form {
-            opacity: 0.5;
-            pointer-events: none;
-            position: relative;
+        .car-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
         }
-        .disabled-form::after {
-            content: '🔒 يرجى إدخال الرقم السري الصحيح';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px 30px;
-            border-radius: 15px;
+        .car-option:hover {
+            border-color: #818cf8;
+            background: #f8fafc;
+        }
+        .car-option.selected {
+            border-color: #4f46e5;
+            background: #eef2ff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .car-option input[type="radio"] {
+            display: none;
+        }
+        .car-option .car-icon {
+            font-size: 20px;
+            color: #4f46e5;
+        }
+        .car-option .car-details {
+            flex: 1;
+        }
+        .car-option .car-details .car-name {
             font-weight: bold;
-            color: #dc2626;
-            border: 2px solid #dc2626;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            z-index: 10;
-            width: 80%;
-            text-align: center;
+            font-size: 14px;
+            color: #1e293b;
         }
+        .car-option .car-details .car-info {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .fuel-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .fuel-95 { background: #fecaca; color: #991b1b; }
+        .fuel-91 { background: #bbf7d0; color: #166534; }
+        .fuel-98 { background: #bfdbfe; color: #1e40af; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8">
@@ -132,19 +159,24 @@
 
             <!-- معلومات الشخص -->
             <div id="personInfo" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
-                <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                        <span class="text-slate-500">نوع السيارة:</span>
-                        <span id="displayCar" class="font-bold text-slate-700 block">-</span>
+                <div class="text-sm">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-user text-indigo-500"></i>
+                        <span class="font-bold text-slate-700" id="displayName">-</span>
                     </div>
-                    <div>
-                        <span class="text-slate-500">الموديل:</span>
-                        <span id="displayModel" class="font-bold text-slate-700 block">-</span>
+                    <div class="text-xs text-slate-500">
+                        <span id="displayCarsCount">0</span> سيارات مسجلة
                     </div>
-                    <div class="col-span-2">
-                        <span class="text-slate-500">نوع الوقود:</span>
-                        <span id="displayFuel" class="font-bold text-indigo-600 block">-</span>
-                    </div>
+                </div>
+            </div>
+
+            <!-- اختيار السيارة -->
+            <div id="carSelection" class="hidden mb-6">
+                <label class="block text-sm font-bold text-slate-700 mb-2">
+                    <i class="fa-solid fa-car text-indigo-500"></i> اختر السيارة
+                </label>
+                <div id="carsList" class="space-y-2">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
                 </div>
             </div>
 
@@ -223,10 +255,11 @@
         // متغيرات عامة
         let selectedPerson = null;
         let personData = null;
+        let selectedCar = null;
         let pinAttempts = 0;
         let isPinVerified = false;
         const MAX_PIN_ATTEMPTS = 3;
-        const PIN_LOCK_DURATION = 3000; // 3 ثواني
+        const PIN_LOCK_DURATION = 3000;
 
         // تعيين الوقت الحالي
         const now = new Date();
@@ -274,6 +307,7 @@
             // إعادة تعيين حالة التحقق
             isPinVerified = false;
             selectedPerson = name;
+            selectedCar = null;
             document.getElementById('pinSection').classList.remove('hidden');
             document.getElementById('pinInput').focus();
             document.getElementById('pinInput').value = '';
@@ -281,6 +315,7 @@
             document.getElementById('pinError').classList.add('hidden');
             document.getElementById('pinSuccess').classList.add('hidden');
             document.getElementById('expenseForm').classList.add('hidden');
+            document.getElementById('carSelection').classList.add('hidden');
             pinAttempts = 0;
             document.getElementById('pinInput').disabled = false;
             document.getElementById('pinInput').classList.remove('opacity-50');
@@ -290,56 +325,132 @@
             // جلب بيانات الشخص
             bnzimRef.child(name).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
-                    let car = 'غير محدد';
-                    let model = 'غير محدد';
-                    let fuelType = '95';
+                    let cars = [];
                     let pin = '';
                     
                     snapshot.forEach((recordSnapshot) => {
                         const data = recordSnapshot.val();
-                        if (data.car) car = data.car;
-                        if (data.model) model = data.model;
-                        if (data.fuelType) fuelType = data.fuelType;
-                        if (data.pin) pin = data.pin;
+                        if (data.cars && data.cars.length > 0) {
+                            cars = data.cars;
+                        }
+                        if (data.pin) {
+                            pin = data.pin;
+                        }
                         return true;
                     });
 
-                    personData = { car, model, fuelType, pin };
+                    personData = { cars, pin };
                     
-                    // عرض معلومات السيارة
-                    document.getElementById('displayCar').textContent = car;
-                    document.getElementById('displayModel').textContent = model;
-                    
-                    const fuelNames = {
-                        '95': 'أحمر (95) - 2.33 ريال/لتر',
-                        '91': 'أخضر (91) - 2.18 ريال/لتر',
-                        '98': 'أزرق (98) - 4.51 ريال/لتر'
-                    };
-                    document.getElementById('displayFuel').textContent = fuelNames[fuelType] || fuelNames['95'];
+                    // عرض معلومات الشخص
+                    document.getElementById('displayName').textContent = name;
+                    document.getElementById('displayCarsCount').textContent = cars.length;
                     document.getElementById('personInfo').classList.remove('hidden');
                     
-                    // تحديث سعر اللتر في الحساب
-                    calculateLiters();
+                    // عرض السيارات للاختيار
+                    if (cars.length > 0) {
+                        renderCars(cars);
+                        document.getElementById('carSelection').classList.remove('hidden');
+                    } else {
+                        alert('⚠️ هذا الشخص ليس لديه سيارات مسجلة!');
+                        document.getElementById('personSelect').value = '';
+                        resetAll();
+                    }
                 }
             });
         });
 
+        // عرض السيارات للاختيار
+        function renderCars(cars) {
+            const container = document.getElementById('carsList');
+            container.innerHTML = '';
+            
+            const fuelNames = {
+                '95': 'أحمر',
+                '91': 'أخضر',
+                '98': 'أزرق'
+            };
+            
+            const fuelColors = {
+                '95': 'fuel-95',
+                '91': 'fuel-91',
+                '98': 'fuel-98'
+            };
+
+            cars.forEach((car, index) => {
+                const div = document.createElement('div');
+                div.className = 'car-option';
+                div.onclick = () => selectCar(index);
+                
+                const fuelType = car.fuelType || '91';
+                div.innerHTML = `
+                    <input type="radio" name="selectedCar" value="${index}" id="car_${index}">
+                    <div class="car-icon">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <div class="car-details">
+                        <div class="car-name">${car.type || 'غير محدد'}</div>
+                        <div class="car-info">
+                            <span>موديل ${car.model || 'غير محدد'}</span>
+                            <span class="fuel-badge ${fuelColors[fuelType]}">${fuelNames[fuelType]} (${fuelType})</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-400">
+                        <i class="fa-regular fa-circle"></i>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            });
+            
+            // اختيار أول سيارة افتراضياً
+            if (cars.length > 0) {
+                selectCar(0);
+            }
+        }
+
+        // اختيار سيارة
+        function selectCar(index) {
+            const carOptions = document.querySelectorAll('.car-option');
+            carOptions.forEach((el, i) => {
+                if (i === index) {
+                    el.classList.add('selected');
+                    el.querySelector('.fa-regular.fa-circle').className = 'fa-regular fa-circle-check text-indigo-500';
+                } else {
+                    el.classList.remove('selected');
+                    el.querySelector('.fa-regular.fa-circle-check')?.className = 'fa-regular fa-circle text-slate-400';
+                }
+            });
+            
+            selectedCar = index;
+            
+            // تحديث معلومات الوقود في نموذج التعبئة
+            if (personData && personData.cars && personData.cars[index]) {
+                const car = personData.cars[index];
+                const fuelType = car.fuelType || '91';
+                const fuelNames = {
+                    '95': 'أحمر (95) - 2.33 ريال/لتر',
+                    '91': 'أخضر (91) - 2.18 ريال/لتر',
+                    '98': 'أزرق (98) - 4.51 ريال/لتر'
+                };
+                document.getElementById('displayFuel').textContent = fuelNames[fuelType];
+                document.getElementById('displayCar').textContent = car.type || 'غير محدد';
+                document.getElementById('displayModel').textContent = car.model || 'غير محدد';
+                document.getElementById('personInfo').classList.remove('hidden');
+                
+                // تحديث حساب اللترات
+                calculateLiters();
+            }
+        }
+
         // تحديث النقاط فقط - بدون تحقق فوري
         document.getElementById('pinInput').addEventListener('input', function() {
             const pin = this.value;
-            
-            // منع غير الأرقام
             this.value = pin.replace(/\D/g, '');
-            
-            // تحديث النقاط فقط
             updatePinDots(this.value);
-            
-            // إخفاء رسائل الخطأ والنجاح أثناء الكتابة
             document.getElementById('pinError').classList.add('hidden');
             document.getElementById('pinSuccess').classList.add('hidden');
             document.getElementById('expenseForm').classList.add('hidden');
             
-            // تحديث حالة النقاط
             if (this.value.length > 0) {
                 document.getElementById('pinStatus').textContent = `جاري الكتابة (${this.value.length}/4-8)`;
                 document.getElementById('pinStatus').className = 'text-xs text-indigo-600';
@@ -367,7 +478,7 @@
             });
         }
 
-        // دالة التحقق من الرقم السري - تُستدعى فقط عند الضغط على Enter
+        // دالة التحقق من الرقم السري
         function verifyPin(pin) {
             if (!personData || !personData.pin) {
                 document.getElementById('pinError').classList.remove('hidden');
@@ -377,7 +488,6 @@
             }
 
             if (pin === personData.pin) {
-                // ✅ الرقم السري صحيح
                 isPinVerified = true;
                 document.getElementById('pinError').classList.add('hidden');
                 document.getElementById('pinSuccess').classList.remove('hidden');
@@ -388,7 +498,6 @@
                 document.getElementById('amount').focus();
                 
             } else {
-                // ❌ الرقم السري خطأ
                 isPinVerified = false;
                 pinAttempts++;
                 const remaining = MAX_PIN_ATTEMPTS - pinAttempts;
@@ -400,7 +509,6 @@
                 document.getElementById('pinStatus').className = 'text-xs text-red-600';
                 document.getElementById('expenseForm').classList.add('hidden');
                 
-                // هز الحقل
                 document.getElementById('pinInput').classList.add('shake');
                 setTimeout(() => {
                     document.getElementById('pinInput').classList.remove('shake');
@@ -440,7 +548,11 @@
         // حساب اللترات تلقائياً
         function calculateLiters() {
             const amount = parseFloat(document.getElementById('amount').value);
-            const fuelType = personData ? personData.fuelType : '95';
+            
+            let fuelType = '91';
+            if (personData && personData.cars && selectedCar !== null && personData.cars[selectedCar]) {
+                fuelType = personData.cars[selectedCar].fuelType || '91';
+            }
             
             let pricePerLiter = 0;
             if (fuelType === '95') pricePerLiter = 2.33;
@@ -458,7 +570,7 @@
         // ربط حساب اللترات عند تغيير المبلغ
         document.getElementById('amount').addEventListener('input', calculateLiters);
 
-        // ✅ التحقق من الرقم السري عند الضغط على Enter فقط
+        // التحقق من الرقم السري عند الضغط على Enter
         document.getElementById('pinInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const pin = this.value;
@@ -486,6 +598,11 @@
                 return;
             }
 
+            if (selectedCar === null || !personData.cars[selectedCar]) {
+                alert('الرجاء اختيار السيارة');
+                return;
+            }
+
             const amount = document.getElementById('amount').value.trim();
             const odometer = document.getElementById('odometer').value.trim() || 'غير محدد';
             const datetime = document.getElementById('datetime').value;
@@ -496,8 +613,9 @@
                 return;
             }
 
-            // حساب اللترات
-            const fuelType = personData ? personData.fuelType : '95';
+            const selectedCarData = personData.cars[selectedCar];
+            const fuelType = selectedCarData.fuelType || '91';
+            
             let pricePerLiter = 0;
             let fuelName = '';
             if (fuelType === '95') { pricePerLiter = 2.33; fuelName = 'أحمر (95)'; }
@@ -506,7 +624,6 @@
             
             const liters = parseFloat(amount) / pricePerLiter;
 
-            // حفظ في قاعدة البيانات
             const newRecordRef = bnzimRef.child(selectedPerson).push();
             newRecordRef.set({
                 amount: parseFloat(amount),
@@ -516,8 +633,9 @@
                 liters: liters,
                 odometer: odometer,
                 timestamp: datetime,
-                car: personData.car,
-                model: personData.model,
+                car: selectedCarData.type || 'غير محدد',
+                model: selectedCarData.model || 'غير محدد',
+                carIndex: selectedCar,
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
                 document.getElementById('successMessage').classList.remove('hidden');
@@ -548,6 +666,7 @@
         function resetAll() {
             document.getElementById('pinSection').classList.add('hidden');
             document.getElementById('personInfo').classList.add('hidden');
+            document.getElementById('carSelection').classList.add('hidden');
             document.getElementById('expenseForm').classList.add('hidden');
             document.getElementById('pinError').classList.add('hidden');
             document.getElementById('pinSuccess').classList.add('hidden');
@@ -558,6 +677,7 @@
             isPinVerified = false;
             selectedPerson = null;
             personData = null;
+            selectedCar = null;
         }
 
         // تحميل الأشخاص عند بدء الصفحة
