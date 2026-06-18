@@ -1,1253 +1,210 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>متجر النوايف الرقمي | علي المالكي</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-<style>
-
-:root{
-
---primary:#0f172a;
---secondary:#1e293b;
---gold:#f59e0b;
---glass:rgba(255,255,255,.08);
---white:#ffffff;
---green:#25D366;
---green2:#16a34a;
---danger:#ef4444;
---text:#dbeafe;
-
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Cairo',sans-serif;
-}
-
-body{
-
-background:
-linear-gradient(135deg,#020617,#0f172a,#1e293b);
-
-min-height:100vh;
-
-color:white;
-
-padding:20px;
-
-overflow-x:hidden;
-
-}
-
-
-/* خلفية متحركة */
-
-body::before{
-
-content:'';
-
-position:fixed;
-
-width:600px;
-height:600px;
-
-background:rgba(245,158,11,.08);
-
-filter:blur(120px);
-
-top:-100px;
-left:-150px;
-
-border-radius:50%;
-
-animation:move1 10s infinite alternate;
-
-z-index:-1;
-
-}
-
-body::after{
-
-content:'';
-
-position:fixed;
-
-width:500px;
-height:500px;
-
-background:rgba(37,211,102,.06);
-
-filter:blur(120px);
-
-bottom:-120px;
-right:-120px;
-
-border-radius:50%;
-
-animation:move2 8s infinite alternate;
-
-z-index:-1;
-
-}
-
-@keyframes move1{
-
-from{transform:translateX(0px)}
-to{transform:translateX(120px)}
-
-}
-
-@keyframes move2{
-
-from{transform:translateY(0px)}
-to{transform:translateY(-100px)}
-
-}
-
-.container{
-
-max-width:1450px;
-
-margin:auto;
-
-}
-
-
-/* الهيدر */
-
-.header{
-
-text-align:center;
-
-padding:40px 20px;
-
-}
-
-.logo-box{
-
-width:95px;
-height:95px;
-
-background:rgba(255,255,255,.1);
-
-border-radius:28px;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-margin:auto;
-
-font-size:40px;
-
-backdrop-filter:blur(20px);
-
-border:1px solid rgba(255,255,255,.15);
-
-box-shadow:0 10px 30px rgba(0,0,0,.3);
-
-margin-bottom:25px;
-
-}
-
-.header h1{
-
-font-size:52px;
-
-font-weight:900;
-
-background:linear-gradient(90deg,#ffffff,#f59e0b);
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-
-margin-bottom:10px;
-
-}
-
-.header p{
-
-font-size:20px;
-
-color:#cbd5e1;
-
-margin-bottom:20px;
-
-}
-
-.offer{
-
-display:inline-block;
-
-padding:14px 35px;
-
-background:linear-gradient(45deg,#dc2626,#ef4444);
-
-border-radius:50px;
-
-font-weight:800;
-
-font-size:18px;
-
-box-shadow:0 10px 25px rgba(239,68,68,.3);
-
-animation:pulse 2s infinite;
-
-}
-
-@keyframes pulse{
-
-0%{transform:scale(1)}
-50%{transform:scale(1.05)}
-100%{transform:scale(1)}
-
-}
-
-
-/* شريط الثقة */
-
-.trust{
-
-margin-top:35px;
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-gap:18px;
-
-}
-
-.trust-item{
-
-background:rgba(255,255,255,.06);
-
-padding:18px;
-
-border-radius:22px;
-
-backdrop-filter:blur(25px);
-
-border:1px solid rgba(255,255,255,.08);
-
-font-size:17px;
-
-font-weight:700;
-
-display:flex;
-align-items:center;
-justify-content:center;
-gap:12px;
-
-transition:.4s;
-
-}
-
-.trust-item:hover{
-
-transform:translateY(-5px);
-
-background:rgba(255,255,255,.12);
-
-}
-
-.trust-item i{
-
-color:#f59e0b;
-
-font-size:22px;
-
-}
-
-
-/* عنوان الخدمات */
-
-.section-title{
-
-margin-top:60px;
-
-margin-bottom:30px;
-
-font-size:35px;
-
-font-weight:900;
-
-text-align:center;
-
-}
-
-
-/* شبكة الخدمات */
-
-.services{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(300px,1fr));
-
-gap:25px;
-
-}
-
-
-/* البطاقة */
-
-.card{
-
-background:rgba(255,255,255,.07);
-
-padding:30px;
-
-border-radius:30px;
-
-backdrop-filter:blur(25px);
-
-border:1px solid rgba(255,255,255,.1);
-
-transition:.4s;
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-.card:hover{
-
-transform:translateY(-8px);
-
-box-shadow:0 20px 35px rgba(0,0,0,.3);
-
-}
-
-.card::before{
-
-content:'';
-
-position:absolute;
-
-height:4px;
-width:100%;
-
-top:0;
-left:0;
-
-background:
-linear-gradient(90deg,#25D366,#f59e0b);
-
-}
-
-.icon{
-
-width:80px;
-height:80px;
-
-background:rgba(255,255,255,.09);
-
-border-radius:22px;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-font-size:32px;
-
-margin-bottom:20px;
-
-color:#f59e0b;
-
-}
-
-.card h3{
-
-font-size:24px;
-
-margin-bottom:10px;
-
-}
-
-.card p{
-
-color:#cbd5e1;
-
-line-height:1.9;
-
-min-height:70px;
-
-font-size:15px;
-
-}
-
-
-/* الأسعار */
-
-.price{
-
-margin-top:18px;
-
-margin-bottom:18px;
-
-display:flex;
-
-align-items:center;
-
-gap:10px;
-
-}
-
-.old{
-
-text-decoration:line-through;
-
-color:#94a3b8;
-
-font-size:18px;
-
-}
-
-.new{
-
-font-size:32px;
-
-font-weight:900;
-
-color:#25D366;
-
-}
-
-
-/* زر الطلب */
-
-.order-btn{
-
-width:100%;
-
-padding:16px;
-
-border:none;
-
-background:
-linear-gradient(45deg,#16a34a,#25D366);
-
-border-radius:18px;
-
-cursor:pointer;
-
-font-size:18px;
-
-font-weight:800;
-
-color:white;
-
-transition:.3s;
-
-}
-
-.order-btn:hover{
-
-transform:scale(1.02);
-
-}
-
-
-/* responsive */
-
-@media(max-width:768px){
-
-.header h1{
-
-font-size:34px;
-
-}
-
-.section-title{
-
-font-size:28px;
-
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقات مصروفات البنزين</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
 </head>
-
-<body>
-
-<div class="container">
-
-<div class="header">
-
-<div class="logo-box">
-
-<i class="fa-solid fa-store"></i>
-
-</div>
-
-<h1>متجر النوايف الرقمي</h1>
-
-<p>تنفيذ جميع الخدمات الإلكترونية بسرعة وأمان واحترافية عالية</p>
-
-<div class="offer">
-
-🔥 خصم خاص على جميع الخدمات — فقط 39 ريال
-
-</div>
-
-
-<div class="trust">
-
-<div class="trust-item">
-
-<i class="fa-solid fa-shield-halved"></i>
-
-بياناتك محمية بالكامل
-
-</div>
-
-
-<div class="trust-item">
-
-<i class="fa-solid fa-bolt"></i>
-
-تنفيذ سريع وفوري
-
-</div>
-
-
-<div class="trust-item">
-
-<i class="fa-brands fa-whatsapp"></i>
-
-دعم مباشر عبر الواتساب
-
-</div>
-
-
-<div class="trust-item">
-
-<i class="fa-solid fa-lock"></i>
-
-سرية تامة للبيانات
-
-</div>
-
-</div>
-
-</div>
-
-<h2 class="section-title">
-
-الخدمات الرئيسية
-
-</h2>
-
-<div class="services" id="serviceGrid">
-    <!-- بطاقات الخدمات سيتم توليدها بالجافاسكربت -->
-
-</div>
-
-
-<!-- خدمات إضافية -->
-
-<h2 class="section-title" style="margin-top:70px;">
-
-خدمات سريعة إضافية
-
-</h2>
-
-
-<div class="services" id="extraGrid">
-
-</div>
-
-
-
-<!-- نافذة الموافقة -->
-
-<div id="confirmModal" class="modal">
-
-<div class="modal-box">
-
-<h2>
-
-<i class="fa-solid fa-triangle-exclamation"
-style="color:#f59e0b"></i>
-
-تنبيه مهم قبل طلب الخدمة
-
-</h2>
-
-
-<div class="rules-box">
-
-<p>📌 يشترط تحويل قيمة الخدمة قبل البدء بالتنفيذ.</p>
-
-<p>📌 بعد التحويل يجب إرسال إيصال التحويل عبر واتساب.</p>
-
-<p>📌 بعض الخدمات الإلكترونية تتطلب أحد التالي:</p>
-
-<ul>
-
-<li>إرسال رقم الهوية الوطنية.</li>
-
-<li>إرسال الرقم السري الخاص بالخدمة المطلوبة.</li>
-
-<li>الموافقة على تسجيل الدخول عبر منصة نفاذ.</li>
-
-</ul>
-
-
-<p>
-
-🔒 جميع بيانات العميل محفوظة بسرية تامة بين العميل ومتجر النوايف الرقمي.
-
-</p>
-
-
-<p>
-
-✅ بالمتابعة أنت توافق على جميع الشروط السابقة.
-
-</p>
-
-</div>
-
-
-<div class="agree-box">
-
-<input type="checkbox" id="agreeCheck">
-
-<label>
-
-أوافق على جميع الشروط والتعليمات
-
-</label>
-
-</div>
-
-
-<div class="modal-buttons">
-
-<button onclick="sendOrder()" class="continue-btn">
-
-متابعة الطلب
-
-</button>
-
-
-<button onclick="closeModal()" class="cancel-btn">
-
-إلغاء
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-
-<!-- الفوتر -->
-
-<div class="footer">
-
-<div class="footer-box">
-
-<h3>متجر النوايف الرقمي</h3>
-
-<p>
-
-خدمات إلكترونية موثوقة وآمنة لجميع العملاء داخل المملكة
-
-</p>
-
-
-<div class="footer-contact">
-
-<i class="fa-brands fa-whatsapp"></i>
-
-0505113747
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<style>
-
-/* نافذة الموافقة */
-
-.modal{
-
-position:fixed;
-
-top:0;
-right:0;
-left:0;
-bottom:0;
-
-background:rgba(0,0,0,.75);
-
-display:none;
-
-justify-content:center;
-
-align-items:center;
-
-padding:20px;
-
-z-index:9999;
-
-backdrop-filter:blur(6px);
-
-}
-
-
-.modal-box{
-
-max-width:700px;
-
-width:100%;
-
-background:#ffffff;
-
-color:#111827;
-
-padding:35px;
-
-border-radius:30px;
-
-animation:fadeIn .35s ease;
-
-}
-
-
-@keyframes fadeIn{
-
-from{
-
-transform:scale(.8);
-
-opacity:0;
-
-}
-
-to{
-
-transform:scale(1);
-
-opacity:1;
-
-}
-
-}
-
-
-.modal-box h2{
-
-text-align:center;
-
-margin-bottom:25px;
-
-font-size:30px;
-
-font-weight:900;
-
-}
-
-
-.rules-box{
-
-background:#f8fafc;
-
-padding:25px;
-
-border-radius:20px;
-
-line-height:2.1;
-
-font-size:16px;
-
-}
-
-
-.rules-box ul{
-
-margin-top:10px;
-
-margin-bottom:10px;
-
-padding-right:20px;
-
-}
-
-
-.agree-box{
-
-margin-top:22px;
-
-font-size:18px;
-
-font-weight:700;
-
-display:flex;
-
-gap:10px;
-
-align-items:center;
-
-}
-
-
-.agree-box input{
-
-width:22px;
-height:22px;
-
-cursor:pointer;
-
-}
-
-
-.modal-buttons{
-
-display:flex;
-
-gap:15px;
-
-margin-top:25px;
-
-}
-
-
-.continue-btn{
-
-flex:1;
-
-background:#25D366;
-
-border:none;
-
-padding:16px;
-
-font-size:18px;
-
-font-weight:800;
-
-color:white;
-
-border-radius:18px;
-
-cursor:pointer;
-
-}
-
-
-.cancel-btn{
-
-flex:1;
-
-background:#ef4444;
-
-border:none;
-
-padding:16px;
-
-font-size:18px;
-
-font-weight:800;
-
-color:white;
-
-border-radius:18px;
-
-cursor:pointer;
-
-}
-
-
-/* الفوتر */
-
-.footer{
-
-margin-top:70px;
-
-padding:20px 0 40px 0;
-
-}
-
-
-.footer-box{
-
-text-align:center;
-
-background:rgba(255,255,255,.06);
-
-padding:35px;
-
-border-radius:25px;
-
-backdrop-filter:blur(20px);
-
-border:1px solid rgba(255,255,255,.1);
-
-}
-
-
-.footer-box h3{
-
-font-size:28px;
-
-margin-bottom:10px;
-
-}
-
-
-.footer-box p{
-
-color:#cbd5e1;
-
-margin-bottom:18px;
-
-}
-
-
-.footer-contact{
-
-display:inline-block;
-
-background:#25D366;
-
-padding:12px 25px;
-
-border-radius:15px;
-
-font-size:20px;
-
-font-weight:800;
-
-}
-
-</style>
-<script>
-
-const WA_NUMBER = "966505113747";
-
-let selectedService = "";
-
-
-
-/* الخدمات الرئيسية */
-
-const services = [
-
-{
-title:"إنشاء سيرة ذاتية (CV)",
-icon:"fa-file-lines",
-desc:"تصميم سيرة ذاتية احترافية متوافقة مع أنظمة التوظيف الحديثة"
-},
-
-{
-title:"إنشاء حساب بريد إلكتروني",
-icon:"fa-envelope",
-desc:"إنشاء بريد Gmail أو Outlook رسمي وتأمين الحساب بالكامل"
-},
-
-{
-title:"تسجيل حساب المواطن",
-icon:"fa-user-check",
-desc:"تسجيل جديد وتحديث البيانات وتقديم الاعتراضات"
-},
-
-{
-title:"الضمان الاجتماعي المطور",
-icon:"fa-hand-holding-heart",
-desc:"تقديم طلبات الضمان ورفع المستندات المطلوبة"
-},
-
-{
-title:"حجز طيران وفنادق",
-icon:"fa-plane",
-desc:"البحث عن أفضل الأسعار وحجز الفنادق والطيران"
-},
-
-{
-title:"تقديم اعتراض رسمي",
-icon:"fa-gavel",
-desc:"صياغة اعتراضات إلكترونية بطريقة احترافية"
-},
-
-{
-title:"رفع شكوى إلكترونية",
-icon:"fa-file-signature",
-desc:"إعداد الشكاوى الرسمية ورفعها إلكترونياً"
-},
-
-{
-title:"تأمين المركبات",
-icon:"fa-car",
-desc:"إصدار تأمين المركبات بأفضل الأسعار"
-},
-
-{
-title:"تجديد رخصة واستمارة",
-icon:"fa-id-card",
-desc:"إنهاء إجراءات المرور وتجديد الوثائق"
-},
-
-{
-title:"تأسيس سجل تجاري",
-icon:"fa-briefcase",
-desc:"إصدار سجل تجاري وحجز الاسم التجاري"
-},
-
-{
-title:"تأمين طبي",
-icon:"fa-heart-pulse",
-desc:"إصدار وتجديد وثائق التأمين الصحي"
-},
-
-{
-title:"حجز المواعيد الحكومية",
-icon:"fa-calendar-days",
-desc:"حجز جميع المواعيد الحكومية الرسمية"
-},
-
-{
-title:"طلب بدل فاقد",
-icon:"fa-address-card",
-desc:"بدل فاقد للهوية والرخصة والجواز"
-},
-
-{
-title:"خدمات أبشر",
-icon:"fa-user-shield",
-desc:"حل مشاكل الحسابات وخدمات منصة أبشر"
-},
-
-{
-title:"توثيق عقود إيجار",
-icon:"fa-file-contract",
-desc:"توثيق العقود عبر شبكة إيجار"
-},
-
-{
-title:"خدمات الزكاة والدخل",
-icon:"fa-receipt",
-desc:"إدارة الضرائب والزكاة وتقديم الإقرارات"
-}
-
-];
-
-
-
-/* خدمات إضافية */
-
-const extraServices = [
-
-"نقل ملكية مركبة",
-
-"إصدار تأشيرات",
-
-"تعديل المهنة",
-
-"تحديث العنوان الوطني",
-
-"تأشيرة خروج وعودة",
-
-"الاستعلام عن المخالفات",
-
-"طباعة ملفات",
-
-"التسجيل في جدارة"
-
-];
-
-
-
-/* إنشاء بطاقات الخدمات */
-
-const serviceGrid = document.getElementById("serviceGrid");
-
-services.forEach(service=>{
-
-serviceGrid.innerHTML += `
-
-<div class="card">
-
-<div class="icon">
-
-<i class="fa-solid ${service.icon}"></i>
-
-</div>
-
-<h3>${service.title}</h3>
-
-<p>${service.desc}</p>
-
-<div class="price">
-
-<span class="old">60 ريال</span>
-
-<span class="new">39 ريال</span>
-
-</div>
-
-<button class="order-btn"
-
-onclick="openModal('${service.title}')">
-
-اطلب الخدمة الآن
-
-</button>
-
-</div>
-
-`;
-
-});
-
-
-
-
-/* إنشاء الخدمات السريعة */
-
-const extraGrid = document.getElementById("extraGrid");
-
-extraServices.forEach(item=>{
-
-extraGrid.innerHTML += `
-
-<div class="card">
-
-<div class="icon">
-
-<i class="fa-solid fa-bolt"></i>
-
-</div>
-
-<h3>${item}</h3>
-
-<p>
-
-تنفيذ سريع وفوري لهذه الخدمة عبر متجر النوايف الرقمي
-
-</p>
-
-<div class="price">
-
-<span class="old">60 ريال</span>
-
-<span class="new">39 ريال</span>
-
-</div>
-
-<button class="order-btn"
-
-onclick="openModal('${item}')">
-
-اطلب الخدمة الآن
-
-</button>
-
-</div>
-
-`;
-
-});
-
-
-
-/* فتح نافذة الموافقة */
-
-function openModal(service){
-
-selectedService = service;
-
-document.getElementById("confirmModal").style.display = "flex";
-
-document.getElementById("agreeCheck").checked = false;
-
-}
-
-
-
-/* إغلاق */
-
-function closeModal(){
-
-document.getElementById("confirmModal").style.display = "none";
-
-}
-
-
-
-/* إرسال الطلب */
-
-function sendOrder(){
-
-let agree = document.getElementById("agreeCheck").checked;
-
-if(!agree){
-
-alert("يجب الموافقة على الشروط أولاً");
-
-return;
-
-}
-
-
-let message =
-
-`مرحباً
-
-أرغب بطلب خدمة:
-
-${selectedService}
-
-وأوافق على جميع شروط متجر النوايف الرقمي قبل البدء بتنفيذ الخدمة.
-
-وشكراً`;
-
-
-
-let link =
-
-`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
-
-
-window.open(link,"_blank");
-
-
-closeModal();
-
-}
-
-</script>
-
-
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <nav class="bg-gradient-to-r from-indigo-700 to-violet-800 text-white shadow-lg sticky top-0 z-50 mb-8">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <i class="fa-solid fa-id-card text-2xl text-amber-400"></i>
+                <h1 class="text-xl font-black">بطاقات مصروفات البنزين لكل شخص</h1>
+            </div>
+            <span class="text-xs bg-white/20 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md font-medium">تحديث فوري ⚡</span>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 pb-12 space-y-6">
+
+        <div class="bg-white p-4 rounded-2xl shadow-xs border border-slate-200/60 max-w-md mx-auto">
+            <div class="relative">
+                <i class="fa-solid fa-filter absolute right-3 top-3.5 text-slate-400"></i>
+                <input type="text" id="searchBox" oninput="renderCards()" placeholder="ابحث عن شخص محدد..." 
+                    class="w-full pl-3 pr-9 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+        </div>
+
+        <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center py-12 text-slate-400 font-medium">
+                <i class="fa-solid fa-circle-notch animate-spin text-indigo-600 text-2xl mb-3 block"></i>
+                جاري تجميع البيانات وتجهيز البطاقات الخاصة...
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // 1. ربط إعدادات Firebase
+        const firebaseConfig = {
+            databaseURL: "https://hsabat-a4353-default-rtdb.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const bnzimRef = database.ref('bnzim');
+
+        let structuredData = {}; // { "اسم الشخص": { car, model, records: [...] } }
+
+        // الاستماع الفوري لقاعدة البيانات
+        bnzimRef.on('value', (snapshot) => {
+            structuredData = {};
+
+            if (!snapshot.exists()) {
+                document.getElementById('cardsGrid').innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 text-slate-400">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2 block text-slate-300"></i> لا توجد بيانات مسجلة حالياً في النظام.
+                    </div>`;
+                return;
+            }
+
+            // معالجة البيانات: استخراج السيارة والموديل من أول سجل إن وجد
+            snapshot.forEach((userSnapshot) => {
+                const userName = userSnapshot.key;
+                let car = "غير محدد";
+                let model = "غير محدد";
+                const records = [];
+
+                userSnapshot.forEach((expenseSnapshot) => {
+                    const data = expenseSnapshot.val();
+                    
+                    // استخراج السيارة والموديل من أي سجل (نفترض أنها ثابتة للشخص)
+                    if (data.car) car = data.car;
+                    if (data.model) model = data.model;
+
+                    records.push({
+                        amount: parseFloat(data.amount) || 0,
+                        liters: parseFloat(data.liters) || 0,
+                        odometer: data.odometer || "غير محدد",
+                        date: data.timestamp || "",
+                        fuelName: data.fuelName || "غير محدد"
+                    });
+                });
+
+                // ترتيب السجلات من الأحدث للأقدم
+                records.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                structuredData[userName] = {
+                    car: car,
+                    model: model,
+                    records: records
+                };
+            });
+
+            renderCards();
+        });
+
+        // دالة بناء ورسم البطاقات
+        function renderCards() {
+            const cardsGrid = document.getElementById('cardsGrid');
+            const searchQuery = document.getElementById('searchBox').value.trim().toLowerCase();
+            cardsGrid.innerHTML = "";
+
+            let hasData = false;
+
+            for (const userName in structuredData) {
+                if (searchQuery && !userName.toLowerCase().includes(searchQuery)) {
+                    continue;
+                }
+
+                hasData = true;
+                const userData = structuredData[userName];
+                const records = userData.records;
+                
+                // حساب الإجماليات
+                const totalAmount = records.reduce((sum, item) => sum + item.amount, 0);
+                const totalLiters = records.reduce((sum, item) => sum + item.liters, 0);
+
+                // إنشاء كرت الشخص
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200";
+
+                let cardHtml = `
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-5 text-white">
+                        <div class="flex justify-between items-start">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-300 text-sm">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <span class="font-bold tracking-wide text-base">${userName}</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-slate-300 mt-1">
+                                    <span><i class="fa-solid fa-car"></i> ${userData.car}</span>
+                                    <span><i class="fa-solid fa-tag"></i> ${userData.model}</span>
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-xs text-slate-400 font-medium">إجمالي المصروف</div>
+                                <span class="text-xl font-black text-emerald-400">${totalAmount.toFixed(2)} <span class="text-xs">ريال</span></span>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 mt-3 pt-3 border-t border-white/10">
+                            <div>
+                                <span class="text-xs text-slate-400 block">اللترات</span>
+                                <span class="text-lg font-bold text-cyan-300">${totalLiters.toFixed(2)}</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-400 block">عدد التعبئات</span>
+                                <span class="text-lg font-bold text-white">${records.length}</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-400 block">متوسط اللتر/تعبئة</span>
+                                <span class="text-lg font-bold text-amber-300">${records.length ? (totalLiters / records.length).toFixed(2) : '0'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 flex-1 overflow-y-auto max-h-[300px] space-y-3 bg-slate-50/50">
+                        <p class="text-xxs font-bold text-slate-400 uppercase tracking-wider mb-1"><i class="fa-solid fa-history"></i> سجلات التعبئة (${records.length}):</p>
+                `;
+
+                // إضافة التسجيلات
+                records.forEach(rec => {
+                    const cleanDate = rec.date ? rec.date.replace('T', ' ') : 'غير محدد';
+                    cardHtml += `
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-xxs flex justify-between items-center hover:border-slate-200 transition-colors">
+                            <div class="space-y-1">
+                                <div class="text-xs text-slate-400 font-semibold flex items-center gap-1">
+                                    <i class="fa-regular fa-calendar text-slate-400"></i> ${cleanDate}
+                                </div>
+                                <div class="text-xs text-slate-500 font-medium flex items-center gap-2">
+                                    ${rec.fuelName !== "غير محدد" ? `<span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">${rec.fuelName}</span>` : ''}
+                                    ${rec.odometer !== "غير محدد" ? `<span><i class="fa-solid fa-gauge-high text-slate-300"></i> ${rec.odometer} كم</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-bold text-slate-700 text-sm">${rec.amount.toFixed(2)}</span> <span class="text-xxs font-bold text-slate-400">ريال</span>
+                                <div class="text-xs text-slate-400">${rec.liters.toFixed(2)} لتر</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                cardHtml += `</div>`;
+                card.innerHTML = cardHtml;
+                cardsGrid.appendChild(card);
+            }
+
+            if (!hasData) {
+                cardsGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-2xl mb-2 block text-slate-300"></i> لا يوجد شخص بهذا الاسم في السجلات.
+                    </div>`;
+            }
+        }
+    </script>
 </body>
-
 </html>
