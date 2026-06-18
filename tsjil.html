@@ -1,1 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل مصروفات البنزين</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .pin-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .pin-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: all 0.3s;
+        }
+        .pin-dot.filled {
+            background: #4f46e5;
+            transform: scale(1.1);
+        }
+        .pin-input {
+            letter-spacing: 8px;
+            font-size: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        .disabled-form {
+            opacity: 0.5;
+            pointer-events: none;
+            position: relative;
+        }
+        .disabled-form::after {
+            content: '🔒 يرجى إدخال الرقم السري الصحيح';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 10;
+            width: 80%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 md:p-8">
 
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="gradient-bg rounded-2xl shadow-2xl p-6 text-white mb-6 text-center">
+            <i class="fa-solid fa-gas-pump text-4xl mb-2 block text-amber-300"></i>
+            <h1 class="text-2xl font-bold">تسجيل مصروفات البنزين</h1>
+            <p class="text-white/80 text-sm">اختر اسمك وأدخل الرقم السري لتسجيل التعبئة</p>
+        </div>
+
+        <!-- نموذج الإدخال -->
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 md:p-8">
+            
+            <!-- اختيار الشخص -->
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-slate-700 mb-2">
+                    <i class="fa-solid fa-user text-indigo-500"></i> اختر اسمك
+                </label>
+                <select id="personSelect" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none bg-white">
+                    <option value="">-- اختر اسمك من القائمة --</option>
+                </select>
+            </div>
+
+            <!-- نموذج الرقم السري -->
+            <div id="pinSection" class="hidden mb-6">
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200">
+                    <label class="block text-sm font-bold text-slate-700 mb-3 text-center">
+                        <i class="fa-solid fa-lock text-indigo-500"></i> أدخل الرقم السري
+                    </label>
+                    
+                    <div class="pin-dots" id="pinDots">
+                        <span class="pin-dot" data-index="0"></span>
+                        <span class="pin-dot" data-index="1"></span>
+                        <span class="pin-dot" data-index="2"></span>
+                        <span class="pin-dot" data-index="3"></span>
+                        <span class="pin-dot hidden" data-index="4"></span>
+                        <span class="pin-dot hidden" data-index="5"></span>
+                        <span class="pin-dot hidden" data-index="6"></span>
+                        <span class="pin-dot hidden" data-index="7"></span>
+                    </div>
+                    
+                    <input type="password" id="pinInput" maxlength="8" 
+                        class="pin-input w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none bg-white"
+                        placeholder="••••">
+                    
+                    <div class="flex justify-between mt-2">
+                        <span id="pinStatus" class="text-xs text-slate-500">أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter</span>
+                        <button type="button" onclick="clearPin()" class="text-xs text-red-500 hover:text-red-700">
+                            <i class="fa-solid fa-eraser"></i> مسح
+                        </button>
+                    </div>
+                    <div id="pinError" class="text-xs text-red-500 mt-2 hidden text-center">
+                        <i class="fa-solid fa-exclamation-circle"></i>
+                        <span id="pinErrorMessage">الرقم السري غير صحيح</span>
+                    </div>
+                    <div id="pinSuccess" class="text-xs text-green-600 mt-2 hidden text-center">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>✅ تم التحقق من الرقم السري بنجاح</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- معلومات الشخص -->
+            <div id="personInfo" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                        <span class="text-slate-500">نوع السيارة:</span>
+                        <span id="displayCar" class="font-bold text-slate-700 block">-</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">الموديل:</span>
+                        <span id="displayModel" class="font-bold text-slate-700 block">-</span>
+                    </div>
+                    <div class="col-span-2">
+                        <span class="text-slate-500">نوع الوقود:</span>
+                        <span id="displayFuel" class="font-bold text-indigo-600 block">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- نموذج تسجيل المصروف -->
+            <div id="expenseForm" class="hidden relative">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold border-b pb-2 border-slate-200 text-slate-700">
+                        <i class="fa-solid fa-pen-to-square text-indigo-500"></i> تسجيل التعبئة
+                    </h3>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-slate-600">المبلغ (ريال):</label>
+                        <input type="number" id="amount" placeholder="0.00" step="0.01" required 
+                            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-slate-600">عدد اللترات (محسوب تلقائياً):</label>
+                        <input type="text" id="litersDisplay" readonly 
+                            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl bg-slate-50 text-slate-700 font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-slate-600">قراءة العداد (كم):</label>
+                        <input type="number" id="odometer" placeholder="اختياري" 
+                            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-slate-600">التاريخ والوقت:</label>
+                        <input type="datetime-local" id="datetime" 
+                            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none">
+                    </div>
+
+                    <button onclick="saveExpense()" 
+                        class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                        <i class="fa-solid fa-floppy-disk ml-2"></i> حفظ التعبئة
+                    </button>
+                </div>
+            </div>
+
+            <!-- رسالة النجاح -->
+            <div id="successMessage" class="mt-4 hidden">
+                <div class="bg-green-50 border-r-4 border-green-500 p-4 rounded-xl">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fa-solid fa-check-circle text-green-500 text-xl"></i>
+                        </div>
+                        <div class="mr-3">
+                            <p class="text-sm text-green-700 font-medium">تم تسجيل التعبئة بنجاح!</p>
+                            <p class="text-xs text-green-600 mt-1">تم حفظ البيانات في قاعدة البيانات</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- زر العودة -->
+        <div class="mt-4 text-center">
+            <a href="#" onclick="history.back()" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                <i class="fa-solid fa-arrow-right ml-1"></i> العودة
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // إعدادات Firebase
+        const firebaseConfig = {
+            databaseURL: "https://hsabat-a4353-default-rtdb.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const bnzimRef = database.ref('bnzim');
+
+        // متغيرات عامة
+        let selectedPerson = null;
+        let personData = null;
+        let pinAttempts = 0;
+        let isPinVerified = false;
+        const MAX_PIN_ATTEMPTS = 3;
+        const PIN_LOCK_DURATION = 3000; // 3 ثواني
+
+        // تعيين الوقت الحالي
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('datetime').value = now.toISOString().slice(0, 16);
+
+        // تحميل قائمة الأشخاص
+        function loadPersons() {
+            const select = document.getElementById('personSelect');
+            select.innerHTML = '<option value="">-- اختر اسمك من القائمة --</option>';
+
+            bnzimRef.once('value').then((snapshot) => {
+                if (!snapshot.exists()) {
+                    select.innerHTML += '<option value="" disabled>لا يوجد أشخاص مسجلين</option>';
+                    return;
+                }
+
+                const persons = [];
+                snapshot.forEach((userSnapshot) => {
+                    persons.push(userSnapshot.key);
+                });
+                persons.sort();
+
+                persons.forEach((name) => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    select.appendChild(option);
+                });
+
+            }).catch((error) => {
+                console.error('خطأ في تحميل الأشخاص:', error);
+                alert('حدث خطأ في تحميل قائمة الأشخاص');
+            });
+        }
+
+        // عند اختيار شخص
+        document.getElementById('personSelect').addEventListener('change', function() {
+            const name = this.value;
+            if (!name) {
+                resetAll();
+                return;
+            }
+
+            // إعادة تعيين حالة التحقق
+            isPinVerified = false;
+            selectedPerson = name;
+            document.getElementById('pinSection').classList.remove('hidden');
+            document.getElementById('pinInput').focus();
+            document.getElementById('pinInput').value = '';
+            updatePinDots('');
+            document.getElementById('pinError').classList.add('hidden');
+            document.getElementById('pinSuccess').classList.add('hidden');
+            document.getElementById('expenseForm').classList.add('hidden');
+            pinAttempts = 0;
+            document.getElementById('pinInput').disabled = false;
+            document.getElementById('pinInput').classList.remove('opacity-50');
+            document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
+            document.getElementById('pinStatus').className = 'text-xs text-slate-500';
+            
+            // جلب بيانات الشخص
+            bnzimRef.child(name).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    let car = 'غير محدد';
+                    let model = 'غير محدد';
+                    let fuelType = '95';
+                    let pin = '';
+                    
+                    snapshot.forEach((recordSnapshot) => {
+                        const data = recordSnapshot.val();
+                        if (data.car) car = data.car;
+                        if (data.model) model = data.model;
+                        if (data.fuelType) fuelType = data.fuelType;
+                        if (data.pin) pin = data.pin;
+                        return true;
+                    });
+
+                    personData = { car, model, fuelType, pin };
+                    
+                    // عرض معلومات السيارة
+                    document.getElementById('displayCar').textContent = car;
+                    document.getElementById('displayModel').textContent = model;
+                    
+                    const fuelNames = {
+                        '95': 'أحمر (95) - 2.33 ريال/لتر',
+                        '91': 'أخضر (91) - 2.18 ريال/لتر',
+                        '98': 'أزرق (98) - 4.51 ريال/لتر'
+                    };
+                    document.getElementById('displayFuel').textContent = fuelNames[fuelType] || fuelNames['95'];
+                    document.getElementById('personInfo').classList.remove('hidden');
+                    
+                    // تحديث سعر اللتر في الحساب
+                    calculateLiters();
+                }
+            });
+        });
+
+        // تحديث النقاط فقط - بدون تحقق فوري
+        document.getElementById('pinInput').addEventListener('input', function() {
+            const pin = this.value;
+            
+            // منع غير الأرقام
+            this.value = pin.replace(/\D/g, '');
+            
+            // تحديث النقاط فقط
+            updatePinDots(this.value);
+            
+            // إخفاء رسائل الخطأ والنجاح أثناء الكتابة
+            document.getElementById('pinError').classList.add('hidden');
+            document.getElementById('pinSuccess').classList.add('hidden');
+            document.getElementById('expenseForm').classList.add('hidden');
+            
+            // تحديث حالة النقاط
+            if (this.value.length > 0) {
+                document.getElementById('pinStatus').textContent = `جاري الكتابة (${this.value.length}/4-8)`;
+                document.getElementById('pinStatus').className = 'text-xs text-indigo-600';
+            } else {
+                document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
+                document.getElementById('pinStatus').className = 'text-xs text-slate-500';
+            }
+        });
+
+        // منع اللصق في حقل الرقم السري
+        document.getElementById('pinInput').addEventListener('paste', function(e) {
+            e.preventDefault();
+        });
+
+        function updatePinDots(pin) {
+            const dots = document.querySelectorAll('.pin-dot');
+            const length = pin.length;
+            
+            dots.forEach((dot, index) => {
+                if (index < length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+
+        // دالة التحقق من الرقم السري - تُستدعى فقط عند الضغط على Enter
+        function verifyPin(pin) {
+            if (!personData || !personData.pin) {
+                document.getElementById('pinError').classList.remove('hidden');
+                document.getElementById('pinErrorMessage').textContent = 'لم يتم العثور على الرقم السري لهذا الشخص';
+                document.getElementById('expenseForm').classList.add('hidden');
+                return;
+            }
+
+            if (pin === personData.pin) {
+                // ✅ الرقم السري صحيح
+                isPinVerified = true;
+                document.getElementById('pinError').classList.add('hidden');
+                document.getElementById('pinSuccess').classList.remove('hidden');
+                document.getElementById('expenseForm').classList.remove('hidden');
+                document.getElementById('pinStatus').textContent = '✅ تم التحقق من الرقم السري';
+                document.getElementById('pinStatus').className = 'text-xs text-green-600';
+                pinAttempts = 0;
+                document.getElementById('amount').focus();
+                
+            } else {
+                // ❌ الرقم السري خطأ
+                isPinVerified = false;
+                pinAttempts++;
+                const remaining = MAX_PIN_ATTEMPTS - pinAttempts;
+                
+                document.getElementById('pinError').classList.remove('hidden');
+                document.getElementById('pinErrorMessage').textContent = `الرقم السري غير صحيح (${remaining} محاولات متبقية)`;
+                document.getElementById('pinSuccess').classList.add('hidden');
+                document.getElementById('pinStatus').textContent = '❌ رقم سري خاطئ';
+                document.getElementById('pinStatus').className = 'text-xs text-red-600';
+                document.getElementById('expenseForm').classList.add('hidden');
+                
+                // هز الحقل
+                document.getElementById('pinInput').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('pinInput').classList.remove('shake');
+                }, 500);
+                
+                if (pinAttempts >= MAX_PIN_ATTEMPTS) {
+                    document.getElementById('pinErrorMessage').textContent = `⚠️ تم تجاوز عدد المحاولات المسموحة. انتظر ${PIN_LOCK_DURATION/1000} ثواني`;
+                    document.getElementById('pinInput').disabled = true;
+                    document.getElementById('pinInput').classList.add('opacity-50');
+                    setTimeout(() => {
+                        document.getElementById('pinInput').disabled = false;
+                        document.getElementById('pinInput').classList.remove('opacity-50');
+                        document.getElementById('pinInput').value = '';
+                        updatePinDots('');
+                        pinAttempts = 0;
+                        document.getElementById('pinError').classList.add('hidden');
+                        document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
+                        document.getElementById('pinStatus').className = 'text-xs text-slate-500';
+                        document.getElementById('pinInput').focus();
+                    }, PIN_LOCK_DURATION);
+                }
+            }
+        }
+
+        function clearPin() {
+            document.getElementById('pinInput').value = '';
+            updatePinDots('');
+            document.getElementById('pinError').classList.add('hidden');
+            document.getElementById('pinSuccess').classList.add('hidden');
+            document.getElementById('expenseForm').classList.add('hidden');
+            document.getElementById('pinStatus').textContent = 'أدخل الرقم السري (4-8 أرقام) ثم اضغط Enter';
+            document.getElementById('pinStatus').className = 'text-xs text-slate-500';
+            document.getElementById('pinInput').focus();
+            isPinVerified = false;
+        }
+
+        // حساب اللترات تلقائياً
+        function calculateLiters() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const fuelType = personData ? personData.fuelType : '95';
+            
+            let pricePerLiter = 0;
+            if (fuelType === '95') pricePerLiter = 2.33;
+            else if (fuelType === '91') pricePerLiter = 2.18;
+            else if (fuelType === '98') pricePerLiter = 4.51;
+            
+            if (!isNaN(amount) && amount > 0 && pricePerLiter > 0) {
+                const liters = amount / pricePerLiter;
+                document.getElementById('litersDisplay').value = liters.toFixed(2) + ' لتر';
+            } else {
+                document.getElementById('litersDisplay').value = '';
+            }
+        }
+
+        // ربط حساب اللترات عند تغيير المبلغ
+        document.getElementById('amount').addEventListener('input', calculateLiters);
+
+        // ✅ التحقق من الرقم السري عند الضغط على Enter فقط
+        document.getElementById('pinInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const pin = this.value;
+                if (pin.length >= 4 && pin.length <= 8) {
+                    verifyPin(pin);
+                } else {
+                    document.getElementById('pinError').classList.remove('hidden');
+                    document.getElementById('pinErrorMessage').textContent = `الرجاء إدخال 4-8 أرقام (حالياً ${pin.length} رقم)`;
+                    document.getElementById('expenseForm').classList.add('hidden');
+                    document.getElementById('pinSuccess').classList.add('hidden');
+                }
+            }
+        });
+
+        // حفظ التعبئة
+        function saveExpense() {
+            if (!isPinVerified) {
+                alert('⚠️ لا يمكنك تسجيل التعبئة. الرجاء إدخال الرقم السري الصحيح أولاً.');
+                document.getElementById('pinInput').focus();
+                return;
+            }
+
+            if (!selectedPerson) {
+                alert('الرجاء اختيار شخص أولاً');
+                return;
+            }
+
+            const amount = document.getElementById('amount').value.trim();
+            const odometer = document.getElementById('odometer').value.trim() || 'غير محدد';
+            const datetime = document.getElementById('datetime').value;
+
+            if (!amount || parseFloat(amount) <= 0) {
+                alert('الرجاء إدخال مبلغ صحيح (أكبر من صفر)');
+                document.getElementById('amount').focus();
+                return;
+            }
+
+            // حساب اللترات
+            const fuelType = personData ? personData.fuelType : '95';
+            let pricePerLiter = 0;
+            let fuelName = '';
+            if (fuelType === '95') { pricePerLiter = 2.33; fuelName = 'أحمر (95)'; }
+            else if (fuelType === '91') { pricePerLiter = 2.18; fuelName = 'أخضر (91)'; }
+            else if (fuelType === '98') { pricePerLiter = 4.51; fuelName = 'أزرق (98)'; }
+            
+            const liters = parseFloat(amount) / pricePerLiter;
+
+            // حفظ في قاعدة البيانات
+            const newRecordRef = bnzimRef.child(selectedPerson).push();
+            newRecordRef.set({
+                amount: parseFloat(amount),
+                fuelType: fuelType,
+                fuelName: fuelName,
+                pricePerLiter: pricePerLiter,
+                liters: liters,
+                odometer: odometer,
+                timestamp: datetime,
+                car: personData.car,
+                model: personData.model,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                document.getElementById('successMessage').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('successMessage').classList.add('hidden');
+                }, 5000);
+
+                document.getElementById('amount').value = '';
+                document.getElementById('odometer').value = '';
+                document.getElementById('litersDisplay').value = '';
+
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                document.getElementById('datetime').value = now.toISOString().slice(0, 16);
+
+                clearPin();
+                document.getElementById('personSelect').value = '';
+                resetAll();
+                
+                alert('✅ تم تسجيل التعبئة بنجاح!');
+
+            }).catch((error) => {
+                console.error('خطأ في الحفظ:', error);
+                alert('حدث خطأ أثناء حفظ البيانات: ' + error.message);
+            });
+        }
+
+        function resetAll() {
+            document.getElementById('pinSection').classList.add('hidden');
+            document.getElementById('personInfo').classList.add('hidden');
+            document.getElementById('expenseForm').classList.add('hidden');
+            document.getElementById('pinError').classList.add('hidden');
+            document.getElementById('pinSuccess').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+            document.getElementById('pinInput').value = '';
+            updatePinDots('');
+            pinAttempts = 0;
+            isPinVerified = false;
+            selectedPerson = null;
+            personData = null;
+        }
+
+        // تحميل الأشخاص عند بدء الصفحة
+        loadPersons();
+
+        // التنقل بين الحقول بالضغط على Enter
+        document.getElementById('amount').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('odometer').focus();
+            }
+        });
+
+        document.getElementById('odometer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveExpense();
+            }
+        });
+    </script>
+</body>
+</html>
