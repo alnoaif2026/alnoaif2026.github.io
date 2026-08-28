@@ -1,1 +1,653 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>مكتبة الأوامر البصرية</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- استدعاء ملف التنسيق الموحد الخارجي -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div class="container">
+  <!-- Navbar -->
+  <nav class="site-nav">
+    <a href="#" class="brand-logo">✦ مكتبة الأوامر</a>
+    <a href="index.html" target="_blank" class="external-link">🌐 الرئيسية</a>
+  </nav>
+
+  <!-- Hero Header -->
+  <header class="hero">
+    <h1>الأوامر البصرية والبرمجية</h1>
+    <p>تصفح، شارك وأنشئ أوامر البرمجة والذكاء الاصطناعي بسهولة</p>
+  </header>
+
+  <!-- Search & Controls -->
+  <div class="glass-panel">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" class="search-input" placeholder="ابحث باسم الأمر أو الوصف...">
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="toggleFavFilter()" id="favFilterBtn">⭐ المفضلة</button>
+      <button class="btn btn-outline" onclick="exportTXT()">💾 تصدير الكل TXT</button>
+      <button class="btn btn-accent" onclick="promptAddCustomCommand()">➕ أمر خاص</button>
+    </div>
+  </div>
+
+  <!-- Categories Scroll Area -->
+  <div class="categories-scroll" id="categories"></div>
+
+  <!-- Prompt Builder Section -->
+  <div class="glass-panel">
+    <h3 style="color: var(--primary-neon); font-size: 1rem; margin-bottom: 8px;">🧩 مجمع البرومبتات</h3>
+    <textarea id="promptBuilder" class="builder-textarea" placeholder="الأوامر المختارة ستظهر هنا..."></textarea>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكود</button>
+      <button class="btn btn-secondary" onclick="shareTXTBuilder()">📤 مشاركة TXT</button>
+      <button class="btn btn-accent" onclick="exportBuilderPNG()">🖼️ مشاركة PNG</button>
+      <button class="btn btn-danger" onclick="clearBuilder()">مسح</button>
+    </div>
+  </div>
+
+  <!-- Cards Main Area -->
+  <main style="margin-top: 16px;">
+    <div class="commands-grid" id="commandsGrid"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast">تمت العملية بنجاح!</div>
+
+<!-- Hidden Canvas for Image Export -->
+<div id="exportCardCanvas" style="position: absolute; left:-9999px; top:-9999px; width:450px; background:#090d16; color:#fff; padding:24px; border-radius:16px; border:2px solid #00f2fe;">
+  <h3 style="color:#00f2fe; margin-bottom:8px; font-size:1.1rem;" id="cardCategoryTag">مكتبة الأوامر البصرية</h3>
+  <div id="cardCommandText" style="font-family:monospace; font-size:1.3rem; background:rgba(255,255,255,0.1); padding:12px; border-radius:10px; margin-bottom:10px; color:#00f2fe; direction:ltr;"></div>
+  <p id="cardDescText" style="color:#ccc; font-size:0.95rem; line-height:1.6;"></p>
+</div>
+
+<script>
+  const library = {"الهندسة الميكانيكية":[
+
+{c:"/mechanicalengineering",d:"إنشاء أو تحليل محتوى متعلق بالهندسة الميكانيكية."},
+{c:"/mechanicaldesign",d:"تصميم جزء أو نظام ميكانيكي حسب المتطلبات."},
+{c:"/machineDesign",d:"تصميم آلة أو منظومة ميكانيكية متكاملة."},
+{c:"/mechanism",d:"تحليل أو تصميم آلية ميكانيكية وحركة أجزائها."},
+{c:"/mechanismanalysis",d:"تحليل حركة القوى والروابط داخل آلية ميكانيكية."},
+{c:"/kinematics",d:"تحليل الحركة والسرعة والتسارع للأجزاء الميكانيكية."},
+{c:"/dynamics",d:"تحليل حركة الأجسام تحت تأثير القوى."},
+{c:"/statics",d:"تحليل القوى والعزوم في الأنظمة الساكنة."},
+{c:"/freebodydiagram",d:"إنشاء مخطط جسم حر يوضح القوى والعزوم المؤثرة."},
+{c:"/forceanalysis",d:"تحليل القوى المؤثرة على جزء أو نظام ميكانيكي."},
+{c:"/momentanalysis",d:"حساب وتحليل العزوم حول النقاط والمحاور."},
+{c:"/torque",d:"حساب أو تحليل عزم الدوران."},
+{c:"/power",d:"حساب القدرة الميكانيكية المطلوبة أو الناتجة."},
+{c:"/mechanicalpower",d:"تحليل القدرة المنتقلة داخل نظام ميكانيكي."},
+{c:"/efficiency",d:"حساب كفاءة النظام الميكانيكي."},
+
+{c:"/explodedview",d:"تفكيك الآلة أو الجزء إلى مكوناته وعرضها بشكل هندسي."},
+{c:"/assemblyview",d:"عرض كيفية تجميع الأجزاء الميكانيكية."},
+{c:"/assemblydiagram",d:"إنشاء مخطط يوضح ترتيب تجميع المكونات."},
+{c:"/disassembly",d:"عرض خطوات فك أجزاء الجهاز أو الآلة."},
+{c:"/partsdiagram",d:"إنشاء مخطط يوضح جميع القطع الميكانيكية."},
+{c:"/componentview",d:"عرض مكوّن ميكانيكي بشكل مستقل وواضح."},
+{c:"/internalview",d:"إظهار المكونات الداخلية للآلة أو الجزء."},
+{c:"/cutaway",d:"إنشاء مقطع يكشف الأجزاء الداخلية للمكوّن."},
+{c:"/crosssection",d:"إنشاء مقطع عرضي يوضح التركيب الداخلي."},
+{c:"/sectionview",d:"إنشاء منظور مقطعي هندسي للجزء."},
+{c:"/xray",d:"إظهار المكونات الداخلية بأسلوب أشعة سينية."},
+{c:"/transparentview",d:"جعل الغلاف الخارجي شفافًا لإظهار الداخل."},
+
+{c:"/technicaldrawing",d:"إنشاء رسم تقني ميكانيكي منظم."},
+{c:"/mechanicaldrawing",d:"إنشاء رسم ميكانيكي احترافي للجزء."},
+{c:"/engineeringdrawing",d:"إنشاء رسم هندسي بالأبعاد والتفاصيل."},
+{c:"/manufacturingdrawing",d:"إنشاء رسم مخصص لتصنيع القطعة."},
+{c:"/productiondrawing",d:"إنشاء رسم إنتاج يحتوي على معلومات التصنيع."},
+{c:"/detaildrawing",d:"إنشاء رسم تفصيلي لقطعة ميكانيكية."},
+{c:"/workingdrawing",d:"إنشاء رسم عمل للاستخدام في الورشة."},
+{c:"/shopdrawing",d:"إنشاء رسم تنفيذي مناسب للورش والتصنيع."},
+{c:"/fabricationdrawing",d:"إنشاء رسم لتصنيع وتجميع القطع المعدنية."},
+{c:"/dimensioned",d:"إضافة الأبعاد والقياسات إلى الرسم."},
+{c:"/dimensions",d:"عرض الطول والعرض والارتفاع والأقطار."},
+{c:"/tolerance",d:"تحديد سماحات التصنيع للأبعاد."},
+{c:"/gdt",d:"إضافة الأبعاد والتفاوتات الهندسية GD&T."},
+{c:"/datum",d:"إضافة المراجع والمحاور الهندسية للرسم."},
+{c:"/surfacefinish",d:"تحديد خشونة وتشطيب الأسطح."},
+{c:"/fits",d:"تحديد نوع التوافق بين الأعمدة والثقوب."},
+{c:"/clearancefit",d:"حساب أو تحديد توافق الخلوص."},
+{c:"/interferencefit",d:"حساب أو تحديد توافق التداخل."},
+{c:"/transitionfit",d:"تحديد توافق انتقالي بين قطعتين."},
+
+{c:"/cad",d:"إنشاء أو وصف نموذج CAD ميكانيكي."},
+{c:"/cadmodel",d:"إنشاء تصور لنموذج ميكانيكي ثلاثي الأبعاد."},
+{c:"/3dcad",d:"إنشاء نموذج CAD ثلاثي الأبعاد."},
+{c:"/2dcad",d:"إنشاء رسم CAD ثنائي الأبعاد."},
+{c:"/solidmodel",d:"إنشاء نموذج ميكانيكي صلب ثلاثي الأبعاد."},
+{c:"/parametricmodel",d:"إنشاء نموذج بارامتري قابل لتغيير الأبعاد."},
+{c:"/sheetmetal",d:"تصميم أجزاء من الصفائح المعدنية."},
+{c:"/sheetmetaldesign",d:"إنشاء تصميم صفائح معدنية قابل للتصنيع."},
+{c:"/flatpattern",d:"إنشاء فرد للقطعة المعدنية قبل الثني."},
+{c:"/bending",d:"حساب أو تصميم عمليات ثني الصفائح."},
+
+{c:"/gear",d:"تصميم أو تحليل ترس ميكانيكي."},
+{c:"/gears",d:"تصميم منظومة تروس."},
+{c:"/geartrain",d:"تحليل مجموعة تروس ونسب السرعة بينها."},
+{c:"/gearbox",d:"تصميم أو تحليل علبة تروس."},
+{c:"/spurGear",d:"تصميم ترس مستقيم الأسنان."},
+{c:"/helicalGear",d:"تصميم ترس حلزوني."},
+{c:"/bevelGear",d:"تصميم ترس مخروطي."},
+{c:"/wormGear",d:"تصميم نظام ترس دودي."},
+{c:"/gearRatio",d:"حساب نسبة التروس."},
+{c:"/modulegear",d:"حساب أو تحديد موديول الترس."},
+{c:"/pitchcircle",d:"حساب دائرة الخطوة للترس."},
+{c:"/gearforces",d:"حساب القوى المؤثرة على أسنان التروس."},
+
+{c:"/shaft",d:"تصميم أو تحليل عمود دوران."},
+{c:"/shaftdesign",d:"تصميم عمود ميكانيكي حسب العزم والحمل."},
+{c:"/shaftstress",d:"حساب الإجهادات في العمود."},
+{c:"/shaftdiameter",d:"حساب قطر العمود المناسب."},
+{c:"/key",d:"تصميم مفتاح تثبيت بين العمود والجزء الدوار."},
+{c:"/keyway",d:"تصميم مجرى المفتاح في العمود."},
+{c:"/spline",d:"تصميم وصلة Splines لنقل العزم."},
+{c:"/coupling",d:"تصميم أو اختيار وصلة بين عمودين."},
+{c:"/flexiblecoupling",d:"اختيار أو تصميم وصلة مرنة."},
+{c:"/rigidcoupling",d:"اختيار أو تصميم وصلة صلبة."},
+{c:"/universaljoint",d:"تحليل أو تصميم وصلة عالمية."},
+
+{c:"/bearing",d:"اختيار أو تحليل محمل ميكانيكي."},
+{c:"/bearingselection",d:"اختيار نوع وحجم الرولمان المناسب."},
+{c:"/bearinglife",d:"حساب العمر التشغيلي المتوقع للمحمل."},
+{c:"/ballbearing",d:"تحليل أو اختيار محمل كروي."},
+{c:"/rollerbearing",d:"تحليل أو اختيار محمل أسطواني."},
+{c:"/thrustbearing",d:"اختيار محمل لتحمل القوى المحورية."},
+{c:"/bearingload",d:"حساب الأحمال المؤثرة على المحمل."},
+{c:"/lubrication",d:"تحديد طريقة ونوع التزييت المناسب."},
+
+{c:"/beltDrive",d:"تصميم نظام نقل حركة باستخدام السيور."},
+{c:"/pulley",d:"تصميم أو حساب البكرات."},
+{c:"/pulleyRatio",d:"حساب نسبة السرعة بين البكرات."},
+{c:"/beltLength",d:"حساب طول السير."},
+{c:"/beltTension",d:"حساب شد السير."},
+{c:"/vbelt",d:"تصميم نظام سيور V-Belt."},
+{c:"/timingbelt",d:"تصميم نظام سير توقيت."},
+{c:"/chainDrive",d:"تصميم نظام نقل حركة باستخدام السلسلة."},
+{c:"/chain",d:"تحليل أو اختيار سلسلة نقل الحركة."},
+{c:"/sprocket",d:"تصميم أو اختيار ترس السلسلة."},
+
+{c:"/spring",d:"تصميم أو تحليل نابض."},
+{c:"/springdesign",d:"تصميم نابض حسب الحمل والإزاحة."},
+{c:"/compressionspring",d:"تصميم نابض ضغط."},
+{c:"/extensionspring",d:"تصميم نابض شد."},
+{c:"/torsionspring",d:"تصميم نابض لَيّ."},
+{c:"/springrate",d:"حساب ثابت النابض."},
+{c:"/springstress",d:"حساب إجهاد النابض."},
+
+{c:"/bolt",d:"تحليل أو اختيار مسمار ربط."},
+{c:"/boltedjoint",d:"تحليل وصلة مثبتة بالمسامير."},
+{c:"/boltload",d:"حساب الحمل على المسمار."},
+{c:"/boltTorque",d:"حساب عزم شد المسمار."},
+{c:"/thread",d:"تحليل أو تصميم القلاوظ."},
+{c:"/threadselection",d:"اختيار نوع ومقاس السن اللولبي."},
+{c:"/screw",d:"تحليل أو اختيار برغي ميكانيكي."},
+{c:"/fasteners",d:"اختيار وسائل التثبيت المناسبة."},
+{c:"/rivet",d:"تصميم أو تحليل وصلة برشام."},
+
+{c:"/welding",d:"تحليل أو تصميم وصلة لحام."},
+{c:"/weldjoint",d:"اختيار نوع وصلة اللحام المناسبة."},
+{c:"/weldsize",d:"حساب حجم اللحام المطلوب."},
+{c:"/filletweld",d:"حساب لحام الزاوية."},
+{c:"/buttweld",d:"تحليل لحام تناكبي."},
+{c:"/weldstress",d:"حساب الإجهادات في منطقة اللحام."},
+{c:"/weldsymbol",d:"إنشاء أو شرح رموز اللحام الهندسية."},
+
+{c:"/stress",d:"حساب الإجهاد الميكانيكي."},
+{c:"/strain",d:"حساب الانفعال الناتج عن الحمل."},
+{c:"/normalstress",d:"حساب الإجهاد العمودي."},
+{c:"/shearstress",d:"حساب إجهاد القص."},
+{c:"/bendingstress",d:"حساب إجهاد الانحناء."},
+{c:"/torsionalstress",d:"حساب إجهاد الالتواء."},
+{c:"/principalstress",d:"حساب الإجهادات الرئيسية."},
+{c:"/vonmises",d:"حساب إجهاد فون ميزس."},
+{c:"/mohrcircle",d:"إنشاء وتحليل دائرة موهر."},
+{c:"/factorofsafety",d:"حساب معامل الأمان."},
+{c:"/safetyfactor",d:"تحديد معامل أمان مناسب للتصميم."},
+
+{c:"/beam",d:"تحليل أو تصميم كمرة ميكانيكية."},
+{c:"/beamanalysis",d:"حساب ردود الأفعال والقص والعزم للكمرة."},
+{c:"/shearforce",d:"حساب قوة القص."},
+{c:"/bendingmoment",d:"حساب عزم الانحناء."},
+{c:"/shearforcediagram",d:"إنشاء مخطط قوة القص."},
+{c:"/bendingmomentdiagram",d:"إنشاء مخطط عزم الانحناء."},
+{c:"/deflection",d:"حساب مقدار الانحراف تحت الحمل."},
+{c:"/beamdeflection",d:"حساب انحراف الكمرة."},
+{c:"/slope",d:"حساب ميل الكمرة تحت الحمل."},
+
+{c:"/column",d:"تحليل عمود معرض للضغط."},
+{c:"/buckling",d:"تحليل الانبعاج للأعمدة."},
+{c:"/eulerbuckling",d:"حساب حمل الانبعاج باستخدام معادلة أويلر."},
+{c:"/criticalLoad",d:"حساب الحمل الحرج للانبعاج."},
+{c:"/slendernessratio",d:"حساب نسبة النحافة للعمود."},
+
+{c:"/fatigue",d:"تحليل فشل الكلال تحت الأحمال المتكررة."},
+{c:"/fatigueanalysis",d:"تقدير عمر الجزء تحت الأحمال الدورية."},
+{c:"/fatiguelife",d:"حساب العمر المتوقع قبل فشل الكلال."},
+{c:"/sncurve",d:"إنشاء أو تفسير منحنى S-N."},
+{c:"/goodman",d:"تحليل الكلال باستخدام مخطط Goodman."},
+{c:"/soderberg",d:"تحليل الكلال باستخدام معيار Soderberg."},
+{c:"/gerber",d:"تحليل الكلال باستخدام معيار Gerber."},
+{c:"/stressconcentration",d:"حساب معامل تركيز الإجهاد."},
+{c:"/notch",d:"تحليل تأثير الشقوق على الإجهاد."},
+
+{c:"/materialselection",d:"اختيار المادة المناسبة للجزء الميكانيكي."},
+{c:"/materialproperties",d:"عرض الخواص الميكانيكية للمادة."},
+{c:"/youngsmodulus",d:"استخدام أو حساب معامل يونغ."},
+{c:"/poissonratio",d:"استخدام أو تفسير نسبة بواسون."},
+{c:"/yieldstrength",d:"تحليل التصميم مقارنة بإجهاد الخضوع."},
+{c:"/ultimatestrength",d:"تحليل المقاومة القصوى للمادة."},
+{c:"/hardness",d:"تحليل أو مقارنة صلادة المواد."},
+{c:"/toughness",d:"تحليل متانة المادة ومقاومتها للكسر."},
+{c:"/ductility",d:"تحليل قابلية المادة للاستطالة."},
+{c:"/brittleness",d:"تحليل قابلية المادة للكسر الهش."},
+
+{c:"/thermodynamics",d:"حل وتحليل مسائل الديناميكا الحرارية."},
+{c:"/firstlaw",d:"تطبيق القانون الأول للديناميكا الحرارية."},
+{c:"/secondlaw",d:"تطبيق القانون الثاني للديناميكا الحرارية."},
+{c:"/energybalance",d:"إنشاء معادلة اتزان الطاقة."},
+{c:"/heat",d:"حساب انتقال أو كمية الحرارة."},
+{c:"/work",d:"حساب الشغل الميكانيكي أو الحراري."},
+{c:"/enthalpy",d:"حساب أو تحليل الإنثالبي."},
+{c:"/entropy",d:"حساب أو تحليل الإنتروبي."},
+{c:"/specificheat",d:"حساب الطاقة اعتمادًا على الحرارة النوعية."},
+{c:"/idealGas",d:"حل مسائل الغاز المثالي."},
+{c:"/gaslaw",d:"تطبيق قوانين الغازات."},
+
+{c:"/heattransfer",d:"تحليل انتقال الحرارة."},
+{c:"/conduction",d:"حساب انتقال الحرارة بالتوصيل."},
+{c:"/convection",d:"حساب انتقال الحرارة بالحمل."},
+{c:"/radiation",d:"حساب انتقال الحرارة بالإشعاع."},
+{c:"/thermalresistance",d:"حساب المقاومة الحرارية."},
+{c:"/heatflux",d:"حساب الفيض الحراري."},
+{c:"/heatexchanger",d:"تصميم أو تحليل مبادل حراري."},
+{c:"/lmtd",d:"حساب فرق درجة الحرارة اللوغاريتمي للمبادل."},
+{c:"/ntu",d:"تحليل المبادل الحراري باستخدام طريقة NTU."},
+{c:"/heatsink",d:"تصميم أو تحليل مشتت حراري."},
+{c:"/insulation",d:"حساب سماكة العزل الحراري المطلوبة."},
+
+{c:"/fluidmechanics",d:"حل وتحليل مسائل ميكانيكا الموائع."},
+{c:"/fluidflow",d:"تحليل تدفق السوائل والغازات."},
+{c:"/bernoulli",d:"تطبيق معادلة برنولي."},
+{c:"/continuity",d:"تطبيق معادلة الاستمرارية."},
+{c:"/reynolds",d:"حساب رقم رينولدز."},
+{c:"/laminarflow",d:"تحليل الجريان الصفحي."},
+{c:"/turbulentflow",d:"تحليل الجريان المضطرب."},
+{c:"/pressureDrop",d:"حساب فاقد الضغط في الأنابيب."},
+{c:"/headloss",d:"حساب فاقد الارتفاع في شبكة الأنابيب."},
+{c:"/darcyweisbach",d:"حساب فاقد الاحتكاك بمعادلة Darcy-Weisbach."},
+{c:"/frictionfactor",d:"حساب معامل الاحتكاك للأنابيب."},
+{c:"/moodychart",d:"تفسير أو استخدام مخطط Moody."},
+
+{c:"/pump",d:"اختيار أو تحليل مضخة."},
+{c:"/pumpselection",d:"اختيار المضخة المناسبة للتدفق والضغط."},
+{c:"/pumphead",d:"حساب ارتفاع الضخ المطلوب."},
+{c:"/pumpPower",d:"حساب قدرة المضخة."},
+{c:"/pumpEfficiency",d:"حساب كفاءة المضخة."},
+{c:"/npsh",d:"حساب NPSH لتجنب التجويف."},
+{c:"/cavitation",d:"تحليل مخاطر التجويف في المضخة."},
+{c:"/pumpcurve",d:"قراءة أو إنشاء منحنى أداء المضخة."},
+
+{c:"/compressor",d:"تحليل أو اختيار ضاغط."},
+{c:"/compressorPower",d:"حساب القدرة المطلوبة للضاغط."},
+{c:"/compressionratio",d:"حساب نسبة الضغط."},
+{c:"/isentropic",d:"تحليل عملية انضغاط أو تمدد إيزنتروبية."},
+{c:"/turbine",d:"تحليل أو تصميم توربين."},
+{c:"/turbinePower",d:"حساب القدرة الناتجة من التوربين."},
+{c:"/nozzle",d:"تحليل الجريان خلال فوهة."},
+{c:"/diffuser",d:"تحليل الجريان خلال ناشر."},
+
+{c:"/hydraulic",d:"تحليل أو تصميم نظام هيدروليكي."},
+{c:"/hydraulics",d:"حل مسائل الأنظمة الهيدروليكية."},
+{c:"/hydraulicschematic",d:"إنشاء مخطط دائرة هيدروليكية."},
+{c:"/hydraulicpump",d:"اختيار مضخة هيدروليكية."},
+{c:"/hydrauliccylinder",d:"حساب قوة وسرعة الأسطوانة الهيدروليكية."},
+{c:"/hydraulicpressure",d:"حساب ضغط النظام الهيدروليكي."},
+{c:"/hydraulicflow",d:"حساب معدل التدفق الهيدروليكي."},
+{c:"/hydraulicforce",d:"حساب القوة الناتجة من الأسطوانة."},
+{c:"/valve",d:"اختيار أو تحليل صمام."},
+{c:"/directionalvalve",d:"اختيار صمام تحكم اتجاهي."},
+{c:"/pressurevalve",d:"تحليل صمامات التحكم في الضغط."},
+
+{c:"/pneumatic",d:"تحليل أو تصميم نظام هواء مضغوط."},
+{c:"/pneumatics",d:"حل مسائل الأنظمة النيوماتيكية."},
+{c:"/pneumaticschematic",d:"إنشاء مخطط دائرة هوائية."},
+{c:"/aircylinder",d:"حساب قوة أسطوانة هوائية."},
+{c:"/airflow",d:"حساب تدفق الهواء المضغوط."},
+{c:"/airpressure",d:"تحليل ضغط الهواء في النظام."},
+
+{c:"/hvac",d:"تصميم أو تحليل أنظمة التكييف والتهوية."},
+{c:"/coolingload",d:"حساب الحمل الحراري للتبريد."},
+{c:"/heatingload",d:"حساب حمل التدفئة."},
+{c:"/airconditioning",d:"تحليل نظام تكييف الهواء."},
+{c:"/refrigeration",d:"تحليل دورة التبريد."},
+{c:"/refrigerationcycle",d:"تحليل دورة ضغط البخار."},
+{c:"/cop",d:"حساب معامل الأداء لنظام التبريد."},
+{c:"/psychrometrics",d:"تحليل خواص الهواء الرطب."},
+{c:"/psychrometricchart",d:"تحليل البيانات باستخدام المخطط السيكرومتري."},
+{c:"/duct",d:"تصميم مجاري الهواء."},
+{c:"/ductsizing",d:"حساب أبعاد مجاري الهواء."},
+{c:"/airflowrate",d:"حساب معدل تدفق الهواء."},
+{c:"/fan",d:"اختيار أو تحليل مروحة."},
+{c:"/fanPower",d:"حساب قدرة المروحة."},
+
+{c:"/internalcombustion",d:"تحليل محركات الاحتراق الداخلي."},
+{c:"/engine",d:"تحليل محرك ميكانيكي."},
+{c:"/enginecycle",d:"تحليل دورة المحرك الحرارية."},
+{c:"/ottocycle",d:"تحليل دورة أوتو."},
+{c:"/dieselcycle",d:"تحليل دورة ديزل."},
+{c:"/braytoncycle",d:"تحليل دورة برايتون."},
+{c:"/rankinecycle",d:"تحليل دورة رانكين."},
+{c:"/enginetorque",d:"حساب عزم المحرك."},
+{c:"/enginepower",d:"حساب قدرة المحرك."},
+{c:"/bsfc",d:"حساب استهلاك الوقود النوعي."},
+{c:"/volumetricefficiency",d:"حساب الكفاءة الحجمية للمحرك."},
+
+{c:"/vibration",d:"تحليل الاهتزازات الميكانيكية."},
+{c:"/vibrationanalysis",d:"تحليل سلوك النظام تحت الاهتزاز."},
+{c:"/naturalfrequency",d:"حساب التردد الطبيعي."},
+{c:"/resonance",d:"تحليل حالة الرنين."},
+{c:"/damping",d:"حساب أو تحليل التخميد."},
+{c:"/dampingratio",d:"حساب نسبة التخميد."},
+{c:"/massspringdamper",d:"تحليل نظام كتلة ونابض ومخمد."},
+{c:"/modalanalysis",d:"تحليل أنماط الاهتزاز الطبيعية."},
+{c:"/rotorDynamics",d:"تحليل ديناميكا الأجزاء الدوارة."},
+{c:"/balancing",d:"تحليل واتزان الأجزاء الدوارة."},
+{c:"/unbalance",d:"حساب تأثير عدم الاتزان."},
+
+{c:"/fea",d:"إعداد أو تفسير تحليل العناصر المحددة."},
+{c:"/finiteelement",d:"تحليل جزء ميكانيكي بطريقة العناصر المحددة."},
+{c:"/stressanalysis",d:"تحليل توزيع الإجهادات على الجزء."},
+{c:"/strainanalysis",d:"تحليل توزيع الانفعالات."},
+{c:"/deformation",d:"تحليل تشوه الجزء تحت الحمل."},
+{c:"/loadsimulation",d:"محاكاة تأثير الأحمال على الجزء."},
+{c:"/thermalanalysis",d:"إجراء تحليل حراري للجزء."},
+{c:"/fatiguefea",d:"تحليل الكلال باستخدام FEA."},
+{c:"/contactanalysis",d:"تحليل التلامس بين الأجزاء."},
+{c:"/mesh",d:"إنشاء أو تحسين شبكة العناصر المحددة."},
+
+{c:"/cfd",d:"إعداد أو تفسير محاكاة ديناميكا الموائع."},
+{c:"/cfdanalysis",d:"تحليل حركة المائع عدديًا."},
+{c:"/streamlines",d:"إنشاء خطوط انسياب للمائع."},
+{c:"/velocitymap",d:"عرض توزيع سرعة المائع."},
+{c:"/pressuremap",d:"عرض توزيع الضغط."},
+{c:"/temperaturemap",d:"عرض توزيع درجات الحرارة."},
+{c:"/turbulence",d:"تحليل الاضطراب في الجريان."},
+{c:"/aerodynamics",d:"تحليل القوى الهوائية حول جسم."},
+{c:"/drag",d:"حساب قوة السحب."},
+{c:"/lift",d:"حساب قوة الرفع."},
+
+{c:"/manufacturing",d:"اختيار أو تصميم عملية تصنيع ميكانيكية."},
+{c:"/machining",d:"تحليل عمليات التشغيل بالقطع."},
+{c:"/cnc",d:"إنشاء أو تحليل عملية تصنيع CNC."},
+{c:"/milling",d:"تحديد إعدادات أو خطوات عملية التفريز."},
+{c:"/turning",d:"تحديد إعدادات أو خطوات عملية الخراطة."},
+{c:"/lathe",d:"تحليل تشغيل قطعة على المخرطة."},
+{c:"/drilling",d:"تحليل عملية الثقب."},
+{c:"/cuttingspeed",d:"حساب سرعة القطع المناسبة."},
+{c:"/feedrate",d:"حساب معدل التغذية."},
+{c:"/spindlespeed",d:"حساب سرعة دوران المغزل RPM."},
+{c:"/machiningtime",d:"تقدير زمن التشغيل."},
+{c:"/toolselection",d:"اختيار أداة القطع المناسبة."},
+{c:"/toolwear",d:"تحليل تآكل أداة القطع."},
+
+{c:"/casting",d:"تحليل أو تصميم عملية صب المعادن."},
+{c:"/forging",d:"تحليل أو تصميم عملية التشكيل بالطرق."},
+{c:"/extrusion",d:"تحليل عملية البثق."},
+{c:"/rolling",d:"تحليل عملية الدرفلة."},
+{c:"/forming",d:"تحليل عمليات تشكيل المعادن."},
+{c:"/stamping",d:"تحليل عمليات الكبس والتشكيل."},
+{c:"/lasercutting",d:"تخطيط عملية القطع بالليزر."},
+{c:"/waterjet",d:"تخطيط عملية القطع بنفث الماء."},
+
+{c:"/3dprinting",d:"تصميم أو تجهيز جزء للطباعة ثلاثية الأبعاد."},
+{c:"/additivemanufacturing",d:"اختيار عملية تصنيع بالإضافة."},
+{c:"/fdm",d:"إعداد نموذج للطباعة بتقنية FDM."},
+{c:"/sla",d:"إعداد نموذج للطباعة بالراتنج SLA."},
+{c:"/sls",d:"إعداد نموذج للطباعة بتقنية SLS."},
+{c:"/printorientation",d:"اختيار أفضل اتجاه للطباعة."},
+{c:"/supports",d:"تحديد أماكن دعامات الطباعة."},
+{c:"/infill",d:"اختيار نسبة ونمط التعبئة الداخلية."},
+
+{c:"/maintenance",d:"إنشاء خطة صيانة لآلة أو معدة."},
+{c:"/preventivemaintenance",d:"إنشاء خطة صيانة وقائية."},
+{c:"/predictivemaintenance",d:"إعداد خطة صيانة تنبؤية."},
+{c:"/correctivemaintenance",d:"تحديد إجراءات الصيانة بعد حدوث العطل."},
+{c:"/maintenancechecklist",d:"إنشاء قائمة فحص صيانة."},
+{c:"/troubleshooting",d:"تشخيص الأعطال الميكانيكية واقتراح الحلول."},
+{c:"/faultdiagnosis",d:"تحليل أعراض العطل وتحديد السبب المحتمل."},
+{c:"/rootcause",d:"تحليل السبب الجذري للعطل."},
+{c:"/rca",d:"إجراء تحليل السبب الجذري للمشكلة."},
+{c:"/failureanalysis",d:"تحليل سبب فشل جزء ميكانيكي."},
+
+{c:"/reliability",d:"تحليل اعتمادية النظام أو الجزء."},
+{c:"/mtbf",d:"حساب متوسط الزمن بين الأعطال."},
+{c:"/mttr",d:"حساب متوسط زمن الإصلاح."},
+{c:"/fmea",d:"إنشاء تحليل أنماط الفشل وآثاره FMEA."},
+{c:"/riskanalysis",d:"تحليل مخاطر التصميم أو التشغيل."},
+
+{c:"/mechanicalcalculation",d:"إجراء حسابات هندسية ميكانيكية حسب المعطيات."},
+{c:"/unitconversion",d:"تحويل الوحدات المستخدمة في المسائل الميكانيكية."},
+{c:"/equation",d:"تكوين المعادلة المناسبة للمسألة."},
+{c:"/solveequation",d:"حل معادلة هندسية ميكانيكية."},
+{c:"/engineeringunits",d:"ترتيب وتحويل الوحدات الهندسية."},
+{c:"/designcheck",d:"مراجعة التصميم والتأكد من سلامة الحسابات."},
+{c:"/designreview",d:"مراجعة تصميم ميكانيكي واقتراح تحسينات."},
+{c:"/optimizemechanical",d:"تحسين التصميم لتقليل الوزن أو التكلفة أو الإجهاد."},
+{c:"/weightreduction",d:"اقتراح تعديلات لتقليل وزن الجزء."},
+{c:"/costreduction",d:"اقتراح طرق لتقليل تكلفة تصنيع الجزء."},
+
+{c:"/bom",d:"إنشاء قائمة المواد والأجزاء BOM."},
+{c:"/partslist",d:"إنشاء قائمة قطع للآلة أو التجميع."},
+{c:"/specsheet",d:"إنشاء ورقة مواصفات ميكانيكية."},
+{c:"/datasheet",d:"إنشاء ورقة بيانات فنية للمعدة أو الجزء."},
+{c:"/maintenanceguide",d:"إنشاء دليل صيانة ميكانيكي."},
+{c:"/serviceguide",d:"إنشاء دليل فك وصيانة وتركيب."},
+{c:"/installationguide",d:"إنشاء خطوات تركيب آلة أو جزء."},
+{c:"/operationmanual",d:"إنشاء تعليمات تشغيل للمعدة."},
+{c:"/mechanicalreport",d:"إنشاء تقرير هندسي ميكانيكي احترافي."},
+{c:"/technicalreport",d:"كتابة تقرير تقني يتضمن الحسابات والنتائج."}
+]
+};
+  let currentCategory = "الكل";
+  let showOnlyFavs = false;
+  let favorites = JSON.parse(localStorage.getItem("promptFav") || "[]");
+  let customCmds = JSON.parse(localStorage.getItem("customCmds") || "[]");
+  const builder = document.getElementById("promptBuilder");
+
+  function allItems() {
+    let arr = [];
+    Object.entries(library).forEach(([cat, items]) => {
+      items.forEach(item => arr.push({...item, category: cat}));
+    });
+    return [...arr, ...customCmds];
+  }
+
+  function renderCategories() {
+    const categoriesDiv = document.getElementById("categories");
+    const cats = ["الكل", ...Object.keys(library)];
+    if(customCmds.length) cats.push("خاص بي");
+
+    categoriesDiv.innerHTML = cats.map(cat => `
+      <button class="cat-pill ${cat === currentCategory && !showOnlyFavs ? 'active' : ''}" 
+              onclick="selectCategory('${cat}')">${cat}</button>
+    `).join('');
+  }
+
+  function selectCategory(cat) {
+    currentCategory = cat;
+    showOnlyFavs = false;
+    document.getElementById("favFilterBtn").style.borderColor = "var(--border)";
+    renderCategories();
+    renderCommands();
+  }
+
+  function toggleFavFilter() {
+    showOnlyFavs = !showOnlyFavs;
+    document.getElementById("favFilterBtn").style.borderColor = showOnlyFavs ? "var(--primary-neon)" : "var(--border)";
+    renderCategories();
+    renderCommands();
+  }
+
+  function renderCommands() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const grid = document.getElementById("commandsGrid");
+    grid.innerHTML = "";
+
+    let filtered = allItems().filter(item => {
+      const matchesSearch = item.c.toLowerCase().includes(query) || item.d.toLowerCase().includes(query);
+      const matchesCat = currentCategory === "الكل" || item.category === currentCategory;
+      const matchesFav = !showOnlyFavs || favorites.includes(item.c);
+      return matchesSearch && matchesCat && matchesFav;
+    });
+
+    if(filtered.length === 0) {
+      grid.innerHTML = `<div style="text-align:center; color:var(--text-secondary); padding:30px;">لا توجد نتائج مطابقة</div>`;
+      return;
+    }
+
+    filtered.forEach(item => {
+      const isFav = favorites.includes(item.c);
+      const card = document.createElement("div");
+      card.className = "command-card";
+      card.innerHTML = `
+        <div>
+          <div class="command-code">${item.c}</div>
+          <p class="command-desc">${item.d}</p>
+        </div>
+        <div class="card-actions">
+          <button class="card-btn" onclick="addBuilder('${item.c}')">➕ أضف للمنشئ</button>
+          <button class="card-btn" onclick="toggleFavorite('${item.c}')">${isFav ? '★ المفضلة' : '☆ مفضلة'}</button>
+          <button class="card-btn" onclick="shareCardPNG('${item.c}', '${item.d}', '${item.category}')">🖼️ مشاركة PNG</button>
+          <button class="card-btn" onclick="shareCardTXT('${item.c}', '${item.d}')">📄 مشاركة TXT</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function addBuilder(c) {
+    let lines = builder.value.split('\n').filter(x => x.trim());
+    if(!lines.includes(c)) {
+      lines.push(c);
+      builder.value = lines.join('\n');
+      showToast("تمت الإضافة لشبكة المنشئ");
+    }
+  }
+
+  function toggleFavorite(c) {
+    favorites = favorites.includes(c) ? favorites.filter(x => x !== c) : [...favorites, c];
+    localStorage.setItem("promptFav", JSON.stringify(favorites));
+    renderCommands();
+  }
+
+  function promptAddCustomCommand() {
+    const c = prompt("أدخل كود الأمر (مثال: /my_command):");
+    const d = prompt("أدخل وصف الأمر:");
+    if(c && d) {
+      customCmds.push({c, d, category: "خاص بي"});
+      localStorage.setItem("customCmds", JSON.stringify(customCmds));
+      renderCategories();
+      renderCommands();
+      showToast("تمت إضافة الأمر الخاص بك!");
+    }
+  }
+
+  async function shareCardTXT(c, d) {
+    const textData = `الأمر: ${c}\nالوصف: ${d}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: c, text: textData });
+      } catch (e) {}
+    } else {
+      navigator.clipboard.writeText(textData);
+      showToast("تم نسخ بيانات الأمر نصياً!");
+    }
+  }
+
+  async function shareCardPNG(c, d, cat) {
+    document.getElementById("cardCommandText").textContent = c;
+    document.getElementById("cardDescText").textContent = d;
+    document.getElementById("cardCategoryTag").textContent = cat || "أمر بصري";
+    
+    const canvas = document.getElementById("exportCardCanvas");
+    showToast("جاري إعداد الصورة...");
+
+    html2canvas(canvas, { backgroundColor: null, scale: 2 }).then(cvs => {
+      cvs.toBlob(async (blob) => {
+        const file = new File([blob], `${c.replace('/', '')}.png`, { type: 'image/png' });
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: c, text: d });
+          } catch(e) {}
+        } else {
+          const a = document.createElement('a'); 
+          a.href = cvs.toDataURL("image/png"); 
+          a.download = `${c.replace('/', '')}.png`; 
+          a.click();
+          showToast("تم تحفيز تنزيل الصورة!");
+        }
+      });
+    });
+  }
+
+  async function shareTXTBuilder() {
+    const text = builder.value.trim();
+    if(!text) return showToast("المنشئ فارغ!");
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'أوامر مجمعة', text: text });
+      } catch(e) {}
+    } else {
+      navigator.clipboard.writeText(text);
+      showToast("تم النسخ للحافظة!");
+    }
+  }
+
+  function exportBuilderPNG() {
+    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
+    shareCardPNG("أوامر مجمعة", builder.value.trim(), "منشئ البرومبتات");
+  }
+
+  function copyBuilder() { 
+    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
+    navigator.clipboard.writeText(builder.value); 
+    showToast("تم نسخ الكود!"); 
+  }
+  
+  function clearBuilder() { builder.value = ""; }
+
+  function exportTXT() {
+    const data = allItems().map(i => i.c + " - " + i.d).join("\n");
+    const blob = new Blob([data], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "commands.txt";
+    a.click();
+    showToast("تم تصدير كل الأوامر نصياً!");
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; 
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
+  }
+
+  document.getElementById("searchInput").addEventListener("input", renderCommands);
+  
+  renderCategories(); 
+  renderCommands();
+</script>
+</body>
+</html>
+ 
