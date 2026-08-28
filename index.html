@@ -1,44 +1,539 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>مكتبة الأوامر الذكية</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- خط Tajawal المتوافق مع style.css -->
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
 
-<!-- استدعاء ملف التنسيقات الخارجي -->
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<!-- ملف التنسيقات الرئيسي -->
 <link rel="stylesheet" href="style.css">
+
+<style>
+
+/* =========================
+   تنسيقات الصفحة الرئيسية فقط
+========================= */
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.brand-image {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    object-fit: cover;
+
+    border: 1px solid var(--glass-border);
+
+    background: rgba(255,255,255,.08);
+}
+
+.brand-name {
+    font-size: 1rem;
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            45deg,
+            var(--primary),
+            #ffffff,
+            var(--secondary)
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+
+/* Hero badge */
+
+.hero-badge {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 15px;
+
+    margin-bottom: 12px;
+
+    border-radius: 50px;
+
+    font-size: .78rem;
+    font-weight: 700;
+
+    color: var(--primary);
+
+    background: rgba(0,242,254,.08);
+
+    border:
+        1px solid
+        rgba(0,242,254,.20);
+}
+
+
+/* Hero title accent */
+
+.hero h1 span {
+
+    display: inline-block;
+
+    color: var(--primary);
+
+    -webkit-text-fill-color: var(--primary);
+}
+
+
+/* Info bar */
+
+.info-bar {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-top: 18px;
+
+    color: var(--text-secondary);
+
+    font-size: .78rem;
+}
+
+
+.info-item {
+
+    white-space: nowrap;
+
+}
+
+
+/* عنوان الأقسام */
+
+.section-head {
+
+    text-align: center;
+
+    margin-bottom: 18px;
+
+}
+
+
+.section-head h2 {
+
+    font-size: 1.35rem;
+
+    margin-bottom: 5px;
+
+}
+
+
+.section-head p {
+
+    color: var(--text-secondary);
+
+    font-size: .88rem;
+
+}
+
+
+/* بطاقات الأقسام */
+
+.library-card {
+
+    position: relative;
+
+    min-height: 255px;
+
+    overflow: hidden;
+
+}
+
+
+.library-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 100%;
+
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--primary),
+            var(--secondary),
+            transparent
+        );
+
+}
+
+
+.library-card:hover {
+
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(0,242,254,.35);
+
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,.25);
+
+}
+
+
+/* الأيقونة */
+
+.icon-box {
+
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.7rem;
+
+    margin-bottom: 12px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,242,254,.14),
+            rgba(127,0,255,.15)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+}
+
+
+/* عنوان البطاقة */
+
+.library-card h3 {
+
+    font-size: 1.05rem;
+
+    margin-bottom: 8px;
+
+    color: #ffffff;
+
+}
+
+
+/* وصف البطاقة */
+
+.library-card .command-desc {
+
+    margin-bottom: 16px;
+
+}
+
+
+/* زر فتح المكتبة */
+
+.library-link {
+
+    width: 100%;
+
+    text-decoration: none;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    font-size: .84rem;
+
+    font-weight: 700;
+
+    color: #000;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-dark)
+        );
+
+    transition: var(--transition);
+
+}
+
+
+.library-link:hover {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,242,254,.20);
+
+}
+
+
+.library-link:active {
+
+    transform: scale(.98);
+
+}
+
+
+/* ألوان أقسام مختلفة */
+
+.teacher .icon-box {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(59,130,246,.25),
+            rgba(0,242,254,.12)
+        );
+
+}
+
+
+.programming .icon-box {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(127,0,255,.28),
+            rgba(0,242,254,.12)
+        );
+
+}
+
+
+.house .icon-box {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(34,197,94,.25),
+            rgba(0,242,254,.10)
+        );
+
+}
+
+
+.car .icon-box {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(239,68,68,.25),
+            rgba(255,0,127,.10)
+        );
+
+}
+
+
+.camera .icon-box {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,0,127,.25),
+            rgba(127,0,255,.15)
+        );
+
+}
+
+
+.engineering .icon-box {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(245,158,11,.25),
+            rgba(255,255,255,.07)
+        );
+
+}
+
+
+.architecture .icon-box {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168,85,247,.25),
+            rgba(0,242,254,.12)
+        );
+
+}
+
+
+/* Footer */
+
+.site-footer {
+
+    width: calc(100% - 24px);
+
+    max-width: 1000px;
+
+    margin: 35px auto 0;
+
+    padding: 20px 12px;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+
+    font-size: .8rem;
+
+    border-top:
+        1px solid
+        var(--border);
+
+}
+
+
+.site-footer strong {
+
+    color: var(--primary);
+
+}
+
+
+/* جوال */
+
+@media (max-width: 600px) {
+
+    .brand-name {
+
+        font-size: .82rem;
+
+    }
+
+    .external-link {
+
+        font-size: .7rem;
+
+        padding: 6px 10px;
+
+    }
+
+    .hero h1 {
+
+        font-size: 1.65rem;
+
+    }
+
+    .info-bar {
+
+        gap: 6px 10px;
+
+    }
+
+    .library-card {
+
+        min-height: auto;
+
+    }
+
+}
+
+</style>
+
 </head>
 
+
 <body>
+
+
+<div class="container">
+
 
 <!-- =========================
      NAVBAR
 ========================= -->
 
-<nav class="navbar">
+<nav class="site-nav">
 
-    <div class="brand">
 
-        <div class="brand-icon">
-            <img src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true" alt="شعار مكتبة الأوامر" class="brand-logo">
-        </div>
+<a href="index.html"
+class="brand-wrapper">
 
-        <div class="brand-text">
-            مكتبة الأوامر (علي المالكي)
-        </div>
 
-    </div>
+<img
 
-    <div class="nav-badge">
-        AI COMMANDS LIBRARY
-    </div>
+src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
+
+alt="شعار مكتبة الأوامر"
+
+class="brand-image">
+
+
+<div class="brand-name">
+
+مكتبة الأوامر
+
+</div>
+
+
+</a>
+
+
+<a
+href="https://alnoaif2026.github.io"
+class="external-link">
+
+🌐 الرئيسية
+
+</a>
+
 
 </nav>
+
 
 
 <!-- =========================
@@ -47,343 +542,589 @@
 
 <header class="hero">
 
-    <div class="hero-badge">
-        ✦ مكتبة ذكية لتنظيم أوامرك
-    </div>
 
-    <h1>
-        كل أوامرك
-        <span>في مكان واحد</span>
-    </h1>
+<div class="hero-badge">
 
-    <p>
-        مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
-        للمعلمين والمنزل والسيارات والتصوير والهندسة والعمارة.
-        اختر القسم المناسب وابدأ مباشرة.
-    </p>
+✦ مكتبة ذكية لتنظيم أوامرك
 
-    <div class="info-bar">
+</div>
 
-        <div class="info-item">
-            ⚡ وصول سريع للأوامر
-        </div>
 
-        <div class="info-item">
-            •
-        </div>
+<h1>
 
-        <div class="info-item">
-            📋 نسخ واستخدام بسهولة
-        </div>
+كل أوامرك
 
-        <div class="info-item">
-            •
-        </div>
+<span>
 
-        <div class="info-item">
-            📱 متوافق مع الجوال
-        </div>
+في مكان واحد
 
-    </div>
+</span>
+
+</h1>
+
+
+<p>
+
+مكتبة منظمة تضم مجموعة من الأوامر
+والأكواد الذكية للمعلمين والمنزل
+والسيارات والتصوير والهندسة والعمارة.
+
+اختر القسم المناسب وابدأ مباشرة.
+
+</p>
+
+
+<div class="info-bar">
+
+
+<div class="info-item">
+
+⚡ وصول سريع للأوامر
+
+</div>
+
+
+<div class="info-item">
+
+•
+
+</div>
+
+
+<div class="info-item">
+
+📋 نسخ واستخدام بسهولة
+
+</div>
+
+
+<div class="info-item">
+
+•
+
+</div>
+
+
+<div class="info-item">
+
+📱 متوافق مع الجوال
+
+</div>
+
+
+</div>
+
 
 </header>
+
 
 
 <!-- =========================
      CONTENT
 ========================= -->
 
-<main class="section">
+<main>
 
-    <div class="section-head">
 
-        <h2>
-            الأقسام الرئيسية
-        </h2>
+<div class="glass-panel">
 
-        <p>
-            اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.
-        </p>
 
-    </div>
+<div class="section-head">
 
 
-    <div class="grid">
+<h2>
 
+الأقسام الرئيسية
 
-        <!-- TEACHERS -->
+</h2>
 
-        <article class="card teacher">
 
-            <div>
+<p>
 
-                <div class="icon-box">
-                    👨‍🏫
-                </div>
+اختر أحد الأقسام للوصول
+إلى مجموعة الأوامر الخاصة به.
 
-                <h3>
-                    أكواد المعلمين
-                </h3>
+</p>
 
-                <p>
-                    أوامر ذكية لإعداد الدروس، إنشاء الاختبارات،
-                    شرح المواد، تصميم الأنشطة، إعداد أوراق العمل
-                    وتطوير المحتوى التعليمي.
-                </p>
 
-            </div>
+</div>
 
-            <a href="https://alnoaif2026.github.io/astath.html" class="card-link">
 
-                <span>
-                    فتح مكتبة المعلمين
-                </span>
 
-                <span>
-                    ←
-                </span>
+<div class="commands-grid">
 
-            </a>
 
-        </article>
 
-        <!-- PROGRAMMING -->
+<!-- =========================
+     TEACHERS
+========================= -->
 
-        <article class="card programming">
-            
-            <div>
-                
-                <div class="icon-box">
-                    💻
-                </div>
-                
-                <h3>
-                    البرمجة وتطوير المواقع
-                </h3>
-                
-                <p>
-                    أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات،
-                    إصلاح الأخطاء، قواعد البيانات، PHP وJavaScript،
-                    Firebase وPython وواجهات API والمزيد.
-                </p>
-                
-            </div>
-            
-            <a href="programming.html" class="card-link">
-            
-                <span>
-                    فتح مكتبة البرمجة
-                </span>
-                
-                <span>
-                    ←
-                </span>
-                
-            </a>
-            
-        </article>
 
+<article
+class="command-card library-card teacher">
 
-        <!-- HOUSE -->
 
-        <article class="card house">
+<div>
 
-            <div>
 
-                <div class="icon-box">
-                    🏠
-                </div>
+<div class="icon-box">
 
-                <h3>
-                    أكواد المنزل
-                </h3>
+👨‍🏫
 
-                <p>
-                    أوامر للطبخ والوصفات وتنظيم المنزل والتنظيف
-                    والتسوق وإدارة الميزانية ووضع الجداول المنزلية
-                    وخطط الوجبات.
-                </p>
+</div>
 
-            </div>
 
-            <a href="biot.html" class="card-link">
+<h3>
 
-                <span>
-                    فتح مكتبة المنزل
-                </span>
+أكواد المعلمين
 
-                <span>
-                    ←
-                </span>
+</h3>
 
-            </a>
 
-        </article>
+<p class="command-desc">
 
+أوامر ذكية لإعداد الدروس،
+إنشاء الاختبارات، شرح المواد،
+تصميم الأنشطة، إعداد أوراق العمل
+وتطوير المحتوى التعليمي.
 
-        <!-- CARS -->
+</p>
 
-        <article class="card car">
 
-            <div>
+</div>
 
-                <div class="icon-box">
-                    🚘
-                </div>
 
-                <h3>
-                    أكواد السيارات
-                </h3>
+<a
+href="https://alnoaif2026.github.io/astath.html"
+class="library-link">
 
-                <p>
-                    أوامر لتحسين صور السيارات، التشخيص،
-                    الصيانة، العرض التفكيكي، الأشعة الافتراضية
-                    والتصوير الاحترافي للمركبات.
-                </p>
+<span>
 
-            </div>
+فتح مكتبة المعلمين
 
-            <a href="cars.html" class="card-link">
+</span>
 
-                <span>
-                    فتح مكتبة السيارات
-                </span>
+<span>
 
-                <span>
-                    ←
-                </span>
+←
 
-            </a>
+</span>
 
-        </article>
+</a>
 
 
-        <!-- CAMERA -->
+</article>
 
-        <article class="card camera">
 
-            <div>
 
-                <div class="icon-box">
-                    📸
-                </div>
+<!-- =========================
+     PROGRAMMING
+========================= -->
 
-                <h3>
-                    التصوير والسينما
-                </h3>
 
-                <p>
-                    أوامر الكاميرات والعدسات والإضاءة السينمائية
-                    وزوايا التصوير والعمق البصري والمؤثرات
-                    والأساليب الفنية الاحترافية.
-                </p>
+<article
+class="command-card library-card programming">
 
-            </div>
 
-            <a href="photography.html" class="card-link">
+<div>
 
-                <span>
-                    فتح مكتبة التصوير
-                </span>
 
-                <span>
-                    ←
-                </span>
+<div class="icon-box">
 
-            </a>
+💻
 
-        </article>
+</div>
 
 
-        <!-- ENGINEERING -->
+<h3>
 
-        <article class="card engineering">
+البرمجة وتطوير المواقع
 
-            <div>
+</h3>
 
-                <div class="icon-box">
-                    ⚙️
-                </div>
 
-                <h3>
-                    الهندسة والتقنية
-                </h3>
+<p class="command-desc">
 
-                <p>
-                    أوامر المخططات الهندسية، التصاميم التقنية،
-                    العرض التفكيكي، الرسوم التوضيحية،
-                    النماذج والمكونات الداخلية.
-                </p>
+أوامر كتابة الأكواد،
+إنشاء المواقع والتطبيقات،
+إصلاح الأخطاء وقواعد البيانات
+وPHP وJavaScript وFirebase
+وPython وواجهات API والمزيد.
 
-            </div>
+</p>
 
-            <a href="engineering.html" class="card-link">
 
-                <span>
-                    فتح مكتبة الهندسة
-                </span>
+</div>
 
-                <span>
-                    ←
-                </span>
 
-            </a>
+<a
+href="programming.html"
+class="library-link">
 
-        </article>
+<span>
 
+فتح مكتبة البرمجة
 
-        <!-- ARCHITECTURE -->
+</span>
 
-        <article class="card architecture">
+<span>
 
-            <div>
+←
 
-                <div class="icon-box">
-                    🏛️
-                </div>
+</span>
 
-                <h3>
-                    العمارة والديكور
-                </h3>
+</a>
 
-                <p>
-                    أوامر التصميم الداخلي والخارجي،
-                    الواجهات، المخططات، توزيع الأثاث،
-                    الإضاءة وتصميم المساحات بأساليب متعددة.
-                </p>
 
-            </div>
+</article>
 
-            <a href="architecture.html" class="card-link">
 
-                <span>
-                    فتح مكتبة العمارة
-                </span>
 
-                <span>
-                    ←
-                </span>
+<!-- =========================
+     HOUSE
+========================= -->
 
-            </a>
 
-        </article>
+<article
+class="command-card library-card house">
 
 
-    </div>
+<div>
+
+
+<div class="icon-box">
+
+🏠
+
+</div>
+
+
+<h3>
+
+أكواد المنزل
+
+</h3>
+
+
+<p class="command-desc">
+
+أوامر للطبخ والوصفات
+وتنظيم المنزل والتنظيف
+والتسوق وإدارة الميزانية
+ووضع الجداول المنزلية
+وخطط الوجبات.
+
+</p>
+
+
+</div>
+
+
+<a
+href="biot.html"
+class="library-link">
+
+<span>
+
+فتح مكتبة المنزل
+
+</span>
+
+<span>
+
+←
+
+</span>
+
+</a>
+
+
+</article>
+
+
+
+<!-- =========================
+     CARS
+========================= -->
+
+
+<article
+class="command-card library-card car">
+
+
+<div>
+
+
+<div class="icon-box">
+
+🚘
+
+</div>
+
+
+<h3>
+
+أكواد السيارات
+
+</h3>
+
+
+<p class="command-desc">
+
+أوامر لتحسين صور السيارات،
+التشخيص والصيانة،
+العرض التفكيكي،
+الأشعة الافتراضية
+والتصوير الاحترافي للمركبات.
+
+</p>
+
+
+</div>
+
+
+<a
+href="cars.html"
+class="library-link">
+
+<span>
+
+فتح مكتبة السيارات
+
+</span>
+
+<span>
+
+←
+
+</span>
+
+</a>
+
+
+</article>
+
+
+
+<!-- =========================
+     CAMERA
+========================= -->
+
+
+<article
+class="command-card library-card camera">
+
+
+<div>
+
+
+<div class="icon-box">
+
+📸
+
+</div>
+
+
+<h3>
+
+التصوير والسينما
+
+</h3>
+
+
+<p class="command-desc">
+
+أوامر الكاميرات والعدسات
+والإضاءة السينمائية
+وزوايا التصوير والعمق البصري
+والمؤثرات والأساليب
+الفنية الاحترافية.
+
+</p>
+
+
+</div>
+
+
+<a
+href="photography.html"
+class="library-link">
+
+<span>
+
+فتح مكتبة التصوير
+
+</span>
+
+<span>
+
+←
+
+</span>
+
+</a>
+
+
+</article>
+
+
+
+<!-- =========================
+     ENGINEERING
+========================= -->
+
+
+<article
+class="command-card library-card engineering">
+
+
+<div>
+
+
+<div class="icon-box">
+
+⚙️
+
+</div>
+
+
+<h3>
+
+الهندسة والتقنية
+
+</h3>
+
+
+<p class="command-desc">
+
+أوامر المخططات الهندسية،
+التصاميم التقنية،
+العرض التفكيكي،
+الرسوم التوضيحية،
+النماذج والمكونات الداخلية.
+
+</p>
+
+
+</div>
+
+
+<a
+href="engineering.html"
+class="library-link">
+
+<span>
+
+فتح مكتبة الهندسة
+
+</span>
+
+<span>
+
+←
+
+</span>
+
+</a>
+
+
+</article>
+
+
+
+<!-- =========================
+     ARCHITECTURE
+========================= -->
+
+
+<article
+class="command-card library-card architecture">
+
+
+<div>
+
+
+<div class="icon-box">
+
+🏛️
+
+</div>
+
+
+<h3>
+
+العمارة والديكور
+
+</h3>
+
+
+<p class="command-desc">
+
+أوامر التصميم الداخلي والخارجي،
+الواجهات والمخططات،
+توزيع الأثاث والإضاءة
+وتصميم المساحات
+بأساليب متعددة.
+
+</p>
+
+
+</div>
+
+
+<a
+href="architecture.html"
+class="library-link">
+
+<span>
+
+فتح مكتبة العمارة
+
+</span>
+
+<span>
+
+←
+
+</span>
+
+</a>
+
+
+</article>
+
+
+
+</div>
+
+</div>
+
 
 </main>
+
+
+</div>
+
 
 
 <!-- =========================
      FOOTER
 ========================= -->
 
-<footer>
 
-    جميع الحقوق محفوظة © 2026
-    <strong>مكتبة الأوامر الذكية || علي المالكي</strong>
+<footer class="site-footer">
+
+جميع الحقوق محفوظة © 2026
+
+<strong>
+
+مكتبة الأوامر الذكية | علي المالكي
+
+</strong>
 
 </footer>
 
+
 </body>
-</html>
+
+</html> 
