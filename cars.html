@@ -1,1 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مكتبة الأوامر البصرية | تصميم محسّن</title>
+  <!-- html2canvas for png export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Google Font for Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0b1120;
+      --surface: #131c2c;
+      --surface-2: #1a2638;
+      --surface-3: #222f42;
+      --border: #2b3b52;
+      --primary: #38bdf8;
+      --accent: #818cf8;
+      --accent2: #c084fc;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --success: #34d399;
+      --danger: #f87171;
+      --shadow: 0 20px 35px -15px rgba(0,0,0,0.6);
+      --glow: 0 0 25px rgba(56,189,248,0.2);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
 
+    *{box-sizing:border-box; margin:0; padding:0;}
+    html {scroll-behavior: smooth;}
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    button, input, textarea { font: inherit; }
+    button{cursor:pointer; transition: all 0.2s ease; border:none;}
+
+    /* شريط تمرير مخصص */
+    ::-webkit-scrollbar{ width: 8px; height: 6px; }
+    ::-webkit-scrollbar-track{ background: var(--surface); }
+    ::-webkit-scrollbar-thumb{ background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover{ background: var(--primary); }
+
+    .header{
+      background: radial-gradient(circle at 20% 10%, rgba(129,140,248,0.2), transparent 50%),
+                  radial-gradient(circle at 90% 20%, rgba(56,189,248,0.15), transparent 40%),
+                  var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 20px 55px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .header-inner{ max-width: 1300px; margin: auto; }
+    .header h1{
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .header p{
+      color: var(--muted);
+      max-width: 650px;
+      margin: 0 auto 28px;
+      font-size: 1.1rem;
+    }
+    .stats{
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .stat{
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .stat strong{ color: var(--primary); font-size: 1.2rem; }
+
+    .main{
+      max-width: 1400px;
+      margin: -30px auto 50px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 3;
+    }
+    .panel{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .toolbar{
+      padding: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 50;
+      background: rgba(19,28,44,0.95);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 25px -10px rgba(0,0,0,0.7);
+    }
+    .toolbar-top{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .search-wrap{
+      flex: 1 1 240px;
+      position: relative;
+    }
+    .search-icon{
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search{
+      width: 100%;
+      height: 52px;
+      padding: 0 48px 0 18px;
+      border-radius: 60px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    .search:focus{ border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56,189,248,0.2); }
+    .actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn{
+      padding: 10px 18px;
+      border-radius: 60px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+    .btn-primary{ background: var(--primary); color: #0b1120; }
+    .btn-primary:hover{ background: #7dd3fc; transform: translateY(-2px); }
+    .btn-blue{ background: var(--accent); color: white; }
+    .btn-blue:hover{ background: #667eea; transform: translateY(-2px); }
+    .btn-light{ background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border); }
+    .btn-light:hover{ background: rgba(255,255,255,0.12); }
+    .btn-danger{ background: rgba(248,113,113,0.2); color: #fca5a5; border: 1px solid rgba(248,113,113,0.4); }
+    .btn-danger:hover{ background: rgba(248,113,113,0.35); }
+
+    .categories{
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 0;
+      scrollbar-width: thin;
+    }
+    .cat-btn{
+      background: var(--bg);
+      color: var(--muted);
+      padding: 8px 20px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+    .cat-btn.active, .cat-btn:hover{
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 6px 15px rgba(129,140,248,0.3);
+    }
+
+    .builder{
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .builder-head{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .builder-head h2{ font-size: 1.4rem; color: var(--primary); font-weight: 700; }
+    .count{ color: var(--muted); font-size: 0.9rem; }
+    .builder textarea{
+      width: 100%;
+      min-height: 130px;
+      background: #0e1523;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      color: #7dd3fc;
+      padding: 18px;
+      direction: ltr;
+      text-align: left;
+      font-family: 'Consolas','Courier New',monospace;
+      font-size: 1rem;
+      resize: vertical;
+      outline: none;
+      transition: 0.2s;
+      line-height: 1.8;
+    }
+    .builder textarea:focus{ border-color: var(--accent); box-shadow: 0 0 0 3px rgba(129,140,248,0.2); }
+    .builder-actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    .layout{
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 310px;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .library{ padding: 20px; }
+    .section-head{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .section-head h2{ font-size: 1.6rem; font-weight: 700; }
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 16px;
+    }
+    .command-card{
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .command-card:hover{
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      background: var(--surface-3);
+    }
+    .command-top{ display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .command{
+      direction: ltr;
+      text-align: left;
+      font-family: 'Consolas', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary);
+      word-break: break-word;
+      background: #0e1523;
+      padding: 6px 12px;
+      border-radius: 12px;
+      flex: 1;
+    }
+    .favorite-btn{
+      background: transparent;
+      font-size: 1.7rem;
+      color: var(--muted);
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .favorite-btn.active{ color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.5); }
+    .description{
+      color: var(--muted);
+      font-size: 0.9rem;
+      flex: 1;
+    }
+    .badge{
+      background: rgba(129,140,248,0.15);
+      color: #a5b4fc;
+      padding: 3px 12px;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      width: fit-content;
+      border: 1px solid rgba(129,140,248,0.3);
+    }
+    .card-actions{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .card-actions-full{ grid-column: span 2; }
+    .small-btn{
+      padding: 10px 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-weight: 600;
+    }
+    .small-btn:hover{ background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .small-btn.add{ background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.3); color: var(--primary); }
+    .small-btn.png-btn{ background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); color: var(--success); }
+
+    .sidebar{ display: flex; flex-direction: column; gap: 20px; }
+    .side-card{ padding: 18px; }
+    .side-card h3{ font-size: 1.2rem; margin-bottom: 15px; color: var(--accent); }
+    .side-list{ display: flex; flex-direction: column; gap: 8px; }
+    .side-item{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .side-item code{
+      direction: ltr;
+      font-size: 0.85rem;
+      color: var(--primary);
+      word-break: break-all;
+      font-family: 'Consolas', monospace;
+    }
+    .icon-btn{
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .icon-btn:hover{ background: var(--accent); transform: scale(1.05); }
+    .empty{
+      display: none;
+      text-align: center;
+      color: var(--muted);
+      padding: 60px 10px;
+      font-size: 1.1rem;
+    }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 30px;
+      transform: translate(-50%, 30px);
+      opacity: 0;
+      background: var(--accent);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 60px;
+      pointer-events: none;
+      transition: 0.35s cubic-bezier(0.18,0.89,0.32,1.28);
+      z-index: 9999;
+      font-weight: 700;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    }
+    .toast.show{ opacity: 1; transform: translate(-50%,0); }
+
+    #exportCardCanvas {
+      position: absolute;
+      left: -9999px;
+      top: -9999px;
+      width: 600px;
+      background: linear-gradient(135deg, #0e1523, #1a2638);
+      border: 2px solid var(--primary);
+      border-radius: 24px;
+      padding: 30px;
+      color: white;
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+    }
+    #exportCardCanvas .brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    #exportCardCanvas .brand-title{ font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    #exportCardCanvas .brand-tag{ background: rgba(129,140,248,0.2); color: #c4b5fd; padding: 4px 14px; border-radius: 30px; font-size: 0.8rem; }
+    #exportCardCanvas .content-cmd{
+      font-family: 'Consolas', monospace;
+      font-size: 1.8rem;
+      color: #7dd3fc;
+      direction: ltr;
+      text-align: left;
+      background: #0b1120;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    #exportCardCanvas .content-desc{ font-size: 1.1rem; color: #e2e8f0; line-height: 1.8; margin-bottom: 25px; }
+    #exportCardCanvas .footer-tag{
+      display: flex;
+      justify-content: space-between;
+      color: #64748b;
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      padding-top: 15px;
+    }
+    footer{ padding: 30px; text-align: center; color: var(--muted); border-top: 1px solid var(--border); margin-top: 20px; }
+
+    @media(max-width: 900px){
+      .layout{ grid-template-columns: 1fr; }
+      .sidebar{ grid-template-columns: 1fr 1fr; display: grid; }
+    }
+    @media(max-width: 650px){
+      .toolbar{ position: relative; top: auto; }
+      .toolbar-top{ flex-direction: column; }
+      .actions{ display: grid; grid-template-columns: 1fr 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      .sidebar{ grid-template-columns: 1fr; }
+      .header h1{ font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <h1>✨ مكتبة الأوامر البصرية الاحترافية</h1>
+    <p>اختر الأمر المناسب، انسخه أو أضفه إلى المولد، واحفظه كبطاقة PNG أنيقة للمشاركة.</p>
+    <div class="stats">
+      <div class="stat">الأوامر: <strong id="totalCommands">0</strong></div>
+      <div class="stat">التصنيفات: <strong id="totalCategories">0</strong></div>
+      <div class="stat">المفضلة: <strong id="favoritesCount">0</strong></div>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <!-- شريط الأدوات -->
+  <section class="panel toolbar">
+    <div class="toolbar-top">
+      <div class="search-wrap">
+        <span class="search-icon">🔎</span>
+        <input id="searchInput" class="search" placeholder="ابحث عن أمر أو وظيفته...">
+      </div>
+      <div class="actions">
+        <button class="btn btn-light" onclick="showFavorites()">⭐ المفضلة</button>
+        <button class="btn btn-light" onclick="exportTXT()">💾 TXT</button>
+        <button class="btn btn-light" onclick="exportJSON()">JSON</button>
+      </div>
+    </div>
+    <div class="categories" id="categories"></div>
+  </section>
+
+  <!-- مولد البرومبت -->
+  <section class="panel builder">
+    <div class="builder-head">
+      <h2>🧩 مولد البرومبت</h2>
+      <span class="count" id="builderCount">0 أوامر</span>
+    </div>
+    <textarea id="promptBuilder" placeholder="/productshot&#10;/studio&#10;/softbox&#10;/photorealistic"></textarea>
+    <div class="builder-actions">
+      <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكل</button>
+      <button class="btn btn-blue" onclick="downloadBuilder()">💾 حفظ TXT</button>
+      <button class="btn btn-blue" style="background:#10b981;" onclick="exportBuilderPNG()">🖼️ بطاقة PNG</button>
+      <button class="btn btn-light" onclick="builderToOneLine()">↔ سطر واحد</button>
+      <button class="btn btn-light" onclick="removeDuplicatesBuilder()">🧹 حذف التكرار</button>
+      <button class="btn btn-danger" onclick="clearBuilder()">🗑 مسح</button>
+    </div>
+  </section>
+
+  <!-- المحتوى الرئيسي -->
+  <div class="layout">
+    <!-- المكتبة -->
+    <section class="panel library">
+      <div class="section-head">
+        <h2 id="libraryTitle">جميع الأوامر</h2>
+        <div class="count">النتائج: <strong id="resultCount">0</strong></div>
+      </div>
+      <div class="grid" id="commandsGrid"></div>
+      <div class="empty" id="emptyState">لا توجد نتائج مطابقة.</div>
+    </section>
+
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar">
+      <section class="panel side-card">
+        <h3>⭐ المفضلة</h3>
+        <div class="side-list" id="favoriteList"></div>
+      </section>
+      <section class="panel side-card">
+        <h3>🕘 آخر المستعملة</h3>
+        <div class="side-list" id="recentList"></div>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<footer class="footer">مكتبة الأوامر البصرية الاحترافية © 2026 - تصميم مُحسّن</footer>
+
+<div class="toast" id="toast">تم النسخ بنجاح</div>
+
+<!-- عنصر تصدير مخفي -->
+<div id="exportCardCanvas">
+  <div class="brand">
+    <span class="brand-title">🎨 Visual Prompt Library</span>
+    <span class="brand-tag" id="cardCategoryTag">تصنيف</span>
+  </div>
+  <div class="content-cmd" id="cardCommandText">/command</div>
+  <div class="content-desc" id="cardDescText">وصف الأمر وتفاصيله...</div>
+  <div class="footer-tag">
+    <span>مكتبة الأوامر البصرية</span>
+    <span>Generated Card</span>
+  </div>
+</div>
+
+<script>
+  // قاعدة البيانات
+ const library={
+"السيارات":[
+{c:"/carphotography",d:"ينشئ تصوير سيارات احترافي بأسلوب إعلاني."},
+{c:"/automotive",d:"يعطي الصورة طابع تصوير السيارات الاحترافي."},
+{c:"/automotivephotography",d:"يحاكي جلسة تصوير تجارية للسيارة."},
+{c:"/carstudio",d:"يضع السيارة داخل استوديو تصوير احترافي."},
+{c:"/carcommercial",d:"يجعل السيارة تظهر كإعلان رسمي للوكالة."},
+{c:"/caradvertising",d:"ينشئ تكوينًا مناسبًا لإعلان سيارة."},
+{c:"/carshowroom",d:"يضع السيارة داخل صالة عرض فاخرة."},
+{c:"/luxurycar",d:"يعطي السيارة مظهرًا فاخرًا وعالي القيمة."},
+{c:"/sportscar",d:"يبرز الطابع الرياضي للسيارة."},
+{c:"/supercar",d:"يعطي السيارة مظهر السيارات الخارقة."},
+{c:"/offroad",d:"يضع السيارة في أجواء طرق وعرة ومغامرات."},
+{c:"/desertdrive",d:"يضع السيارة في مشهد قيادة داخل الصحراء."},
+{c:"/mountainroad",d:"يضع السيارة على طريق جبلي."},
+{c:"/citydrive",d:"يضع السيارة في مشهد قيادة داخل المدينة."},
+{c:"/highway",d:"يضع السيارة على طريق سريع."},
+{c:"/nightdrive",d:"يحول المشهد إلى قيادة ليلية."},
+{c:"/rainycar",d:"يضع السيارة في أجواء ممطرة مع انعكاسات الطريق."},
+{c:"/snowdrive",d:"يضع السيارة في طريق ثلجي."},
+{c:"/muddyoffroad",d:"يضيف طينًا وآثار قيادة وعرة على السيارة."},
+{c:"/dustycar",d:"يضيف غبارًا على السيارة أو حولها."},
+
+{c:"/rolling_shot",d:"يحاكي تصوير السيارة أثناء القيادة مع إحساس بالحركة."},
+{c:"/tracking_shot",d:"يحاكي كاميرا تتبع السيارة أثناء سيرها."},
+{c:"/panning",d:"يثبت السيارة بصريًا مع ضبابية حركة في الخلفية."},
+{c:"/speedshot",d:"يعطي إحساسًا قويًا بالسرعة."},
+{c:"/motioncar",d:"يضيف تأثير الحركة إلى السيارة والمشهد."},
+{c:"/drivingshot",d:"ينشئ لقطة طبيعية للسيارة أثناء القيادة."},
+{c:"/roadshot",d:"يعرض السيارة في مشهد طريق احترافي."},
+{c:"/cornering",d:"يصور السيارة أثناء دخول منعطف."},
+{c:"/drifting",d:"يصور السيارة أثناء الانجراف مع دخان الإطارات."},
+{c:"/burnout",d:"يضيف تأثير دوران الإطارات والدخان."},
+{c:"/launchcontrol",d:"يظهر السيارة أثناء انطلاقة قوية."},
+{c:"/racetrack",d:"يضع السيارة على حلبة سباق."},
+{c:"/pitlane",d:"يضع السيارة في ممر الصيانة بحلبة السباق."},
+
+{c:"/frontcar",d:"يعرض السيارة من الأمام مباشرة."},
+{c:"/rearcar",d:"يعرض السيارة من الخلف مباشرة."},
+{c:"/sidecar",d:"يعرض السيارة من الجانب."},
+{c:"/threequarterfront",d:"يعرض السيارة بزاوية أمامية ثلاثة أرباع."},
+{c:"/threequarterrear",d:"يعرض السيارة بزاوية خلفية ثلاثة أرباع."},
+{c:"/lowanglecar",d:"يصور السيارة من زاوية منخفضة لتبدو أكثر قوة."},
+{c:"/highanglecar",d:"يصور السيارة من زاوية مرتفعة."},
+{c:"/topviewcar",d:"يعرض السيارة من الأعلى مباشرة."},
+{c:"/birdseyecar",d:"يعرض السيارة من زاوية جوية عمودية."},
+{c:"/car360",d:"يعرض السيارة بطريقة مناسبة لرؤية 360 درجة."},
+{c:"/multiviewcar",d:"يعرض السيارة من عدة زوايا في صورة واحدة."},
+{c:"/carprofile",d:"يعرض الشكل الجانبي الكامل للسيارة."},
+
+{c:"/carinterior",d:"يركز على المقصورة الداخلية للسيارة."},
+{c:"/dashboard",d:"يعرض لوحة العدادات والواجهة الداخلية."},
+{c:"/dashboardcloseup",d:"يعرض لوحة العدادات بتفاصيل قريبة."},
+{c:"/steeringwheel",d:"يركز على عجلة القيادة."},
+{c:"/centerconsole",d:"يعرض الكونسول الوسطي."},
+{c:"/infotainment",d:"يركز على شاشة ونظام الترفيه."},
+{c:"/digitalspeedometer",d:"يعرض عداد السرعة الرقمي."},
+{c:"/gauges",d:"يركز على عدادات السيارة."},
+{c:"/gearshifter",d:"يعرض ناقل الحركة."},
+{c:"/carseats",d:"يركز على المقاعد الداخلية."},
+{c:"/leatherinterior",d:"يبرز خامة الجلد داخل المقصورة."},
+{c:"/ambientlighting",d:"يضيف إضاءة داخلية محيطية للمقصورة."},
+{c:"/luxuryinteriorcar",d:"يجعل المقصورة تبدو فاخرة."},
+{c:"/backseat",d:"يعرض المقاعد الخلفية."},
+{c:"/trunk",d:"يعرض مساحة صندوق السيارة."},
+
+{c:"/enginebay",d:"يركز على حجرة المحرك."},
+{c:"/engine",d:"يعرض المحرك بشكل واضح."},
+{c:"/enginecloseup",d:"يعرض تفاصيل المحرك عن قرب."},
+{c:"/engineexplodedview",d:"يفكك المحرك إلى أجزائه بصريًا."},
+{c:"/turbo",d:"يركز على الشاحن التوربيني."},
+{c:"/twinTurbo",d:"يعرض نظام التيربو المزدوج."},
+{c:"/supercharger",d:"يعرض الشاحن الميكانيكي."},
+{c:"/intakesystem",d:"يعرض نظام سحب الهواء."},
+{c:"/exhaustsystem",d:"يعرض نظام العادم."},
+{c:"/radiator",d:"يركز على الرديتر ونظام التبريد."},
+{c:"/coolingsystem",d:"يعرض نظام تبريد المحرك."},
+{c:"/battery",d:"يركز على بطارية السيارة."},
+{c:"/fuelssystem",d:"يعرض نظام الوقود."},
+{c:"/transmission",d:"يعرض ناقل الحركة."},
+{c:"/gearbox",d:"يركز على علبة التروس."},
+{c:"/drivetrain",d:"يعرض منظومة نقل الحركة."},
+{c:"/differential",d:"يعرض الدفرنس ومكوناته."},
+{c:"/driveshaft",d:"يعرض عمود نقل الحركة."},
+{c:"/axle",d:"يعرض المحور."},
+{c:"/4x4system",d:"يعرض نظام الدفع الرباعي."},
+{c:"/awd",d:"يعرض نظام الدفع الكلي."},
+{c:"/fwd",d:"يعرض نظام الدفع الأمامي."},
+{c:"/rwd",d:"يعرض نظام الدفع الخلفي."},
+
+{c:"/suspension",d:"يعرض نظام التعليق."},
+{c:"/frontsuspension",d:"يعرض نظام التعليق الأمامي."},
+{c:"/rearsuspension",d:"يعرض نظام التعليق الخلفي."},
+{c:"/shockabsorber",d:"يركز على المساعدات."},
+{c:"/coilover",d:"يعرض نظام الكويل أوفر."},
+{c:"/controlarms",d:"يعرض أذرعة التعليق."},
+{c:"/steeringsystem",d:"يعرض نظام التوجيه."},
+{c:"/brakesystem",d:"يعرض نظام الفرامل."},
+{c:"/brakedisc",d:"يركز على أقراص الفرامل."},
+{c:"/brakecaliper",d:"يركز على كليبر الفرامل."},
+{c:"/abs",d:"يعرض مكونات نظام منع انغلاق الفرامل."},
+
+{c:"/wheelcloseup",d:"يركز على الجنط والإطار بتفاصيل عالية."},
+{c:"/wheels",d:"يركز على جنوط السيارة."},
+{c:"/tires",d:"يركز على الإطارات."},
+{c:"/rims",d:"يعرض الجنوط بتفاصيل واضحة."},
+{c:"/alloywheels",d:"يعرض جنوط ألمنيوم رياضية."},
+{c:"/offroadtires",d:"يضيف إطارات مخصصة للطرق الوعرة."},
+{c:"/sporttires",d:"يضيف إطارات رياضية."},
+{c:"/wheelfitment",d:"يعرض تناسق الجنط والإطار مع هيكل السيارة."},
+{c:"/stance",d:"يخفض السيارة ويبرز وضعية الجنوط."},
+{c:"/loweredcar",d:"يخفض ارتفاع السيارة عن الأرض."},
+{c:"/liftedcar",d:"يرفع السيارة عن الأرض."},
+
+{c:"/carcutaway",d:"يفتح جزءًا من هيكل السيارة لإظهار الداخل."},
+{c:"/carxray",d:"يعرض السيارة بطريقة أشعة تكشف المكونات الداخلية."},
+{c:"/transparentcar",d:"يجعل جسم السيارة شفافًا لإظهار المكونات."},
+{c:"/carblueprint",d:"يحول السيارة إلى مخطط هندسي Blueprint."},
+{c:"/carwireframe",d:"يعرض السيارة كنموذج شبكي ثلاثي الأبعاد."},
+{c:"/carchassis",d:"يعرض شاصي السيارة."},
+{c:"/bodyframe",d:"يعرض الهيكل الخارجي وهيكل السيارة الأساسي."},
+{c:"/unibody",d:"يعرض هيكل السيارة الأحادي."},
+{c:"/ladderframe",d:"يعرض شاصي السلم المستخدم في سيارات الدفع الرباعي."},
+{c:"/undercarriage",d:"يعرض أسفل السيارة."},
+{c:"/underbody",d:"يعرض تفاصيل الجزء السفلي للسيارة."},
+{c:"/technicalcar",d:"يحول السيارة إلى رسم تقني."},
+{c:"/carpartsdiagram",d:"ينشئ مخططًا يوضح أجزاء السيارة."},
+{c:"/labeledcar",d:"يعرض السيارة مع تسميات للأجزاء."},
+
+{c:"/carrepair",d:"يعرض السيارة في سياق إصلاح أو صيانة."},
+{c:"/mechanic",d:"يضيف أجواء ورشة ميكانيكا سيارات."},
+{c:"/garageworkshop",d:"يضع السيارة داخل ورشة صيانة."},
+{c:"/diagnostic",d:"يعرض فحص وتشخيص السيارة."},
+{c:"/obd",d:"يركز على تشخيص السيارة إلكترونيًا عبر OBD."},
+{c:"/oilchange",d:"يعرض عملية تغيير زيت المحرك."},
+{c:"/brakerepair",d:"يعرض إصلاح أو صيانة الفرامل."},
+{c:"/tirechange",d:"يعرض تغيير الإطار."},
+{c:"/batteryreplacement",d:"يعرض تغيير بطارية السيارة."},
+{c:"/enginerepair",d:"يعرض إصلاح المحرك."},
+{c:"/transmissionrepair",d:"يعرض إصلاح ناقل الحركة."},
+{c:"/suspensionrepair",d:"يعرض إصلاح نظام التعليق."},
+
+{c:"/carwash",d:"يعرض السيارة أثناء الغسيل."},
+{c:"/detailing",d:"يركز على تنظيف ولمعان وتفاصيل السيارة."},
+{c:"/cardetailing",d:"يعرض جلسة تلميع وتنظيف احترافية."},
+{c:"/polishcar",d:"يضيف تأثير تلميع قوي لطلاء السيارة."},
+{c:"/waxcar",d:"يبرز لمعان الطلاء بعد التشميع."},
+{c:"/ceramiccoating",d:"يعطي الطلاء لمعانًا وحماية شبيهة بالسيراميك."},
+{c:"/wetlook",d:"يجعل طلاء السيارة شديد اللمعان."},
+{c:"/cleanwheels",d:"ينظف الجنوط والإطارات بصريًا."},
+{c:"/cleaninterior",d:"ينظف المقصورة الداخلية."},
+{c:"/restorecar",d:"يرمم مظهر سيارة قديمة أو متضررة."},
+
+{c:"/carpaint",d:"يركز على طلاء السيارة."},
+{c:"/repaint",d:"يغير لون طلاء السيارة."},
+{c:"/mattecar",d:"يجعل الطلاء مطفيًا."},
+{c:"/glossycar",d:"يجعل طلاء السيارة لامعًا."},
+{c:"/metallicpaint",d:"يضيف طلاء معدني لامع."},
+{c:"/pearlescent",d:"يضيف طلاء لؤلؤيًا متغير الانعكاس."},
+{c:"/chromecar",d:"يجعل السيارة بسطح كرومي شديد الانعكاس."},
+{c:"/carbonfiber",d:"يضيف خامة ألياف الكربون إلى أجزاء السيارة."},
+{c:"/carwrap",d:"يغير مظهر السيارة باستخدام تغليف خارجي."},
+{c:"/twotone",d:"يستخدم لونين مختلفين على هيكل السيارة."},
+
+{c:"/bodykit",d:"يضيف طقم هيكل رياضي للسيارة."},
+{c:"/widebody",d:"يوسع رفارف وهيكل السيارة بأسلوب Widebody."},
+{c:"/spoiler",d:"يضيف جناحًا خلفيًا."},
+{c:"/rearwing",d:"يضيف جناحًا رياضيًا كبيرًا."},
+{c:"/frontsplitter",d:"يضيف سبليتر أمامي."},
+{c:"/diffuser",d:"يضيف ديفيوزر خلفي."},
+{c:"/sideskirts",d:"يضيف عتبات جانبية رياضية."},
+{c:"/hoodscoop",d:"يضيف فتحة تهوية على غطاء المحرك."},
+{c:"/ventedhood",d:"يضيف فتحات تهوية رياضية للكبوت."},
+{c:"/roofrack",d:"يضيف حاملًا علويًا للسقف."},
+{c:"/bullbar",d:"يضيف صدام حماية أمامي للطرق الوعرة."},
+{c:"/snorkel",d:"يضيف سنوركل لسحب الهواء في سيارات الدفع الرباعي."},
+{c:"/offroadkit",d:"يضيف تجهيزات مناسبة للطرق الوعرة."},
+
+{c:"/headlights",d:"يركز على المصابيح الأمامية."},
+{c:"/taillights",d:"يركز على المصابيح الخلفية."},
+{c:"/ledheadlights",d:"يضيف أو يبرز مصابيح LED."},
+{c:"/daytimerunninglights",d:"يبرز إضاءة النهار DRL."},
+{c:"/foglights",d:"يبرز كشافات الضباب."},
+{c:"/underglow",d:"يضيف إضاءة أسفل السيارة."},
+{c:"/neoncar",d:"يضيف إضاءة نيون حول السيارة."},
+{c:"/lightbar",d:"يضيف شريط إضاءة للطرق الوعرة."},
+
+{c:"/classiccar",d:"يعطي السيارة طابع السيارات الكلاسيكية."},
+{c:"/vintagecar",d:"يجعل السيارة تبدو قديمة بطابع تاريخي."},
+{c:"/retrocar",d:"يضيف أسلوبًا رجعيًا للسيارة."},
+{c:"/restomod",d:"يمزج السيارة الكلاسيكية بتعديلات حديثة."},
+{c:"/futurecar",d:"يحول السيارة إلى تصميم مستقبلي."},
+{c:"/conceptcar",d:"يجعل السيارة تبدو كنموذج اختباري مستقبلي."},
+{c:"/cybercar",d:"يعطي السيارة طابع سايبربانك مستقبلي."},
+{c:"/electriccar",d:"يركز على السيارة الكهربائية."},
+{c:"/evbattery",d:"يعرض بطارية السيارة الكهربائية."},
+{c:"/electricdrivetrain",d:"يعرض منظومة الدفع الكهربائي."},
+{c:"/charging",d:"يعرض السيارة أثناء الشحن الكهربائي."},
+{c:"/chargingstation",d:"يضع السيارة بجوار محطة شحن."},
+
+{c:"/beforeaftercar",d:"يعرض السيارة قبل وبعد الإصلاح أو التعديل."},
+{c:"/damagedcar",d:"يظهر السيارة بحالة متضررة."},
+{c:"/repairedcar",d:"يظهر السيارة بعد الإصلاح."},
+{c:"/accidentdamage",d:"يظهر أضرار حادث على السيارة."},
+{c:"/dentrepair",d:"يعرض إصلاح انبعاج في الهيكل."},
+{c:"/scratchrepair",d:"يعرض إزالة خدوش الطلاء."},
+{c:"/paintrepair",d:"يعرض إصلاح الطلاء."},
+{c:"/rustrepair",d:"يعرض معالجة الصدأ."},
+{c:"/bodyrepair",d:"يعرض إصلاح هيكل السيارة الخارجي."}
+]
+  };
+
+  let category="الكل";
+  let favOnly=false;
+  let favorites=JSON.parse(localStorage.getItem("promptFav")||"[]");
+  let recent=JSON.parse(localStorage.getItem("promptRecent")||"[]");
+
+  const builder=document.getElementById("promptBuilder");
+  builder.value=localStorage.getItem("promptBuilder")||"";
+
+  function allItems(){
+    let arr=[];
+    Object.entries(library).forEach(([cat,items])=>{
+      items.forEach(item=>{
+        arr.push({...item, category:cat});
+      });
+    });
+    return arr;
+  }
+
+  function renderCategories(){
+    const el=document.getElementById("categories");
+    el.innerHTML="";
+    ["الكل",...Object.keys(library)].forEach(cat=>{
+      const b=document.createElement("button");
+      b.className="cat-btn";
+      if(cat===category && !favOnly) b.classList.add("active");
+      b.textContent=cat;
+      b.onclick=()=>{
+        category=cat;
+        favOnly=false;
+        renderCategories();
+        renderCommands();
+      };
+      el.appendChild(b);
+    });
+  }
+
+  function renderCommands(){
+    const query=document.getElementById("searchInput").value.trim().toLowerCase();
+    let items=allItems().filter(item=>{
+      const matchCategory=category==="الكل"||item.category===category;
+      const matchSearch=!query||item.c.toLowerCase().includes(query)||item.d.toLowerCase().includes(query)||item.category.toLowerCase().includes(query);
+      const matchFav=!favOnly||favorites.includes(item.c);
+      return matchCategory && matchSearch && matchFav;
+    });
+
+    document.getElementById("resultCount").textContent=items.length;
+    document.getElementById("libraryTitle").textContent=favOnly?"⭐ الأوامر المفضلة":category==="الكل"?"جميع الأوامر":category;
+
+    const grid=document.getElementById("commandsGrid");
+    grid.innerHTML="";
+    document.getElementById("emptyState").style.display=items.length?"none":"block";
+
+    items.forEach(item=>{
+      const card=document.createElement("div");
+      card.className="command-card";
+      const activeFav=favorites.includes(item.c);
+
+      card.innerHTML=`
+        <div>
+          <div class="command-top">
+            <div class="command">${escapeHTML(item.c)}</div>
+            <button class="favorite-btn ${activeFav?'active':''}">${activeFav?"★":"☆"}</button>
+          </div>
+          <div class="description">${escapeHTML(item.d)}</div>
+        </div>
+        <div>
+          <span class="badge">${escapeHTML(item.category)}</span>
+          <div class="card-actions">
+            <button class="small-btn copy">📋 نسخ</button>
+            <button class="small-btn add">＋ إضافة</button>
+            <button class="small-btn png-btn card-actions-full">🖼️ حفظ PNG</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector(".copy").onclick=()=>copyCommand(item.c);
+      card.querySelector(".add").onclick=()=>addBuilder(item.c);
+      card.querySelector(".favorite-btn").onclick=()=>toggleFavorite(item.c);
+      card.querySelector(".png-btn").onclick=()=>generateCardPNG(item.c, item.d, item.category);
+      grid.appendChild(card);
+    });
+  }
+
+  async function copyText(text){
+    try{ await navigator.clipboard.writeText(text); } catch {
+      const t=document.createElement("textarea");
+      t.value=text; document.body.appendChild(t); t.select();
+      document.execCommand("copy"); t.remove();
+    }
+    toast("تم النسخ بنجاح ✓");
+  }
+
+  function copyCommand(c){
+    copyText(c);
+    recent=[c,...recent.filter(x=>x!==c)].slice(0,10);
+    saveRecent(); renderRecent();
+  }
+
+  function addBuilder(c){
+    let lines=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+    if(!lines.includes(c)) lines.push(c);
+    builder.value=lines.join("\n");
+    saveBuilder(); toast("تمت إضافة الأمر");
+  }
+
+  function toggleFavorite(c){
+    if(favorites.includes(c)) favorites=favorites.filter(x=>x!==c);
+    else favorites.push(c);
+    localStorage.setItem("promptFav",JSON.stringify(favorites));
+    renderCommands(); renderFavorites(); updateStats();
+  }
+
+  function showFavorites(){ favOnly=true; renderCategories(); renderCommands(); }
+
+  function renderFavorites(){
+    const el=document.getElementById("favoriteList");
+    el.innerHTML="";
+    if(!favorites.length){ el.innerHTML='<div class="count">لا توجد عناصر في المفضلة</div>'; return; }
+    favorites.slice(0,15).forEach(c=>{
+      const row=document.createElement("div");
+      row.className="side-item";
+      row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">📋</button>`;
+      row.querySelector("button").onclick=()=>copyCommand(c);
+      el.appendChild(row);
+    });
+  }
+
+  function renderRecent(){
+    const el=document.getElementById("recentList");
+    el.innerHTML="";
+    if(!recent.length){ el.innerHTML='<div class="count">لا يوجد سجل استخدام</div>'; return; }
+    recent.forEach(c=>{
+      const row=document.createElement("div");
+      row.className="side-item";
+      row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">＋</button>`;
+      row.querySelector("button").onclick=()=>addBuilder(c);
+      el.appendChild(row);
+    });
+  }
+
+  function saveRecent(){ localStorage.setItem("promptRecent",JSON.stringify(recent)); }
+  function saveBuilder(){ localStorage.setItem("promptBuilder",builder.value); updateBuilderCount(); }
+  builder.addEventListener("input",saveBuilder);
+
+  function updateBuilderCount(){
+    const count=builder.value.split(/\s+/).filter(x=>x.startsWith("/")).length;
+    document.getElementById("builderCount").textContent=count+" أوامر";
+  }
+
+  function copyBuilder(){ if(!builder.value.trim()) { toast("لا توجد أوامر"); return; } copyText(builder.value.trim()); }
+  function clearBuilder(){ if(builder.value.trim() && confirm("مسح كل الأوامر؟")) { builder.value=""; saveBuilder(); } }
+  function removeDuplicatesBuilder(){
+    let commands=builder.value.split(/\s+/).map(x=>x.trim()).filter(Boolean);
+    commands=[...new Set(commands)];
+    builder.value=commands.join("\n"); saveBuilder(); toast("تم حذف التكرار");
+  }
+  function builderToOneLine(){ builder.value=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean).join(" "); saveBuilder(); }
+
+  function downloadBuilder(){
+    const text=builder.value.trim();
+    if(!text){ toast("لا توجد أوامر للحفظ"); return; }
+    downloadFile(text,"my-prompt.txt","text/plain;charset=utf-8");
+  }
+
+  function generateCardPNG(commandText, descText, catText){
+    document.getElementById("cardCommandText").textContent = commandText;
+    document.getElementById("cardDescText").textContent = descText;
+    document.getElementById("cardCategoryTag").textContent = catText;
+    const cardElement = document.getElementById("exportCardCanvas");
+    toast("جاري التوليد والحفظ...");
+    html2canvas(cardElement, { backgroundColor: null, scale: 2 }).then(canvas => {
+      const image = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = image;
+      a.download = `${commandText.replace('/', '')}-card.png`;
+      a.click();
+      toast("تم حفظ بطاقة PNG 🖼️");
+    });
+  }
+
+  function exportBuilderPNG(){
+    const text = builder.value.trim();
+    if(!text){ toast("لا توجد أوامر مجمعة!"); return; }
+    generateCardPNG(text, "مجموعة الأوامر البصرية التي تم إنشاؤها عبر مولد البرومبت.", "مولد البرومبت");
+  }
+
+  function exportTXT(){
+    let txt="مكتبة أوامر التوليد البصري\n\n";
+    Object.entries(library).forEach(([cat,items])=>{
+      txt+="\n=========="+cat+"==========\n\n";
+      items.forEach(item=>{ txt+=item.c+"\nالوظيفة: "+item.d+"\n\n"; });
+    });
+    downloadFile(txt,"visual-prompts-library.txt","text/plain;charset=utf-8");
+  }
+
+  function exportJSON(){
+    const data={ library, favorites, builder:builder.value };
+    downloadFile(JSON.stringify(data,null,2),"visual-prompts-library.json","application/json");
+  }
+
+  function downloadFile(content,name,type){
+    const blob=new Blob([content],{type});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    toast("تم حفظ الملف");
+  }
+
+  function updateStats(){
+    const items=allItems();
+    document.getElementById("totalCommands").textContent=new Set(items.map(x=>x.c)).size;
+    document.getElementById("totalCategories").textContent=Object.keys(library).length;
+    document.getElementById("favoritesCount").textContent=favorites.length;
+  }
+
+  function toast(msg){
+    const t=document.getElementById("toast");
+    t.textContent=msg; t.classList.add("show");
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>t.classList.remove("show"),2000);
+  }
+
+  function escapeHTML(str){ return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+
+  document.getElementById("searchInput").addEventListener("input",renderCommands);
+
+  // Init
+  renderCategories();
+  renderCommands();
+  renderFavorites();
+  renderRecent();
+  updateStats();
+  updateBuilderCount();
+</script>
+</body>
+</html>
