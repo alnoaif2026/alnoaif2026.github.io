@@ -371,3 +371,230 @@ body {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 } 
+/* =========================================
+   إحصائيات مكتبة الأوامر
+========================================= */
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+
+/* بطاقة الإحصائية */
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border-radius: 16px;
+
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  min-width: 0;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+
+/* تأثير البطاقة */
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-neon, #00f2fe);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+
+/* أيقونة الإحصائية */
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  font-size: 24px;
+
+  background: rgba(0, 242, 254, 0.1);
+
+  border: 1px solid rgba(0, 242, 254, 0.12);
+}
+
+
+/* محتوى الإحصائية */
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+
+  min-width: 0;
+}
+
+
+/* الرقم */
+
+.stat-number {
+  display: block;
+
+  font-family: "Cairo", "Tajawal", sans-serif;
+
+  font-size: 1.6rem;
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  color: var(--primary-neon, #00f2fe);
+}
+
+
+/* عنوان الإحصائية */
+
+.stat-label {
+  display: block;
+
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  color: var(--text-secondary, #aaa);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+
+/* =========================================
+   زر نسخ الأمر داخل البطاقة
+========================================= */
+
+.copy-command-btn {
+  background: rgba(0, 242, 254, 0.08) !important;
+
+  border-color: rgba(0, 242, 254, 0.25) !important;
+
+  color: var(--primary-neon, #00f2fe);
+}
+
+
+/* عند المرور */
+
+.copy-command-btn:hover {
+  background: rgba(0, 242, 254, 0.16) !important;
+
+  border-color: var(--primary-neon, #00f2fe) !important;
+
+  transform: translateY(-1px);
+}
+
+
+/* عند الضغط */
+
+.copy-command-btn:active {
+  transform: scale(0.97);
+}
+
+
+
+/* =========================================
+   الشاشات الصغيرة
+========================================= */
+
+@media (max-width: 600px) {
+
+  .stats-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin: 12px 0;
+  }
+
+
+  .stat-card {
+    padding: 11px;
+
+    gap: 9px;
+
+    border-radius: 14px;
+  }
+
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 11px;
+
+    font-size: 20px;
+  }
+
+
+  .stat-number {
+    font-size: 1.25rem;
+  }
+
+
+  .stat-label {
+    font-size: 0.72rem;
+  }
+
+}
+
+
+
+/* =========================================
+   الجوال الصغير جداً
+========================================= */
+
+@media (max-width: 380px) {
+
+  .stats-container {
+    gap: 6px;
+  }
+
+
+  .stat-card {
+    padding: 9px;
+    gap: 7px;
+  }
+
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+
+    font-size: 18px;
+  }
+
+
+  .stat-number {
+    font-size: 1.1rem;
+  }
+
+
+  .stat-label {
+    font-size: 0.67rem;
+  }
+
+}
