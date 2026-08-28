@@ -2,111 +2,74 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مكتبة الأوامر البصرية | تصميم محسّن</title>
-  <!-- html2canvas for png export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <!-- Google Font for Tajawal -->
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>مكتبة الأوامر البصرية</title>
   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- استدعاء ملف التنسيق الموحد الخارجي -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-</head>
-<body>
 
-<header class="header">
-  <div class="header-inner">
-    <h1>✨ مكتبة الأوامر البصرية الاحترافية</h1>
-    <p>اختر الأمر المناسب، انسخه أو أضفه إلى المولد، واحفظه كبطاقة PNG أنيقة للمشاركة.</p>
-    <div class="stats">
-      <div class="stat">الأوامر: <strong id="totalCommands">0</strong></div>
-      <div class="stat">التصنيفات: <strong id="totalCategories">0</strong></div>
-      <div class="stat">المفضلة: <strong id="favoritesCount">0</strong></div>
+<div class="container">
+  <!-- Navbar -->
+  <nav class="site-nav">
+    <a href="#" class="brand-logo">✦ مكتبة الأوامر</a>
+    <a href="https://alnoaif2026.github.io" target="_blank" class="external-link">🌐 الرئيسية</a>
+  </nav>
+
+  <!-- Hero Header -->
+  <header class="hero">
+    <h1>الأوامر البصرية والبرمجية</h1>
+    <p>تصفح، شارك وأنشئ أوامر البرمجة والذكاء الاصطناعي بسهولة</p>
+  </header>
+
+  <!-- Search & Controls -->
+  <div class="glass-panel">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" class="search-input" placeholder="ابحث باسم الأمر أو الوصف...">
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="toggleFavFilter()" id="favFilterBtn">⭐ المفضلة</button>
+      <button class="btn btn-outline" onclick="exportTXT()">💾 تصدير الكل TXT</button>
+      <button class="btn btn-accent" onclick="promptAddCustomCommand()">➕ أمر خاص</button>
     </div>
   </div>
-</header>
 
-<main class="main">
-  <!-- شريط الأدوات -->
-  <section class="panel toolbar">
-    <div class="toolbar-top">
-      <div class="search-wrap">
-        <span class="search-icon">🔎</span>
-        <input id="searchInput" class="search" placeholder="ابحث عن أمر أو وظيفته...">
-      </div>
-      <div class="actions">
-        <button class="btn btn-light" onclick="showFavorites()">⭐ المفضلة</button>
-        <button class="btn btn-light" onclick="exportTXT()">💾 TXT</button>
-        <button class="btn btn-light" onclick="exportJSON()">JSON</button>
-      </div>
+  <!-- Categories Scroll Area -->
+  <div class="categories-scroll" id="categories"></div>
+
+  <!-- Prompt Builder Section -->
+  <div class="glass-panel">
+    <h3 style="color: var(--primary-neon); font-size: 1rem; margin-bottom: 8px;">🧩 مجمع البرومبتات</h3>
+    <textarea id="promptBuilder" class="builder-textarea" placeholder="الأوامر المختارة ستظهر هنا..."></textarea>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكود</button>
+      <button class="btn btn-secondary" onclick="shareTXTBuilder()">📤 مشاركة TXT</button>
+      <button class="btn btn-accent" onclick="exportBuilderPNG()">🖼️ مشاركة PNG</button>
+      <button class="btn btn-danger" onclick="clearBuilder()">مسح</button>
     </div>
-    <div class="categories" id="categories"></div>
-  </section>
-
-  <!-- مولد البرومبت -->
-  <section class="panel builder">
-    <div class="builder-head">
-      <h2>🧩 مولد البرومبت</h2>
-      <span class="count" id="builderCount">0 أوامر</span>
-    </div>
-    <textarea id="promptBuilder" placeholder="/productshot&#10;/studio&#10;/softbox&#10;/photorealistic"></textarea>
-    <div class="builder-actions">
-      <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكل</button>
-      <button class="btn btn-blue" onclick="downloadBuilder()">💾 حفظ TXT</button>
-      <button class="btn btn-blue" style="background:#10b981;" onclick="exportBuilderPNG()">🖼️ بطاقة PNG</button>
-      <button class="btn btn-light" onclick="builderToOneLine()">↔ سطر واحد</button>
-      <button class="btn btn-light" onclick="removeDuplicatesBuilder()">🧹 حذف التكرار</button>
-      <button class="btn btn-danger" onclick="clearBuilder()">🗑 مسح</button>
-    </div>
-  </section>
-
-  <!-- المحتوى الرئيسي -->
-  <div class="layout">
-    <!-- المكتبة -->
-    <section class="panel library">
-      <div class="section-head">
-        <h2 id="libraryTitle">جميع الأوامر</h2>
-        <div class="count">النتائج: <strong id="resultCount">0</strong></div>
-      </div>
-      <div class="grid" id="commandsGrid"></div>
-      <div class="empty" id="emptyState">لا توجد نتائج مطابقة.</div>
-    </section>
-
-    <!-- الشريط الجانبي -->
-    <aside class="sidebar">
-      <section class="panel side-card">
-        <h3>⭐ المفضلة</h3>
-        <div class="side-list" id="favoriteList"></div>
-      </section>
-      <section class="panel side-card">
-        <h3>🕘 آخر المستعملة</h3>
-        <div class="side-list" id="recentList"></div>
-      </section>
-    </aside>
   </div>
-</main>
 
-<footer class="footer">مكتبة الأوامر البصرية الاحترافية © 2026 - تصميم مُحسّن</footer>
+  <!-- Cards Main Area -->
+  <main style="margin-top: 16px;">
+    <div class="commands-grid" id="commandsGrid"></div>
+  </main>
+</div>
 
-<div class="toast" id="toast">تم النسخ بنجاح</div>
+<div class="toast" id="toast">تمت العملية بنجاح!</div>
 
-<!-- عنصر تصدير مخفي -->
-<div id="exportCardCanvas">
-  <div class="brand">
-    <span class="brand-title">🎨 Visual Prompt Library</span>
-    <span class="brand-tag" id="cardCategoryTag">تصنيف</span>
-  </div>
-  <div class="content-cmd" id="cardCommandText">/command</div>
-  <div class="content-desc" id="cardDescText">وصف الأمر وتفاصيله...</div>
-  <div class="footer-tag">
-    <span>مكتبة الأوامر البصرية</span>
-    <span>Generated Card</span>
-  </div>
+<!-- Hidden Canvas for Image Export -->
+<div id="exportCardCanvas" style="position: absolute; left:-9999px; top:-9999px; width:450px; background:#090d16; color:#fff; padding:24px; border-radius:16px; border:2px solid #00f2fe;">
+  <h3 style="color:#00f2fe; margin-bottom:8px; font-size:1.1rem;" id="cardCategoryTag">مكتبة الأوامر البصرية</h3>
+  <div id="cardCommandText" style="font-family:monospace; font-size:1.3rem; background:rgba(255,255,255,0.1); padding:12px; border-radius:10px; margin-bottom:10px; color:#00f2fe; direction:ltr;"></div>
+  <p id="cardDescText" style="color:#ccc; font-size:0.95rem; line-height:1.6;"></p>
 </div>
 
 <script>
-  // قاعدة البيانات
+
 const library={
   "التصوير والسينما":[
 {c:"/cinematic",d:"يعطي الصورة أو المشهد مظهرًا سينمائيًا احترافيًا."},
@@ -362,239 +325,196 @@ const library={
 ]
   };
 
-  let category="الكل";
-  let favOnly=false;
-  let favorites=JSON.parse(localStorage.getItem("promptFav")||"[]");
-  let recent=JSON.parse(localStorage.getItem("promptRecent")||"[]");
+  let currentCategory = "الكل";
+  let showOnlyFavs = false;
+  let favorites = JSON.parse(localStorage.getItem("promptFav") || "[]");
+  let customCmds = JSON.parse(localStorage.getItem("customCmds") || "[]");
+  const builder = document.getElementById("promptBuilder");
 
-  const builder=document.getElementById("promptBuilder");
-  builder.value=localStorage.getItem("promptBuilder")||"";
-
-  function allItems(){
-    let arr=[];
-    Object.entries(library).forEach(([cat,items])=>{
-      items.forEach(item=>{
-        arr.push({...item, category:cat});
-      });
+  function allItems() {
+    let arr = [];
+    Object.entries(library).forEach(([cat, items]) => {
+      items.forEach(item => arr.push({...item, category: cat}));
     });
-    return arr;
+    return [...arr, ...customCmds];
   }
 
-  function renderCategories(){
-    const el=document.getElementById("categories");
-    el.innerHTML="";
-    ["الكل",...Object.keys(library)].forEach(cat=>{
-      const b=document.createElement("button");
-      b.className="cat-btn";
-      if(cat===category && !favOnly) b.classList.add("active");
-      b.textContent=cat;
-      b.onclick=()=>{
-        category=cat;
-        favOnly=false;
-        renderCategories();
-        renderCommands();
-      };
-      el.appendChild(b);
-    });
+  function renderCategories() {
+    const categoriesDiv = document.getElementById("categories");
+    const cats = ["الكل", ...Object.keys(library)];
+    if(customCmds.length) cats.push("خاص بي");
+
+    categoriesDiv.innerHTML = cats.map(cat => `
+      <button class="cat-pill ${cat === currentCategory && !showOnlyFavs ? 'active' : ''}" 
+              onclick="selectCategory('${cat}')">${cat}</button>
+    `).join('');
   }
 
-  function renderCommands(){
-    const query=document.getElementById("searchInput").value.trim().toLowerCase();
-    let items=allItems().filter(item=>{
-      const matchCategory=category==="الكل"||item.category===category;
-      const matchSearch=!query||item.c.toLowerCase().includes(query)||item.d.toLowerCase().includes(query)||item.category.toLowerCase().includes(query);
-      const matchFav=!favOnly||favorites.includes(item.c);
-      return matchCategory && matchSearch && matchFav;
+  function selectCategory(cat) {
+    currentCategory = cat;
+    showOnlyFavs = false;
+    document.getElementById("favFilterBtn").style.borderColor = "var(--border)";
+    renderCategories();
+    renderCommands();
+  }
+
+  function toggleFavFilter() {
+    showOnlyFavs = !showOnlyFavs;
+    document.getElementById("favFilterBtn").style.borderColor = showOnlyFavs ? "var(--primary-neon)" : "var(--border)";
+    renderCategories();
+    renderCommands();
+  }
+
+  function renderCommands() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const grid = document.getElementById("commandsGrid");
+    grid.innerHTML = "";
+
+    let filtered = allItems().filter(item => {
+      const matchesSearch = item.c.toLowerCase().includes(query) || item.d.toLowerCase().includes(query);
+      const matchesCat = currentCategory === "الكل" || item.category === currentCategory;
+      const matchesFav = !showOnlyFavs || favorites.includes(item.c);
+      return matchesSearch && matchesCat && matchesFav;
     });
 
-    document.getElementById("resultCount").textContent=items.length;
-    document.getElementById("libraryTitle").textContent=favOnly?"⭐ الأوامر المفضلة":category==="الكل"?"جميع الأوامر":category;
+    if(filtered.length === 0) {
+      grid.innerHTML = `<div style="text-align:center; color:var(--text-secondary); padding:30px;">لا توجد نتائج مطابقة</div>`;
+      return;
+    }
 
-    const grid=document.getElementById("commandsGrid");
-    grid.innerHTML="";
-    document.getElementById("emptyState").style.display=items.length?"none":"block";
-
-    items.forEach(item=>{
-      const card=document.createElement("div");
-      card.className="command-card";
-      const activeFav=favorites.includes(item.c);
-
-      card.innerHTML=`
+    filtered.forEach(item => {
+      const isFav = favorites.includes(item.c);
+      const card = document.createElement("div");
+      card.className = "command-card";
+      card.innerHTML = `
         <div>
-          <div class="command-top">
-            <div class="command">${escapeHTML(item.c)}</div>
-            <button class="favorite-btn ${activeFav?'active':''}">${activeFav?"★":"☆"}</button>
-          </div>
-          <div class="description">${escapeHTML(item.d)}</div>
+          <div class="command-code">${item.c}</div>
+          <p class="command-desc">${item.d}</p>
         </div>
-        <div>
-          <span class="badge">${escapeHTML(item.category)}</span>
-          <div class="card-actions">
-            <button class="small-btn copy">📋 نسخ</button>
-            <button class="small-btn add">＋ إضافة</button>
-            <button class="small-btn png-btn card-actions-full">🖼️ حفظ PNG</button>
-          </div>
+        <div class="card-actions">
+          <button class="card-btn" onclick="addBuilder('${item.c}')">➕ أضف للمنشئ</button>
+          <button class="card-btn" onclick="toggleFavorite('${item.c}')">${isFav ? '★ المفضلة' : '☆ مفضلة'}</button>
+          <button class="card-btn" onclick="shareCardPNG('${item.c}', '${item.d}', '${item.category}')">🖼️ مشاركة PNG</button>
+          <button class="card-btn" onclick="shareCardTXT('${item.c}', '${item.d}')">📄 مشاركة TXT</button>
         </div>
       `;
-
-      card.querySelector(".copy").onclick=()=>copyCommand(item.c);
-      card.querySelector(".add").onclick=()=>addBuilder(item.c);
-      card.querySelector(".favorite-btn").onclick=()=>toggleFavorite(item.c);
-      card.querySelector(".png-btn").onclick=()=>generateCardPNG(item.c, item.d, item.category);
       grid.appendChild(card);
     });
   }
 
-  async function copyText(text){
-    try{ await navigator.clipboard.writeText(text); } catch {
-      const t=document.createElement("textarea");
-      t.value=text; document.body.appendChild(t); t.select();
-      document.execCommand("copy"); t.remove();
+  function addBuilder(c) {
+    let lines = builder.value.split('\n').filter(x => x.trim());
+    if(!lines.includes(c)) {
+      lines.push(c);
+      builder.value = lines.join('\n');
+      showToast("تمت الإضافة لشبكة المنشئ");
     }
-    toast("تم النسخ بنجاح ✓");
   }
 
-  function copyCommand(c){
-    copyText(c);
-    recent=[c,...recent.filter(x=>x!==c)].slice(0,10);
-    saveRecent(); renderRecent();
+  function toggleFavorite(c) {
+    favorites = favorites.includes(c) ? favorites.filter(x => x !== c) : [...favorites, c];
+    localStorage.setItem("promptFav", JSON.stringify(favorites));
+    renderCommands();
   }
 
-  function addBuilder(c){
-    let lines=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean);
-    if(!lines.includes(c)) lines.push(c);
-    builder.value=lines.join("\n");
-    saveBuilder(); toast("تمت إضافة الأمر");
+  function promptAddCustomCommand() {
+    const c = prompt("أدخل كود الأمر (مثال: /my_command):");
+    const d = prompt("أدخل وصف الأمر:");
+    if(c && d) {
+      customCmds.push({c, d, category: "خاص بي"});
+      localStorage.setItem("customCmds", JSON.stringify(customCmds));
+      renderCategories();
+      renderCommands();
+      showToast("تمت إضافة الأمر الخاص بك!");
+    }
   }
 
-  function toggleFavorite(c){
-    if(favorites.includes(c)) favorites=favorites.filter(x=>x!==c);
-    else favorites.push(c);
-    localStorage.setItem("promptFav",JSON.stringify(favorites));
-    renderCommands(); renderFavorites(); updateStats();
+  async function shareCardTXT(c, d) {
+    const textData = `الأمر: ${c}\nالوصف: ${d}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: c, text: textData });
+      } catch (e) {}
+    } else {
+      navigator.clipboard.writeText(textData);
+      showToast("تم نسخ بيانات الأمر نصياً!");
+    }
   }
 
-  function showFavorites(){ favOnly=true; renderCategories(); renderCommands(); }
+  async function shareCardPNG(c, d, cat) {
+    document.getElementById("cardCommandText").textContent = c;
+    document.getElementById("cardDescText").textContent = d;
+    document.getElementById("cardCategoryTag").textContent = cat || "أمر بصري";
+    
+    const canvas = document.getElementById("exportCardCanvas");
+    showToast("جاري إعداد الصورة...");
 
-  function renderFavorites(){
-    const el=document.getElementById("favoriteList");
-    el.innerHTML="";
-    if(!favorites.length){ el.innerHTML='<div class="count">لا توجد عناصر في المفضلة</div>'; return; }
-    favorites.slice(0,15).forEach(c=>{
-      const row=document.createElement("div");
-      row.className="side-item";
-      row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">📋</button>`;
-      row.querySelector("button").onclick=()=>copyCommand(c);
-      el.appendChild(row);
+    html2canvas(canvas, { backgroundColor: null, scale: 2 }).then(cvs => {
+      cvs.toBlob(async (blob) => {
+        const file = new File([blob], `${c.replace('/', '')}.png`, { type: 'image/png' });
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: c, text: d });
+          } catch(e) {}
+        } else {
+          const a = document.createElement('a'); 
+          a.href = cvs.toDataURL("image/png"); 
+          a.download = `${c.replace('/', '')}.png`; 
+          a.click();
+          showToast("تم تحفيز تنزيل الصورة!");
+        }
+      });
     });
   }
 
-  function renderRecent(){
-    const el=document.getElementById("recentList");
-    el.innerHTML="";
-    if(!recent.length){ el.innerHTML='<div class="count">لا يوجد سجل استخدام</div>'; return; }
-    recent.forEach(c=>{
-      const row=document.createElement("div");
-      row.className="side-item";
-      row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">＋</button>`;
-      row.querySelector("button").onclick=()=>addBuilder(c);
-      el.appendChild(row);
-    });
-  }
-
-  function saveRecent(){ localStorage.setItem("promptRecent",JSON.stringify(recent)); }
-  function saveBuilder(){ localStorage.setItem("promptBuilder",builder.value); updateBuilderCount(); }
-  builder.addEventListener("input",saveBuilder);
-
-  function updateBuilderCount(){
-    const count=builder.value.split(/\s+/).filter(x=>x.startsWith("/")).length;
-    document.getElementById("builderCount").textContent=count+" أوامر";
-  }
-
-  function copyBuilder(){ if(!builder.value.trim()) { toast("لا توجد أوامر"); return; } copyText(builder.value.trim()); }
-  function clearBuilder(){ if(builder.value.trim() && confirm("مسح كل الأوامر؟")) { builder.value=""; saveBuilder(); } }
-  function removeDuplicatesBuilder(){
-    let commands=builder.value.split(/\s+/).map(x=>x.trim()).filter(Boolean);
-    commands=[...new Set(commands)];
-    builder.value=commands.join("\n"); saveBuilder(); toast("تم حذف التكرار");
-  }
-  function builderToOneLine(){ builder.value=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean).join(" "); saveBuilder(); }
-
-  function downloadBuilder(){
-    const text=builder.value.trim();
-    if(!text){ toast("لا توجد أوامر للحفظ"); return; }
-    downloadFile(text,"my-prompt.txt","text/plain;charset=utf-8");
-  }
-
-  function generateCardPNG(commandText, descText, catText){
-    document.getElementById("cardCommandText").textContent = commandText;
-    document.getElementById("cardDescText").textContent = descText;
-    document.getElementById("cardCategoryTag").textContent = catText;
-    const cardElement = document.getElementById("exportCardCanvas");
-    toast("جاري التوليد والحفظ...");
-    html2canvas(cardElement, { backgroundColor: null, scale: 2 }).then(canvas => {
-      const image = canvas.toDataURL("image/png");
-      const a = document.createElement("a");
-      a.href = image;
-      a.download = `${commandText.replace('/', '')}-card.png`;
-      a.click();
-      toast("تم حفظ بطاقة PNG 🖼️");
-    });
-  }
-
-  function exportBuilderPNG(){
+  async function shareTXTBuilder() {
     const text = builder.value.trim();
-    if(!text){ toast("لا توجد أوامر مجمعة!"); return; }
-    generateCardPNG(text, "مجموعة الأوامر البصرية التي تم إنشاؤها عبر مولد البرومبت.", "مولد البرومبت");
+    if(!text) return showToast("المنشئ فارغ!");
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'أوامر مجمعة', text: text });
+      } catch(e) {}
+    } else {
+      navigator.clipboard.writeText(text);
+      showToast("تم النسخ للحافظة!");
+    }
   }
 
-  function exportTXT(){
-    let txt="مكتبة أوامر التوليد البصري\n\n";
-    Object.entries(library).forEach(([cat,items])=>{
-      txt+="\n=========="+cat+"==========\n\n";
-      items.forEach(item=>{ txt+=item.c+"\nالوظيفة: "+item.d+"\n\n"; });
-    });
-    downloadFile(txt,"visual-prompts-library.txt","text/plain;charset=utf-8");
+  function exportBuilderPNG() {
+    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
+    shareCardPNG("أوامر مجمعة", builder.value.trim(), "منشئ البرومبتات");
   }
 
-  function exportJSON(){
-    const data={ library, favorites, builder:builder.value };
-    downloadFile(JSON.stringify(data,null,2),"visual-prompts-library.json","application/json");
+  function copyBuilder() { 
+    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
+    navigator.clipboard.writeText(builder.value); 
+    showToast("تم نسخ الكود!"); 
+  }
+  
+  function clearBuilder() { builder.value = ""; }
+
+  function exportTXT() {
+    const data = allItems().map(i => i.c + " - " + i.d).join("\n");
+    const blob = new Blob([data], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "commands.txt";
+    a.click();
+    showToast("تم تصدير كل الأوامر نصياً!");
   }
 
-  function downloadFile(content,name,type){
-    const blob=new Blob([content],{type});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    toast("تم حفظ الملف");
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; 
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
   }
 
-  function updateStats(){
-    const items=allItems();
-    document.getElementById("totalCommands").textContent=new Set(items.map(x=>x.c)).size;
-    document.getElementById("totalCategories").textContent=Object.keys(library).length;
-    document.getElementById("favoritesCount").textContent=favorites.length;
-  }
-
-  function toast(msg){
-    const t=document.getElementById("toast");
-    t.textContent=msg; t.classList.add("show");
-    clearTimeout(window.toastTimer);
-    window.toastTimer=setTimeout(()=>t.classList.remove("show"),2000);
-  }
-
-  function escapeHTML(str){ return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
-
-  document.getElementById("searchInput").addEventListener("input",renderCommands);
-
-  // Init
-  renderCategories();
+  document.getElementById("searchInput").addEventListener("input", renderCommands);
+  
+  renderCategories(); 
   renderCommands();
-  renderFavorites();
-  renderRecent();
-  updateStats();
-  updateBuilderCount();
 </script>
 </body>
 </html>
+  
