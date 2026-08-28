@@ -1,874 +1,389 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>مكتبة الأوامر البصرية</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #00f2fe;
-      --primary-dark: #4facfe;
-      --secondary: #7f00ff;
-      --accent: #ff007f;
-      --bg-main: #090d16;
-      --bg-surface: rgba(22, 30, 46, 0.85);
-      --bg-card: rgba(30, 41, 59, 0.7);
-      --text-primary: #ffffff;
-      --text-secondary: #94a3b8;
-      --border: rgba(255, 255, 255, 0.1);
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --radius: 14px;
-      --radius-lg: 20px;
-      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<title>مكتبة الأوامر الذكية</title>
 
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background: var(--bg-main);
-      background-image: 
-        radial-gradient(at 10% 10%, rgba(127, 0, 255, 0.2) 0px, transparent 50%),
-        radial-gradient(at 90% 90%, rgba(0, 242, 254, 0.15) 0px, transparent 50%);
-      background-attachment: fixed;
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.5;
-      padding-bottom: 40px;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-main); }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-
-    .container { 
-      width: 100%; 
-      max-width: 1000px; 
-      margin: 0 auto; 
-      padding: 0 12px; 
-    }
-
-    /* Navigation Bar */
-    .site-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 4px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
-    }
-    .brand-logo {
-      font-size: 1.25rem;
-      font-weight: 800;
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      color: transparent;
-      text-decoration: none;
-    }
-    .external-link {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--glass-border);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-    .external-link:active {
-      background: var(--primary);
-      color: #000;
-    }
-
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 10px 0 20px;
-    }
-    .hero h1 {
-      font-size: 1.8rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, #fff 30%, var(--primary));
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-    .hero p {
-      color: var(--text-secondary);
-      font-size: 0.92rem;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    /* Glass Panels */
-    .glass-panel {
-      background: var(--bg-surface);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .search-wrapper { position: relative; margin-bottom: 12px; }
-    .search-input {
-      width: 100%;
-      padding: 14px 16px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: #fff;
-      font-size: 0.95rem;
-      outline: none;
-      transition: var(--transition);
-    }
-    .search-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
-    }
-
-    /* Buttons Layout */
-    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-    .btn {
-      padding: 9px 14px;
-      border-radius: var(--radius);
-      font-weight: 700;
-      font-size: 0.82rem;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: var(--transition);
-      flex: 1 1 auto;
-      text-align: center;
-    }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #000; }
-    .btn-secondary { background: linear-gradient(135deg, var(--secondary), #5a00b8); color: #fff; }
-    .btn-accent { background: linear-gradient(135deg, var(--accent), #cc0066); color: #fff; }
-    .btn-outline { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border); }
-    .btn-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
-
-    /* Categories Scroll */
-    .categories-scroll { 
-      display: flex; 
-      gap: 8px; 
-      overflow-x: auto; 
-      padding-bottom: 6px; 
-      margin-bottom: 16px;
-      scrollbar-width: none;
-    }
-    .categories-scroll::-webkit-scrollbar { display: none; }
-    .cat-pill {
-      white-space: nowrap;
-      padding: 8px 18px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: var(--transition);
-    }
-    .cat-pill.active {
-      background: var(--primary);
-      color: #000;
-      font-weight: 700;
-      border-color: var(--primary);
-    }
-
-    /* Single Column Layout (No Sidebar) */
-    .commands-grid { 
-      display: grid; 
-      grid-template-columns: 1fr; 
-      gap: 14px; 
-    }
-
-    @media (min-width: 640px) {
-      .commands-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    .command-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 12px;
-      transition: var(--transition);
-    }
-    .command-code {
-      direction: ltr;
-      font-family: monospace;
-      font-size: 1rem;
-      font-weight: bold;
-      color: var(--primary);
-      background: rgba(0, 242, 254, 0.08);
-      padding: 8px 12px;
-      border-radius: 8px;
-      word-break: break-all;
-      display: inline-block;
-    }
-    .command-desc { 
-      color: var(--text-secondary); 
-      font-size: 0.88rem; 
-      line-height: 1.5;
-    }
-
-    /* Card Actions */
-    .card-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
-    }
-    .card-btn {
-      padding: 8px 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
-    .card-btn:active {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    /* Builder Textarea */
-    .builder-textarea {
-      width: 100%; 
-      min-height: 100px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--primary);
-      padding: 12px;
-      direction: ltr;
-      font-family: monospace;
-      font-size: 0.9rem;
-      outline: none;
-      margin-bottom: 10px;
-      resize: vertical;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed; 
-      bottom: 20px; 
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--primary); 
-      color: #000;
-      padding: 10px 24px; 
-      border-radius: 50px;
-      font-weight: 700; 
-      font-size: 0.88rem;
-      transition: var(--transition);
-      z-index: 1000; 
-      opacity: 0;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      white-space: nowrap;
-    }
-    .toast.show { 
-      transform: translateX(-50%) translateY(0); 
-      opacity: 1; 
-    }
-  </style>
+<!-- استدعاء ملف التنسيقات الخارجي -->
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="container">
-  <!-- Navbar -->
-  <nav class="site-nav">
-    <a href="#" class="brand-logo">✦ مكتبة الأوامر</a>
-    <a href="https://alnoaif2026.github.io" target="_blank" class="external-link">🌐 الرئيسية</a>
-  </nav>
+<!-- =========================
+     NAVBAR
+========================= -->
 
-  <!-- Hero Header -->
-  <header class="hero">
-    <h1>الأوامر البصرية</h1>
-    <p>تصفح شارك وأنشئ أوامر التصوير والذكاء الاصطناعي بسهولة</p>
-  </header>
+<nav class="navbar">
 
-  <!-- Search & Controls -->
-  <div class="glass-panel">
-    <div class="search-wrapper">
-      <input type="text" id="searchInput" class="search-input" placeholder="ابحث باسم الأمر أو الوصف...">
-    </div>
-    <div class="btn-group">
-      <button class="btn btn-outline" onclick="toggleFavFilter()" id="favFilterBtn">⭐ المفضلة</button>
-      <button class="btn btn-outline" onclick="exportTXT()">💾 تصدير الكل TXT</button>
-      <button class="btn btn-accent" onclick="promptAddCustomCommand()">➕ أمر خاص</button>
-    </div>
-  </div>
+    <div class="brand">
 
-  <!-- Categories Scroll Area -->
-  <div class="categories-scroll" id="categories"></div>
-
-  <!-- Prompt Builder Section -->
-  <div class="glass-panel">
-    <h3 style="color: var(--primary); font-size: 1rem; margin-bottom: 8px;">🧩 مجمع البرومبتات</h3>
-    <textarea id="promptBuilder" class="builder-textarea" placeholder="الأوامر المختارة ستظهر هنا..."></textarea>
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكود</button>
-      <button class="btn btn-secondary" onclick="shareTXTBuilder()">📤 مشاركة TXT</button>
-      <button class="btn btn-accent" onclick="exportBuilderPNG()">🖼️ مشاركة PNG</button>
-      <button class="btn btn-danger" onclick="clearBuilder()">مسح</button>
-    </div>
-  </div>
-
-  <!-- Cards Main Area -->
-  <main style="margin-top: 16px;">
-    <div class="commands-grid" id="commandsGrid"></div>
-  </main>
-</div>
-
-<div class="toast" id="toast">تمت العملية بنجاح!</div>
-
-<!-- Hidden Canvas for Image Export -->
-<div id="exportCardCanvas" style="position: absolute; left:-9999px; top:-9999px; width:450px; background:#090d16; color:#fff; padding:24px; border-radius:16px; border:2px solid #00f2fe;">
-  <h3 style="color:#00f2fe; margin-bottom:8px; font-size:1.1rem;" id="cardCategoryTag">مكتبة الأوامر البصرية</h3>
-  <div id="cardCommandText" style="font-family:monospace; font-size:1.3rem; background:rgba(255,255,255,0.1); padding:12px; border-radius:10px; margin-bottom:10px; color:#00f2fe; direction:ltr;"></div>
-  <p id="cardDescText" style="color:#ccc; font-size:0.95rem; line-height:1.6;"></p>
-</div>
-
-<script>
-  const library = {
-    "البرمجة والتطوير":[
-
-{c:"/code",d:"إنشاء كود برمجي حسب المطلوب."},
-{c:"/writecode",d:"كتابة كود كامل لتنفيذ فكرة محددة."},
-{c:"/generatecode",d:"توليد كود بناءً على وصف المشروع."},
-{c:"/completecode",d:"إكمال الأجزاء الناقصة من الكود."},
-{c:"/fullcode",d:"إرسال الكود كاملًا وجاهزًا للاستخدام."},
-{c:"/continuecode",d:"متابعة كتابة الكود من آخر جزء."},
-{c:"/explaincode",d:"شرح الكود ووظيفة كل جزء."},
-{c:"/codewalkthrough",d:"شرح تنفيذ الكود خطوة بخطوة."},
-{c:"/simplifycode",d:"تبسيط الكود وجعله أسهل للفهم."},
-{c:"/refactor",d:"إعادة تنظيم الكود بدون تغيير وظيفته."},
-{c:"/cleancode",d:"تحسين الكود ليصبح أنظف وأكثر تنظيمًا."},
-{c:"/optimizecode",d:"تحسين أداء الكود."},
-{c:"/shortencode",d:"اختصار الكود مع الحفاظ على وظيفته."},
-{c:"/modernizecode",d:"تحديث الكود لاستخدام أساليب وتقنيات أحدث."},
-{c:"/convertcode",d:"تحويل الكود من لغة برمجة إلى أخرى."},
-{c:"/pseudocode",d:"تحويل الفكرة إلى كود شبه برمجي."},
-{c:"/algorithm",d:"إنشاء خوارزمية لحل المشكلة."},
-{c:"/logic",d:"تصميم المنطق البرمجي للمشروع."},
-
-{c:"/debug",d:"البحث عن الأخطاء البرمجية وإصلاحها."},
-{c:"/fixcode",d:"إصلاح الكود الذي لا يعمل."},
-{c:"/findbug",d:"البحث عن سبب المشكلة في الكود."},
-{c:"/fixerror",d:"إصلاح رسالة خطأ محددة."},
-{c:"/syntaxfix",d:"إصلاح أخطاء الكتابة والصياغة البرمجية."},
-{c:"/logicfix",d:"إصلاح الأخطاء المنطقية."},
-{c:"/runtimefix",d:"إصلاح أخطاء وقت التشغيل."},
-{c:"/consoleerror",d:"تحليل وإصلاح أخطاء Console."},
-{c:"/servererror",d:"تحليل أخطاء الخادم."},
-{c:"/databaseerror",d:"تحليل أخطاء قاعدة البيانات."},
-{c:"/fix404",d:"البحث عن سبب خطأ 404 وإصلاحه."},
-{c:"/fix500",d:"البحث عن سبب خطأ 500 وإصلاحه."},
-{c:"/debugstep",d:"تشخيص المشكلة خطوة بخطوة."},
-{c:"/errorhandling",d:"إضافة معالجة للأخطاء والاستثناءات."},
-{c:"/validation",d:"إضافة التحقق من صحة البيانات."},
-
-{c:"/html",d:"إنشاء صفحة HTML."},
-{c:"/html5",d:"إنشاء صفحة باستخدام HTML5."},
-{c:"/webpage",d:"إنشاء صفحة ويب كاملة."},
-{c:"/landingpage",d:"إنشاء صفحة هبوط."},
-{c:"/homepage",d:"إنشاء الصفحة الرئيسية."},
-{c:"/aboutpage",d:"إنشاء صفحة من نحن."},
-{c:"/contactpage",d:"إنشاء صفحة تواصل."},
-{c:"/form",d:"إنشاء نموذج إدخال بيانات."},
-{c:"/loginform",d:"إنشاء نموذج تسجيل دخول."},
-{c:"/registerform",d:"إنشاء نموذج إنشاء حساب."},
-{c:"/searchform",d:"إنشاء مربع ونموذج بحث."},
-{c:"/table",d:"إنشاء جدول HTML."},
-{c:"/navbar",d:"إنشاء شريط تنقل."},
-{c:"/sidebar",d:"إنشاء قائمة جانبية."},
-{c:"/footer",d:"إنشاء تذييل الصفحة."},
-{c:"/header",d:"إنشاء رأس الصفحة."},
-{c:"/card",d:"إنشاء بطاقة محتوى."},
-{c:"/modal",d:"إنشاء نافذة منبثقة."},
-{c:"/accordion",d:"إنشاء قوائم قابلة للفتح والإغلاق."},
-{c:"/tabs",d:"إنشاء تبويبات."},
-{c:"/dropdown",d:"إنشاء قائمة منسدلة."},
-{c:"/gallery",d:"إنشاء معرض صور."},
-{c:"/slider",d:"إنشاء سلايدر."},
-{c:"/carousel",d:"إنشاء معرض صور متحرك."},
-{c:"/dashboard",d:"إنشاء لوحة تحكم."},
-{c:"/adminpanel",d:"إنشاء لوحة إدارة."},
-{c:"/profilepage",d:"إنشاء صفحة ملف شخصي."},
-{c:"/productpage",d:"إنشاء صفحة منتج."},
-{c:"/cartpage",d:"إنشاء صفحة سلة مشتريات."},
-{c:"/checkoutpage",d:"إنشاء صفحة إتمام الطلب."},
-{c:"/responsivepage",d:"إنشاء صفحة متجاوبة مع الجوال والكمبيوتر."},
-
-{c:"/css",d:"إنشاء أو تعديل CSS."},
-{c:"/style",d:"تصميم عناصر الصفحة."},
-{c:"/moderncss",d:"تحويل التصميم إلى مظهر حديث."},
-{c:"/responsive",d:"جعل الصفحة متجاوبة مع جميع الشاشات."},
-{c:"/mobilefirst",d:"تصميم الصفحة للجوال أولًا."},
-{c:"/darkmode",d:"إضافة الوضع الداكن."},
-{c:"/lightmode",d:"إنشاء تصميم فاتح."},
-{c:"/rtl",d:"دعم اللغة العربية واتجاه RTL."},
-{c:"/animation",d:"إضافة حركة للعناصر."},
-{c:"/transition",d:"إضافة انتقالات ناعمة."},
-{c:"/hover",d:"إضافة تأثير عند تمرير المؤشر."},
-{c:"/gradient",d:"إنشاء تدرجات لونية."},
-{c:"/shadow",d:"إضافة ظلال احترافية."},
-{c:"/glassmorphism",d:"إنشاء تأثير الزجاج الشفاف."},
-{c:"/neumorphism",d:"استخدام أسلوب التصميم البارز الناعم."},
-{c:"/grid",d:"تنظيم العناصر باستخدام CSS Grid."},
-{c:"/flexbox",d:"تنظيم العناصر باستخدام Flexbox."},
-{c:"/sticky",d:"تثبيت عنصر أثناء التمرير."},
-{c:"/fixed",d:"تثبيت عنصر على الشاشة."},
-{c:"/printcss",d:"إنشاء تنسيق خاص بالطباعة."},
-{c:"/a4",d:"تنسيق الصفحة للطباعة بحجم A4."},
-{c:"/csscleanup",d:"تنظيف CSS وحذف التكرار."},
-{c:"/cssvariables",d:"تنظيم الألوان والقيم باستخدام CSS Variables."},
-
-{c:"/javascript",d:"إنشاء JavaScript."},
-{c:"/js",d:"كتابة كود JavaScript."},
-{c:"/addevent",d:"إضافة حدث لعنصر."},
-{c:"/onclick",d:"إضافة وظيفة عند الضغط."},
-{c:"/formvalidation",d:"التحقق من بيانات النموذج."},
-{c:"/search",d:"إنشاء بحث داخل الصفحة."},
-{c:"/filter",d:"إنشاء فلترة للبيانات."},
-{c:"/sort",d:"ترتيب البيانات."},
-{c:"/pagination",d:"تقسيم النتائج إلى صفحات."},
-{c:"/copybutton",d:"إنشاء زر نسخ."},
-{c:"/downloadbutton",d:"إنشاء زر تحميل."},
-{c:"/save",d:"إنشاء وظيفة حفظ."},
-{c:"/autosave",d:"إضافة حفظ تلقائي."},
-{c:"/localstorage",d:"حفظ البيانات داخل المتصفح."},
-{c:"/sessionstorage",d:"حفظ البيانات مؤقتًا داخل الجلسة."},
-{c:"/clipboard",d:"نسخ النصوص إلى الحافظة."},
-{c:"/exportjson",d:"تصدير البيانات بصيغة JSON."},
-{c:"/importjson",d:"استيراد بيانات JSON."},
-{c:"/exportcsv",d:"تصدير البيانات CSV."},
-{c:"/print",d:"إضافة وظيفة طباعة."},
-{c:"/savepng",d:"حفظ عنصر أو تصميم كصورة PNG."},
-{c:"/notification",d:"إضافة إشعارات."},
-{c:"/toast",d:"إنشاء رسالة تنبيه صغيرة."},
-{c:"/confirm",d:"إنشاء نافذة تأكيد."},
-{c:"/timer",d:"إنشاء مؤقت."},
-{c:"/countdown",d:"إنشاء عد تنازلي."},
-{c:"/random",d:"توليد قيمة عشوائية."},
-{c:"/generator",d:"إنشاء مولد بيانات أو محتوى."},
-{c:"/fetch",d:"جلب بيانات من API."},
-{c:"/async",d:"استخدام البرمجة غير المتزامنة."},
-{c:"/promise",d:"إنشاء أو التعامل مع Promise."},
-
-{c:"/php",d:"إنشاء كود PHP."},
-{c:"/phpform",d:"معالجة نموذج HTML باستخدام PHP."},
-{c:"/phpmysql",d:"ربط PHP بقاعدة MySQL."},
-{c:"/dbconnect",d:"إنشاء اتصال بقاعدة البيانات."},
-{c:"/insert",d:"إضافة بيانات إلى قاعدة البيانات."},
-{c:"/select",d:"قراءة البيانات من قاعدة البيانات."},
-{c:"/update",d:"تحديث البيانات."},
-{c:"/delete",d:"حذف البيانات."},
-{c:"/crud",d:"إنشاء إضافة وعرض وتعديل وحذف كامل."},
-{c:"/login",d:"إنشاء نظام تسجيل دخول."},
-{c:"/logout",d:"إنشاء تسجيل خروج."},
-{c:"/register",d:"إنشاء نظام تسجيل مستخدم."},
-{c:"/session",d:"إدارة جلسات المستخدم."},
-{c:"/cookie",d:"التعامل مع Cookies."},
-{c:"/upload",d:"رفع الملفات إلى السيرفر."},
-{c:"/uploadimage",d:"رفع الصور."},
-{c:"/deleteimage",d:"حذف صورة من السيرفر."},
-{c:"/authentication",d:"إنشاء نظام مصادقة."},
-{c:"/authorization",d:"إدارة صلاحيات المستخدمين."},
-{c:"/adminlogin",d:"إنشاء تسجيل دخول للإدارة."},
-{c:"/userroles",d:"إنشاء مستويات وصلاحيات المستخدمين."},
-{c:"/paginationphp",d:"تقسيم نتائج قاعدة البيانات إلى صفحات."},
-{c:"/searchphp",d:"إنشاء بحث PHP في قاعدة البيانات."},
-{c:"/preparedstatements",d:"استخدام الاستعلامات المجهزة لقاعدة البيانات."},
-
-{c:"/sql",d:"إنشاء استعلام SQL."},
-{c:"/createdatabase",d:"إنشاء قاعدة بيانات."},
-{c:"/createtable",d:"إنشاء جدول."},
-{c:"/altertable",d:"تعديل بنية جدول."},
-{c:"/insertdata",d:"إضافة بيانات."},
-{c:"/selectdata",d:"استرجاع بيانات."},
-{c:"/updatedata",d:"تحديث سجل."},
-{c:"/deletedata",d:"حذف سجل."},
-{c:"/join",d:"ربط عدة جداول."},
-{c:"/where",d:"إنشاء شروط للاستعلام."},
-{c:"/orderby",d:"ترتيب النتائج."},
-{c:"/groupby",d:"تجميع النتائج."},
-{c:"/database",d:"تصميم قاعدة بيانات."},
-{c:"/databaseschema",d:"إنشاء مخطط قاعدة البيانات."},
-{c:"/relationship",d:"إنشاء العلاقات بين الجداول."},
-{c:"/primarykey",d:"إعداد المفتاح الأساسي."},
-{c:"/foreignkey",d:"إنشاء مفتاح أجنبي."},
-{c:"/index",d:"إنشاء فهرس لتحسين الاستعلام."},
-{c:"/migration",d:"إنشاء أو تعديل بنية قاعدة البيانات."},
-{c:"/backupdatabase",d:"إنشاء آلية نسخ احتياطي."},
-{c:"/seeddata",d:"إنشاء بيانات تجريبية."},
-
-{c:"/firebase",d:"إنشاء وربط Firebase."},
-{c:"/firebaseconfig",d:"إعداد Firebase للمشروع."},
-{c:"/realtimedatabase",d:"استخدام Firebase Realtime Database."},
-{c:"/firestore",d:"استخدام Cloud Firestore."},
-{c:"/firebaseauth",d:"إضافة Firebase Authentication."},
-{c:"/firebaseupload",d:"رفع البيانات أو الملفات."},
-{c:"/firebaseread",d:"قراءة البيانات."},
-{c:"/firebasewrite",d:"كتابة البيانات."},
-{c:"/firebaseupdate",d:"تحديث البيانات."},
-{c:"/firebasedelete",d:"حذف البيانات."},
-{c:"/firebasequery",d:"البحث والاستعلام عن البيانات."},
-{c:"/firebaselistener",d:"الاستماع للتغييرات بشكل مباشر."},
-{c:"/firebaserules",d:"إنشاء قواعد أمان Firebase."},
-{c:"/firebasecrud",d:"إنشاء CRUD كامل باستخدام Firebase."},
-{c:"/firebasepagination",d:"تقسيم نتائج Firebase."},
-{c:"/firebaseimage",d:"ربط الصور مع Firebase Storage."},
-
-{c:"/api",d:"إنشاء أو التعامل مع API."},
-{c:"/restapi",d:"إنشاء REST API."},
-{c:"/endpoint",d:"إنشاء Endpoint."},
-{c:"/getrequest",d:"إنشاء طلب GET."},
-{c:"/postrequest",d:"إنشاء طلب POST."},
-{c:"/putrequest",d:"إنشاء طلب PUT."},
-{c:"/patchrequest",d:"إنشاء طلب PATCH."},
-{c:"/deleterequest",d:"إنشاء طلب DELETE."},
-{c:"/fetchapi",d:"جلب بيانات API باستخدام JavaScript."},
-{c:"/apiconnect",d:"ربط الموقع بخدمة API."},
-{c:"/jsonapi",d:"التعامل مع API يعيد JSON."},
-{c:"/apiresponse",d:"تنظيم استجابة API."},
-{c:"/apierror",d:"معالجة أخطاء API."},
-{c:"/apitest",d:"اختبار API."},
-{c:"/apikey",d:"شرح طريقة استخدام مفتاح API بأمان."},
-{c:"/ratelimit",d:"إضافة حدود لعدد طلبات API."},
-
-{c:"/react",d:"إنشاء كود React."},
-{c:"/component",d:"إنشاء Component."},
-{c:"/reactpage",d:"إنشاء صفحة React."},
-{c:"/reactform",d:"إنشاء نموذج React."},
-{c:"/reactstate",d:"إدارة State."},
-{c:"/reacthook",d:"إنشاء أو استخدام Hook."},
-{c:"/useeffect",d:"استخدام useEffect."},
-{c:"/usestate",d:"استخدام useState."},
-{c:"/context",d:"إنشاء Context."},
-{c:"/reactrouter",d:"إضافة التنقل بين الصفحات."},
-{c:"/nextjs",d:"إنشاء مشروع أو صفحة Next.js."},
-{c:"/typescript",d:"إنشاء TypeScript."},
-{c:"/tailwind",d:"تصميم باستخدام Tailwind CSS."},
-{c:"/bootstrap",d:"تصميم باستخدام Bootstrap."},
-
-{c:"/python",d:"إنشاء برنامج Python."},
-{c:"/pythonscript",d:"إنشاء سكربت Python."},
-{c:"/pythonfunction",d:"إنشاء Function."},
-{c:"/pythonclass",d:"إنشاء Class."},
-{c:"/pythonfile",d:"قراءة وكتابة الملفات."},
-{c:"/pythonjson",d:"التعامل مع JSON."},
-{c:"/pythoncsv",d:"التعامل مع CSV."},
-{c:"/pythonexcel",d:"التعامل مع ملفات Excel."},
-{c:"/pythonautomation",d:"إنشاء أتمتة باستخدام Python."},
-{c:"/pythonapi",d:"التعامل مع API باستخدام Python."},
-{c:"/pythonweb",d:"إنشاء تطبيق ويب Python."},
-{c:"/flask",d:"إنشاء تطبيق Flask."},
-{c:"/django",d:"إنشاء تطبيق Django."},
-{c:"/fastapi",d:"إنشاء API باستخدام FastAPI."},
-{c:"/pandas",d:"تحليل ومعالجة البيانات."},
-{c:"/matplotlib",d:"إنشاء رسوم بيانية."},
-
-{c:"/mobileapp",d:"تصميم فكرة تطبيق جوال."},
-{c:"/android",d:"إنشاء كود Android."},
-{c:"/kotlin",d:"إنشاء كود Kotlin."},
-{c:"/java",d:"إنشاء كود Java."},
-{c:"/flutter",d:"إنشاء تطبيق Flutter."},
-{c:"/dart",d:"كتابة كود Dart."},
-{c:"/reactnative",d:"إنشاء تطبيق React Native."},
-{c:"/mobileui",d:"إنشاء واجهة تطبيق جوال."},
-{c:"/bottomnav",d:"إنشاء شريط تنقل سفلي."},
-{c:"/splashscreen",d:"إنشاء شاشة بداية."},
-{c:"/appsettings",d:"إنشاء صفحة إعدادات."},
-{c:"/pushnotification",d:"إضافة إشعارات للتطبيق."},
-
-{c:"/securecode",d:"مراجعة الكود لتحسين الأمان."},
-{c:"/securityreview",d:"فحص تصميم التطبيق بحثًا عن مشكلات أمنية."},
-{c:"/sanitize",d:"تنظيف المدخلات قبل معالجتها."},
-{c:"/validateinput",d:"التحقق من صحة المدخلات."},
-{c:"/passwordhash",d:"تخزين كلمات المرور باستخدام التجزئة الآمنة."},
-{c:"/csrfprotection",d:"إضافة حماية من CSRF."},
-{c:"/xssprotection",d:"تقليل مخاطر XSS."},
-{c:"/sqlinjection",d:"مراجعة الاستعلامات لمنع SQL Injection."},
-{c:"/permissions",d:"تنظيم الصلاحيات."},
-{c:"/accesscontrol",d:"إنشاء التحكم في الوصول."},
-{c:"/secureupload",d:"جعل رفع الملفات أكثر أمانًا."},
-{c:"/env",d:"نقل كلمات المرور والمفاتيح إلى متغيرات البيئة."},
-{c:"/secrets",d:"تنظيم الأسرار ومفاتيح الخدمات بطريقة آمنة."},
-
-{c:"/test",d:"إنشاء اختبارات للكود."},
-{c:"/unittest",d:"إنشاء Unit Tests."},
-{c:"/integrationtest",d:"إنشاء اختبارات تكامل."},
-{c:"/uitest",d:"اختبار واجهة المستخدم."},
-{c:"/testcases",d:"إنشاء حالات اختبار."},
-{c:"/edgecases",d:"البحث عن الحالات الاستثنائية."},
-{c:"/codereview",d:"مراجعة الكود واقتراح تحسينات."},
-{c:"/performance",d:"تحليل الأداء."},
-{c:"/optimize",d:"تحسين سرعة وأداء البرنامج."},
-{c:"/accessibility",d:"تحسين إمكانية الوصول."},
-{c:"/seo",d:"تحسين الصفحة لمحركات البحث."},
-{c:"/lighthouse",d:"اقتراح تحسينات الأداء وإمكانية الوصول وSEO."},
-
-{c:"/git",d:"شرح أو إنشاء أوامر Git."},
-{c:"/gitinit",d:"تهيئة مستودع Git."},
-{c:"/gitignore",d:"إنشاء ملف .gitignore."},
-{c:"/commit",d:"اقتراح رسالة Commit."},
-{c:"/branch",d:"إنشاء وتنظيم الفروع."},
-{c:"/merge",d:"شرح دمج الفروع."},
-{c:"/github",d:"تجهيز المشروع لـ GitHub."},
-{c:"/readme",d:"إنشاء README للمشروع."},
-{c:"/changelog",d:"إنشاء سجل تغييرات."},
-{c:"/release",d:"تجهيز إصدار جديد."},
-{c:"/deploy",d:"تجهيز المشروع للنشر."},
-{c:"/githubpages",d:"تجهيز موقع للنشر على GitHub Pages."},
-
-{c:"/website",d:"إنشاء موقع كامل."},
-{c:"/webapp",d:"إنشاء تطبيق ويب."},
-{c:"/store",d:"إنشاء متجر إلكتروني."},
-{c:"/portfolio",d:"إنشاء موقع أعمال شخصية."},
-{c:"/blog",d:"إنشاء مدونة."},
-{c:"/schoolwebsite",d:"إنشاء موقع مدرسة."},
-{c:"/restaurantwebsite",d:"إنشاء موقع مطعم."},
-{c:"/companywebsite",d:"إنشاء موقع شركة."},
-{c:"/booking",d:"إنشاء نظام حجوزات."},
-{c:"/inventory",d:"إنشاء نظام مخزون."},
-{c:"/products",d:"إنشاء نظام منتجات."},
-{c:"/orders",d:"إنشاء نظام طلبات."},
-{c:"/customers",d:"إنشاء نظام عملاء."},
-{c:"/invoice",d:"إنشاء نظام فواتير."},
-{c:"/pos",d:"تصميم نظام نقاط بيع."},
-{c:"/cms",d:"إنشاء نظام إدارة محتوى."},
-{c:"/adminsystem",d:"إنشاء نظام إدارة متكامل."},
-
-{c:"/buildproject",d:"إنشاء هيكل مشروع كامل من البداية."},
-{c:"/frontend",d:"إنشاء الواجهة الأمامية."},
-{c:"/backend",d:"إنشاء الجزء الخلفي والخادم."},
-{c:"/fullstack",d:"إنشاء Frontend + Backend + Database."},
-{c:"/htmlcssjs",d:"إنشاء المشروع باستخدام HTML وCSS وJavaScript."},
-{c:"/phpmysqlproject",d:"إنشاء مشروع PHP + MySQL."},
-{c:"/firebaseproject",d:"إنشاء مشروع متكامل باستخدام Firebase."},
-{c:"/responsiveproject",d:"إنشاء مشروع متجاوب للجوال والكمبيوتر."},
-{c:"/debugandfix",d:"فحص الكود ثم إصلاح جميع المشاكل المكتشفة."},
-{c:"/reviewandimprove",d:"مراجعة الكود وتحسينه."},
-{c:"/refactorandoptimize",d:"تنظيم الكود وتحسين أدائه."},
-{c:"/secureandoptimize",d:"تحسين الأمان والأداء."},
-{c:"/explainandfix",d:"شرح المشكلة ثم إصلاحها."},
-{c:"/fullcodewithcomments",d:"إرسال الكود كاملًا مع تعليقات توضيحية."},
-{c:"/productionready",d:"تجهيز الكود للاستخدام الفعلي مع مراعاة الأمان والأخطاء."},
-{c:"/projectstructure",d:"اقتراح هيكل المجلدات والملفات للمشروع."},
-{c:"/requirements",d:"تحديد متطلبات المشروع قبل البرمجة."},
-{c:"/databaseandapi",d:"تصميم قاعدة البيانات وAPI المناسب لها."}
-
-]
-  };
-
-  let currentCategory = "الكل"
-  let showOnlyFavs = false;
-  let favorites = JSON.parse(localStorage.getItem("promptFav") || "[]");
-  let customCmds = JSON.parse(localStorage.getItem("customCmds") || "[]");
-  const builder = document.getElementById("promptBuilder");
-
-  function allItems() {
-    let arr = [];
-    Object.entries(library).forEach(([cat, items]) => {
-      items.forEach(item => arr.push({...item, category: cat}));
-    });
-    return [...arr, ...customCmds];
-  }
-
-  function renderCategories() {
-    const categoriesDiv = document.getElementById("categories");
-    const cats = ["الكل", ...Object.keys(library)];
-    if(customCmds.length) cats.push("خاص بي");
-
-    categoriesDiv.innerHTML = cats.map(cat => `
-      <button class="cat-pill ${cat === currentCategory && !showOnlyFavs ? 'active' : ''}" 
-              onclick="selectCategory('${cat}')">${cat}</button>
-    `).join('');
-  }
-
-  function selectCategory(cat) {
-    currentCategory = cat;
-    showOnlyFavs = false;
-    document.getElementById("favFilterBtn").style.borderColor = "var(--border)";
-    renderCategories();
-    renderCommands();
-  }
-
-  function toggleFavFilter() {
-    showOnlyFavs = !showOnlyFavs;
-    document.getElementById("favFilterBtn").style.borderColor = showOnlyFavs ? "var(--primary)" : "var(--border)";
-    renderCategories();
-    renderCommands();
-  }
-
-  function renderCommands() {
-    const query = document.getElementById("searchInput").value.toLowerCase();
-    const grid = document.getElementById("commandsGrid");
-    grid.innerHTML = "";
-
-    let filtered = allItems().filter(item => {
-      const matchesSearch = item.c.toLowerCase().includes(query) || item.d.toLowerCase().includes(query);
-      const matchesCat = currentCategory === "الكل" || item.category === currentCategory;
-      const matchesFav = !showOnlyFavs || favorites.includes(item.c);
-      return matchesSearch && matchesCat && matchesFav;
-    });
-
-    if(filtered.length === 0) {
-      grid.innerHTML = `<div style="text-align:center; color:var(--text-secondary); padding:30px;">لا توجد نتائج مطابقة</div>`;
-      return;
-    }
-
-    filtered.forEach(item => {
-      const isFav = favorites.includes(item.c);
-      const card = document.createElement("div");
-      card.className = "command-card";
-      card.innerHTML = `
-        <div>
-          <div class="command-code">${item.c}</div>
-          <p class="command-desc">${item.d}</p>
+        <div class="brand-icon">
+            <img src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true" alt="شعار مكتبة الأوامر" class="brand-logo">
         </div>
-        <div class="card-actions">
-          <button class="card-btn" onclick="addBuilder('${item.c}')">➕ أضف للمنشئ</button>
-          <button class="card-btn" onclick="toggleFavorite('${item.c}')">${isFav ? '★ المفضلة' : '☆ مفضلة'}</button>
-          <button class="card-btn" onclick="shareCardPNG('${item.c}', '${item.d}', '${item.category}')">🖼️ مشاركة PNG</button>
-          <button class="card-btn" onclick="shareCardTXT('${item.c}', '${item.d}')">📄 مشاركة TXT</button>
+
+        <div class="brand-text">
+            مكتبة الأوامر (علي المالكي)
         </div>
-      `;
-      grid.appendChild(card);
-    });
-  }
 
-  function addBuilder(c) {
-    let lines = builder.value.split('\n').filter(x => x.trim());
-    if(!lines.includes(c)) {
-      lines.push(c);
-      builder.value = lines.join('\n');
-      showToast("تمت الإضافة لشبكة المنشئ");
-    }
-  }
+    </div>
 
-  function toggleFavorite(c) {
-    favorites = favorites.includes(c) ? favorites.filter(x => x !== c) : [...favorites, c];
-    localStorage.setItem("promptFav", JSON.stringify(favorites));
-    renderCommands();
-  }
+    <div class="nav-badge">
+        AI COMMANDS LIBRARY
+    </div>
 
-  function promptAddCustomCommand() {
-    const c = prompt("أدخل كود الأمر (مثال: /my_command):");
-    const d = prompt("أدخل وصف الأمر:");
-    if(c && d) {
-      customCmds.push({c, d, category: "خاص بي"});
-      localStorage.setItem("customCmds", JSON.stringify(customCmds));
-      renderCategories();
-      renderCommands();
-      showToast("تمت إضافة الأمر الخاص بك!");
-    }
-  }
+</nav>
 
-  /* Single Card Share Functions */
-  async function shareCardTXT(c, d) {
-    const textData = `الأمر: ${c}\nالوصف: ${d}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: c, text: textData });
-      } catch (e) {}
-    } else {
-      navigator.clipboard.writeText(textData);
-      showToast("تم نسخ بيانات الأمر نصياً!");
-    }
-  }
 
-  async function shareCardPNG(c, d, cat) {
-    document.getElementById("cardCommandText").textContent = c;
-    document.getElementById("cardDescText").textContent = d;
-    document.getElementById("cardCategoryTag").textContent = cat || "أمر بصري";
-    
-    const canvas = document.getElementById("exportCardCanvas");
-    showToast("جاري إعداد الصورة...");
+<!-- =========================
+     HERO
+========================= -->
 
-    html2canvas(canvas, { backgroundColor: null, scale: 2 }).then(cvs => {
-      cvs.toBlob(async (blob) => {
-        const file = new File([blob], `${c.replace('/', '')}.png`, { type: 'image/png' });
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({ files: [file], title: c, text: d });
-          } catch(e) {}
-        } else {
-          const a = document.createElement('a'); 
-          a.href = cvs.toDataURL("image/png"); 
-          a.download = `${c.replace('/', '')}.png`; 
-          a.click();
-          showToast("تم تحفيز تنزيل الصورة!");
-        }
-      });
-    });
-  }
+<header class="hero">
 
-  /* Builder Global Share Functions */
-  async function shareTXTBuilder() {
-    const text = builder.value.trim();
-    if(!text) return showToast("المنشئ فارغ!");
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'أوامر مجمعة', text: text });
-      } catch(e) {}
-    } else {
-      navigator.clipboard.writeText(text);
-      showToast("تم النسخ للحافظة!");
-    }
-  }
+    <div class="hero-badge">
+        ✦ مكتبة ذكية لتنظيم أوامرك
+    </div>
 
-  function exportBuilderPNG() {
-    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
-    shareCardPNG("أوامر مجمعة", builder.value.trim(), "منشئ البرومبتات");
-  }
+    <h1>
+        كل أوامرك
+        <span>في مكان واحد</span>
+    </h1>
 
-  function copyBuilder() { 
-    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
-    navigator.clipboard.writeText(builder.value); 
-    showToast("تم نسخ الكود!"); 
-  }
-  
-  function clearBuilder() { builder.value = ""; }
+    <p>
+        مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
+        للمعلمين والمنزل والسيارات والتصوير والهندسة والعمارة.
+        اختر القسم المناسب وابدأ مباشرة.
+    </p>
 
-  function exportTXT() {
-    const data = allItems().map(i => i.c + " - " + i.d).join("\n");
-    const blob = new Blob([data], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "commands.txt";
-    a.click();
-    showToast("تم تصدير كل الأوامر نصياً!");
-  }
+    <div class="info-bar">
 
-  function showToast(msg) {
-    const t = document.getElementById("toast");
-    t.textContent = msg; 
-    t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 2000);
-  }
+        <div class="info-item">
+            ⚡ وصول سريع للأوامر
+        </div>
 
-  document.getElementById("searchInput").addEventListener("input", renderCommands);
-  
-  // Initialization
-  renderCategories(); 
-  renderCommands();
-</script>
+        <div class="info-item">
+            •
+        </div>
+
+        <div class="info-item">
+            📋 نسخ واستخدام بسهولة
+        </div>
+
+        <div class="info-item">
+            •
+        </div>
+
+        <div class="info-item">
+            📱 متوافق مع الجوال
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     CONTENT
+========================= -->
+
+<main class="section">
+
+    <div class="section-head">
+
+        <h2>
+            الأقسام الرئيسية
+        </h2>
+
+        <p>
+            اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+
+        <!-- TEACHERS -->
+
+        <article class="card teacher">
+
+            <div>
+
+                <div class="icon-box">
+                    👨‍🏫
+                </div>
+
+                <h3>
+                    أكواد المعلمين
+                </h3>
+
+                <p>
+                    أوامر ذكية لإعداد الدروس، إنشاء الاختبارات،
+                    شرح المواد، تصميم الأنشطة، إعداد أوراق العمل
+                    وتطوير المحتوى التعليمي.
+                </p>
+
+            </div>
+
+            <a href="https://alnoaif2026.github.io/astath.html" class="card-link">
+
+                <span>
+                    فتح مكتبة المعلمين
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+        <!-- PROGRAMMING -->
+
+        <article class="card programming">
+            
+            <div>
+                
+                <div class="icon-box">
+                    💻
+                </div>
+                
+                <h3>
+                    البرمجة وتطوير المواقع
+                </h3>
+                
+                <p>
+                    أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات،
+                    إصلاح الأخطاء، قواعد البيانات، PHP وJavaScript،
+                    Firebase وPython وواجهات API والمزيد.
+                </p>
+                
+            </div>
+            
+            <a href="programming.html" class="card-link">
+            
+                <span>
+                    فتح مكتبة البرمجة
+                </span>
+                
+                <span>
+                    ←
+                </span>
+                
+            </a>
+            
+        </article>
+
+
+        <!-- HOUSE -->
+
+        <article class="card house">
+
+            <div>
+
+                <div class="icon-box">
+                    🏠
+                </div>
+
+                <h3>
+                    أكواد المنزل
+                </h3>
+
+                <p>
+                    أوامر للطبخ والوصفات وتنظيم المنزل والتنظيف
+                    والتسوق وإدارة الميزانية ووضع الجداول المنزلية
+                    وخطط الوجبات.
+                </p>
+
+            </div>
+
+            <a href="biot.html" class="card-link">
+
+                <span>
+                    فتح مكتبة المنزل
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- CARS -->
+
+        <article class="card car">
+
+            <div>
+
+                <div class="icon-box">
+                    🚘
+                </div>
+
+                <h3>
+                    أكواد السيارات
+                </h3>
+
+                <p>
+                    أوامر لتحسين صور السيارات، التشخيص،
+                    الصيانة، العرض التفكيكي، الأشعة الافتراضية
+                    والتصوير الاحترافي للمركبات.
+                </p>
+
+            </div>
+
+            <a href="cars.html" class="card-link">
+
+                <span>
+                    فتح مكتبة السيارات
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- CAMERA -->
+
+        <article class="card camera">
+
+            <div>
+
+                <div class="icon-box">
+                    📸
+                </div>
+
+                <h3>
+                    التصوير والسينما
+                </h3>
+
+                <p>
+                    أوامر الكاميرات والعدسات والإضاءة السينمائية
+                    وزوايا التصوير والعمق البصري والمؤثرات
+                    والأساليب الفنية الاحترافية.
+                </p>
+
+            </div>
+
+            <a href="photography.html" class="card-link">
+
+                <span>
+                    فتح مكتبة التصوير
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- ENGINEERING -->
+
+        <article class="card engineering">
+
+            <div>
+
+                <div class="icon-box">
+                    ⚙️
+                </div>
+
+                <h3>
+                    الهندسة والتقنية
+                </h3>
+
+                <p>
+                    أوامر المخططات الهندسية، التصاميم التقنية،
+                    العرض التفكيكي، الرسوم التوضيحية،
+                    النماذج والمكونات الداخلية.
+                </p>
+
+            </div>
+
+            <a href="engineering.html" class="card-link">
+
+                <span>
+                    فتح مكتبة الهندسة
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- ARCHITECTURE -->
+
+        <article class="card architecture">
+
+            <div>
+
+                <div class="icon-box">
+                    🏛️
+                </div>
+
+                <h3>
+                    العمارة والديكور
+                </h3>
+
+                <p>
+                    أوامر التصميم الداخلي والخارجي،
+                    الواجهات، المخططات، توزيع الأثاث،
+                    الإضاءة وتصميم المساحات بأساليب متعددة.
+                </p>
+
+            </div>
+
+            <a href="architecture.html" class="card-link">
+
+                <span>
+                    فتح مكتبة العمارة
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    جميع الحقوق محفوظة © 2026
+    <strong>مكتبة الأوامر الذكية || علي المالكي</strong>
+
+</footer>
+
 </body>
 </html>
