@@ -3,57 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>مكتبة الأوامر البصرية والذكية</title>
+  <title>مكتبة الأوامر البصرية</title>
   
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-  <!-- External Unified Stylesheet -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- استدعاء ملف التنسيق الموحد الخارجي -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
   <!-- Navbar -->
-  <nav class="navbar site-nav">
-    <div class="brand">
-      <div class="brand-icon">
-        <img src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true" alt="شعار مكتبة الأوامر" class="brand-logo">
-      </div>
-      <div class="brand-text">
-        مكتبة الأوامر (علي المالكي)
-      </div>
-    </div>
-
-    <div class="btn-group">
-      <a href="https://alnoaif2026.github.io" target="_blank" class="external-link">🌐 الرئيسية</a>
-      <div class="nav-badge">AI COMMANDS LIBRARY</div>
-    </div>
+  <nav class="site-nav">
+    <a href="#" class="brand-logo">✦ مكتبة الأوامر</a>
+    <a href="https://alnoaif2026.github.io" target="_blank" class="external-link">🌐 الرئيسية</a>
   </nav>
 
   <!-- Hero Header -->
   <header class="hero">
-    <div class="hero-badge">
-      ✦ مكتبة ذكية لتنظيم أوامرك
-    </div>
-    <h1>
-      كل أوامرك
-      <span>في مكان واحد</span>
-    </h1>
-    <p>تصفح شارك وأنشئ أوامر التصوير، البرمجة والذكاء الاصطناعي بسهولة</p>
-
-    <div class="info-bar">
-      <div class="info-item">⚡ وصول سريع للأوامر</div>
-      <div class="info-item">•</div>
-      <div class="info-item">📋 نسخ واستخدام بسهولة</div>
-      <div class="info-item">•</div>
-      <div class="info-item">📱 متوافق مع الجوال</div>
-    </div>
+    <h1>الأوامر البصرية والبرمجية</h1>
+    <p>تصفح، شارك وأنشئ أوامر البرمجة والذكاء الاصطناعي بسهولة</p>
   </header>
 
   <!-- Search & Controls -->
@@ -73,7 +43,7 @@
 
   <!-- Prompt Builder Section -->
   <div class="glass-panel">
-    <h3 style="color: var(--primary); font-size: 1rem; margin-bottom: 8px;">🧩 مجمع البرومبتات</h3>
+    <h3 style="color: var(--primary-neon); font-size: 1rem; margin-bottom: 8px;">🧩 مجمع البرومبتات</h3>
     <textarea id="promptBuilder" class="builder-textarea" placeholder="الأوامر المختارة ستظهر هنا..."></textarea>
     <div class="btn-group">
       <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكود</button>
@@ -84,18 +54,11 @@
   </div>
 
   <!-- Cards Main Area -->
-  <main class="section">
+  <main style="margin-top: 16px;">
     <div class="commands-grid" id="commandsGrid"></div>
   </main>
 </div>
 
-<!-- Footer -->
-<footer>
-  جميع الحقوق محفوظة © 2026
-  <strong>مكتبة الأوامر الذكية || علي المالكي</strong>
-</footer>
-
-<!-- Toast Notification -->
 <div class="toast" id="toast">تمت العملية بنجاح!</div>
 
 <!-- Hidden Canvas for Image Export -->
@@ -108,334 +71,316 @@
 <script>
   const library = {
     "البرمجة والتطوير":[
-
-{c:"/code",d:"إنشاء كود برمجي حسب المطلوب."},
-{c:"/writecode",d:"كتابة كود كامل لتنفيذ فكرة محددة."},
-{c:"/generatecode",d:"توليد كود بناءً على وصف المشروع."},
-{c:"/completecode",d:"إكمال الأجزاء الناقصة من الكود."},
-{c:"/fullcode",d:"إرسال الكود كاملًا وجاهزًا للاستخدام."},
-{c:"/continuecode",d:"متابعة كتابة الكود من آخر جزء."},
-{c:"/explaincode",d:"شرح الكود ووظيفة كل جزء."},
-{c:"/codewalkthrough",d:"شرح تنفيذ الكود خطوة بخطوة."},
-{c:"/simplifycode",d:"تبسيط الكود وجعله أسهل للفهم."},
-{c:"/refactor",d:"إعادة تنظيم الكود بدون تغيير وظيفته."},
-{c:"/cleancode",d:"تحسين الكود ليصبح أنظف وأكثر تنظيمًا."},
-{c:"/optimizecode",d:"تحسين أداء الكود."},
-{c:"/shortencode",d:"اختصار الكود مع الحفاظ على وظيفته."},
-{c:"/modernizecode",d:"تحديث الكود لاستخدام أساليب وتقنيات أحدث."},
-{c:"/convertcode",d:"تحويل الكود من لغة برمجة إلى أخرى."},
-{c:"/pseudocode",d:"تحويل الفكرة إلى كود شبه برمجي."},
-{c:"/algorithm",d:"إنشاء خوارزمية لحل المشكلة."},
-{c:"/logic",d:"تصميم المنطق البرمجي للمشروع."},
-
-{c:"/debug",d:"البحث عن الأخطاء البرمجية وإصلاحها."},
-{c:"/fixcode",d:"إصلاح الكود الذي لا يعمل."},
-{c:"/findbug",d:"البحث عن سبب المشكلة في الكود."},
-{c:"/fixerror",d:"إصلاح رسالة خطأ محددة."},
-{c:"/syntaxfix",d:"إصلاح أخطاء الكتابة والصياغة البرمجية."},
-{c:"/logicfix",d:"إصلاح الأخطاء المنطقية."},
-{c:"/runtimefix",d:"إصلاح أخطاء وقت التشغيل."},
-{c:"/consoleerror",d:"تحليل وإصلاح أخطاء Console."},
-{c:"/servererror",d:"تحليل أخطاء الخادم."},
-{c:"/databaseerror",d:"تحليل أخطاء قاعدة البيانات."},
-{c:"/fix404",d:"البحث عن سبب خطأ 404 وإصلاحه."},
-{c:"/fix500",d:"البحث عن سبب خطأ 500 وإصلاحه."},
-{c:"/debugstep",d:"تشخيص المشكلة خطوة بخطوة."},
-{c:"/errorhandling",d:"إضافة معالجة للأخطاء والاستثناءات."},
-{c:"/validation",d:"إضافة التحقق من صحة البيانات."},
-
-{c:"/html",d:"إنشاء صفحة HTML."},
-{c:"/html5",d:"إنشاء صفحة باستخدام HTML5."},
-{c:"/webpage",d:"إنشاء صفحة ويب كاملة."},
-{c:"/landingpage",d:"إنشاء صفحة هبوط."},
-{c:"/homepage",d:"إنشاء الصفحة الرئيسية."},
-{c:"/aboutpage",d:"إنشاء صفحة من نحن."},
-{c:"/contactpage",d:"إنشاء صفحة تواصل."},
-{c:"/form",d:"إنشاء نموذج إدخال بيانات."},
-{c:"/loginform",d:"إنشاء نموذج تسجيل دخول."},
-{c:"/registerform",d:"إنشاء نموذج إنشاء حساب."},
-{c:"/searchform",d:"إنشاء مربع ونموذج بحث."},
-{c:"/table",d:"إنشاء جدول HTML."},
-{c:"/navbar",d:"إنشاء شريط تنقل."},
-{c:"/sidebar",d:"إنشاء قائمة جانبية."},
-{c:"/footer",d:"إنشاء تذييل الصفحة."},
-{c:"/header",d:"إنشاء رأس الصفحة."},
-{c:"/card",d:"إنشاء بطاقة محتوى."},
-{c:"/modal",d:"إنشاء نافذة منبثقة."},
-{c:"/accordion",d:"إنشاء قوائم قابلة للفتح والإغلاق."},
-{c:"/tabs",d:"إنشاء تبويبات."},
-{c:"/dropdown",d:"إنشاء قائمة منسدلة."},
-{c:"/gallery",d:"إنشاء معرض صور."},
-{c:"/slider",d:"إنشاء سلايدر."},
-{c:"/carousel",d:"إنشاء معرض صور متحرك."},
-{c:"/dashboard",d:"إنشاء لوحة تحكم."},
-{c:"/adminpanel",d:"إنشاء لوحة إدارة."},
-{c:"/profilepage",d:"إنشاء صفحة ملف شخصي."},
-{c:"/productpage",d:"إنشاء صفحة منتج."},
-{c:"/cartpage",d:"إنشاء صفحة سلة مشتريات."},
-{c:"/checkoutpage",d:"إنشاء صفحة إتمام الطلب."},
-{c:"/responsivepage",d:"إنشاء صفحة متجاوبة مع الجوال والكمبيوتر."},
-
-{c:"/css",d:"إنشاء أو تعديل CSS."},
-{c:"/style",d:"تصميم عناصر الصفحة."},
-{c:"/moderncss",d:"تحويل التصميم إلى مظهر حديث."},
-{c:"/responsive",d:"جعل الصفحة متجاوبة مع جميع الشاشات."},
-{c:"/mobilefirst",d:"تصميم الصفحة للجوال أولًا."},
-{c:"/darkmode",d:"إضافة الوضع الداكن."},
-{c:"/lightmode",d:"إنشاء تصميم فاتح."},
-{c:"/rtl",d:"دعم اللغة العربية واتجاه RTL."},
-{c:"/animation",d:"إضافة حركة للعناصر."},
-{c:"/transition",d:"إضافة انتقالات ناعمة."},
-{c:"/hover",d:"إضافة تأثير عند تمرير المؤشر."},
-{c:"/gradient",d:"إنشاء تدرجات لونية."},
-{c:"/shadow",d:"إضافة ظلال احترافية."},
-{c:"/glassmorphism",d:"إنشاء تأثير الزجاج الشفاف."},
-{c:"/neumorphism",d:"استخدام أسلوب التصميم البارز الناعم."},
-{c:"/grid",d:"تنظيم العناصر باستخدام CSS Grid."},
-{c:"/flexbox",d:"تنظيم العناصر باستخدام Flexbox."},
-{c:"/sticky",d:"تثبيت عنصر أثناء التمرير."},
-{c:"/fixed",d:"تثبيت عنصر على الشاشة."},
-{c:"/printcss",d:"إنشاء تنسيق خاص بالطباعة."},
-{c:"/a4",d:"تنسيق الصفحة للطباعة بحجم A4."},
-{c:"/csscleanup",d:"تنظيف CSS وحذف التكرار."},
-{c:"/cssvariables",d:"تنظيم الألوان والقيم باستخدام CSS Variables."},
-
-{c:"/javascript",d:"إنشاء JavaScript."},
-{c:"/js",d:"كتابة كود JavaScript."},
-{c:"/addevent",d:"إضافة حدث لعنصر."},
-{c:"/onclick",d:"إضافة وظيفة عند الضغط."},
-{c:"/formvalidation",d:"التحقق من بيانات النموذج."},
-{c:"/search",d:"إنشاء بحث داخل الصفحة."},
-{c:"/filter",d:"إنشاء فلترة للبيانات."},
-{c:"/sort",d:"ترتيب البيانات."},
-{c:"/pagination",d:"تقسيم النتائج إلى صفحات."},
-{c:"/copybutton",d:"إنشاء زر نسخ."},
-{c:"/downloadbutton",d:"إنشاء زر تحميل."},
-{c:"/save",d:"إنشاء وظيفة حفظ."},
-{c:"/autosave",d:"إضافة حفظ تلقائي."},
-{c:"/localstorage",d:"حفظ البيانات داخل المتصفح."},
-{c:"/sessionstorage",d:"حفظ البيانات مؤقتًا داخل الجلسة."},
-{c:"/clipboard",d:"نسخ النصوص إلى الحافظة."},
-{c:"/exportjson",d:"تصدير البيانات بصيغة JSON."},
-{c:"/importjson",d:"استيراد بيانات JSON."},
-{c:"/exportcsv",d:"تصدير البيانات CSV."},
-{c:"/print",d:"إضافة وظيفة طباعة."},
-{c:"/savepng",d:"حفظ عنصر أو تصميم كصورة PNG."},
-{c:"/notification",d:"إضافة إشعارات."},
-{c:"/toast",d:"إنشاء رسالة تنبيه صغيرة."},
-{c:"/confirm",d:"إنشاء نافذة تأكيد."},
-{c:"/timer",d:"إنشاء مؤقت."},
-{c:"/countdown",d:"إنشاء عد تنازلي."},
-{c:"/random",d:"توليد قيمة عشوائية."},
-{c:"/generator",d:"إنشاء مولد بيانات أو محتوى."},
-{c:"/fetch",d:"جلب بيانات من API."},
-{c:"/async",d:"استخدام البرمجة غير المتزامنة."},
-{c:"/promise",d:"إنشاء أو التعامل مع Promise."},
-
-{c:"/php",d:"إنشاء كود PHP."},
-{c:"/phpform",d:"معالجة نموذج HTML باستخدام PHP."},
-{c:"/phpmysql",d:"ربط PHP بقاعدة MySQL."},
-{c:"/dbconnect",d:"إنشاء اتصال بقاعدة البيانات."},
-{c:"/insert",d:"إضافة بيانات إلى قاعدة البيانات."},
-{c:"/select",d:"قراءة البيانات من قاعدة البيانات."},
-{c:"/update",d:"تحديث البيانات."},
-{c:"/delete",d:"حذف البيانات."},
-{c:"/crud",d:"إنشاء إضافة وعرض وتعديل وحذف كامل."},
-{c:"/login",d:"إنشاء نظام تسجيل دخول."},
-{c:"/logout",d:"إنشاء تسجيل خروج."},
-{c:"/register",d:"إنشاء نظام تسجيل مستخدم."},
-{c:"/session",d:"إدارة جلسات المستخدم."},
-{c:"/cookie",d:"التعامل مع Cookies."},
-{c:"/upload",d:"رفع الملفات إلى السيرفر."},
-{c:"/uploadimage",d:"رفع الصور."},
-{c:"/deleteimage",d:"حذف صورة من السيرفر."},
-{c:"/authentication",d:"إنشاء نظام مصادقة."},
-{c:"/authorization",d:"إدارة صلاحيات المستخدمين."},
-{c:"/adminlogin",d:"إنشاء تسجيل دخول للإدارة."},
-{c:"/userroles",d:"إنشاء مستويات وصلاحيات المستخدمين."},
-{c:"/paginationphp",d:"تقسيم نتائج قاعدة البيانات إلى صفحات."},
-{c:"/searchphp",d:"إنشاء بحث PHP في قاعدة البيانات."},
-{c:"/preparedstatements",d:"استخدام الاستعلامات المجهزة لقاعدة البيانات."},
-
-{c:"/sql",d:"إنشاء استعلام SQL."},
-{c:"/createdatabase",d:"إنشاء قاعدة بيانات."},
-{c:"/createtable",d:"إنشاء جدول."},
-{c:"/altertable",d:"تعديل بنية جدول."},
-{c:"/insertdata",d:"إضافة بيانات."},
-{c:"/selectdata",d:"استرجاع بيانات."},
-{c:"/updatedata",d:"تحديث سجل."},
-{c:"/deletedata",d:"حذف سجل."},
-{c:"/join",d:"ربط عدة جداول."},
-{c:"/where",d:"إنشاء شروط للاستعلام."},
-{c:"/orderby",d:"ترتيب النتائج."},
-{c:"/groupby",d:"تجميع النتائج."},
-{c:"/database",d:"تصميم قاعدة بيانات."},
-{c:"/databaseschema",d:"إنشاء مخطط قاعدة البيانات."},
-{c:"/relationship",d:"إنشاء العلاقات بين الجداول."},
-{c:"/primarykey",d:"إعداد المفتاح الأساسي."},
-{c:"/foreignkey",d:"إنشاء مفتاح أجنبي."},
-{c:"/index",d:"إنشاء فهرس لتحسين الاستعلام."},
-{c:"/migration",d:"إنشاء أو تعديل بنية قاعدة البيانات."},
-{c:"/backupdatabase",d:"إنشاء آلية نسخ احتياطي."},
-{c:"/seeddata",d:"إنشاء بيانات تجريبية."},
-
-{c:"/firebase",d:"إنشاء وربط Firebase."},
-{c:"/firebaseconfig",d:"إعداد Firebase للمشروع."},
-{c:"/realtimedatabase",d:"استخدام Firebase Realtime Database."},
-{c:"/firestore",d:"استخدام Cloud Firestore."},
-{c:"/firebaseauth",d:"إضافة Firebase Authentication."},
-{c:"/firebaseupload",d:"رفع البيانات أو الملفات."},
-{c:"/firebaseread",d:"قراءة البيانات."},
-{c:"/firebasewrite",d:"كتابة البيانات."},
-{c:"/firebaseupdate",d:"تحديث البيانات."},
-{c:"/firebasedelete",d:"حذف البيانات."},
-{c:"/firebasequery",d:"البحث والاستعلام عن البيانات."},
-{c:"/firebaselistener",d:"الاستماع للتغييرات بشكل مباشر."},
-{c:"/firebaserules",d:"إنشاء قواعد أمان Firebase."},
-{c:"/firebasecrud",d:"إنشاء CRUD كامل باستخدام Firebase."},
-{c:"/firebasepagination",d:"تقسيم نتائج Firebase."},
-{c:"/firebaseimage",d:"ربط الصور مع Firebase Storage."},
-
-{c:"/api",d:"إنشاء أو التعامل مع API."},
-{c:"/restapi",d:"إنشاء REST API."},
-{c:"/endpoint",d:"إنشاء Endpoint."},
-{c:"/getrequest",d:"إنشاء طلب GET."},
-{c:"/postrequest",d:"إنشاء طلب POST."},
-{c:"/putrequest",d:"إنشاء طلب PUT."},
-{c:"/patchrequest",d:"إنشاء طلب PATCH."},
-{c:"/deleterequest",d:"إنشاء طلب DELETE."},
-{c:"/fetchapi",d:"جلب بيانات API باستخدام JavaScript."},
-{c:"/apiconnect",d:"ربط الموقع بخدمة API."},
-{c:"/jsonapi",d:"التعامل مع API يعيد JSON."},
-{c:"/apiresponse",d:"تنظيم استجابة API."},
-{c:"/apierror",d:"معالجة أخطاء API."},
-{c:"/apitest",d:"اختبار API."},
-{c:"/apikey",d:"شرح طريقة استخدام مفتاح API بأمان."},
-{c:"/ratelimit",d:"إضافة حدود لعدد طلبات API."},
-
-{c:"/react",d:"إنشاء كود React."},
-{c:"/component",d:"إنشاء Component."},
-{c:"/reactpage",d:"إنشاء صفحة React."},
-{c:"/reactform",d:"إنشاء نموذج React."},
-{c:"/reactstate",d:"إدارة State."},
-{c:"/reacthook",d:"إنشاء أو استخدام Hook."},
-{c:"/useeffect",d:"استخدام useEffect."},
-{c:"/usestate",d:"استخدام useState."},
-{c:"/context",d:"إنشاء Context."},
-{c:"/reactrouter",d:"إضافة التنقل بين الصفحات."},
-{c:"/nextjs",d:"إنشاء مشروع أو صفحة Next.js."},
-{c:"/typescript",d:"إنشاء TypeScript."},
-{c:"/tailwind",d:"تصميم باستخدام Tailwind CSS."},
-{c:"/bootstrap",d:"تصميم باستخدام Bootstrap."},
-
-{c:"/python",d:"إنشاء برنامج Python."},
-{c:"/pythonscript",d:"إنشاء سكربت Python."},
-{c:"/pythonfunction",d:"إنشاء Function."},
-{c:"/pythonclass",d:"إنشاء Class."},
-{c:"/pythonfile",d:"قراءة وكتابة الملفات."},
-{c:"/pythonjson",d:"التعامل مع JSON."},
-{c:"/pythoncsv",d:"التعامل مع CSV."},
-{c:"/pythonexcel",d:"التعامل مع ملفات Excel."},
-{c:"/pythonautomation",d:"إنشاء أتمتة باستخدام Python."},
-{c:"/pythonapi",d:"التعامل مع API باستخدام Python."},
-{c:"/pythonweb",d:"إنشاء تطبيق ويب Python."},
-{c:"/flask",d:"إنشاء تطبيق Flask."},
-{c:"/django",d:"إنشاء تطبيق Django."},
-{c:"/fastapi",d:"إنشاء API باستخدام FastAPI."},
-{c:"/pandas",d:"تحليل ومعالجة البيانات."},
-{c:"/matplotlib",d:"إنشاء رسوم بيانية."},
-
-{c:"/mobileapp",d:"تصميم فكرة تطبيق جوال."},
-{c:"/android",d:"إنشاء كود Android."},
-{c:"/kotlin",d:"إنشاء كود Kotlin."},
-{c:"/java",d:"إنشاء كود Java."},
-{c:"/flutter",d:"إنشاء تطبيق Flutter."},
-{c:"/dart",d:"كتابة كود Dart."},
-{c:"/reactnative",d:"إنشاء تطبيق React Native."},
-{c:"/mobileui",d:"إنشاء واجهة تطبيق جوال."},
-{c:"/bottomnav",d:"إنشاء شريط تنقل سفلي."},
-{c:"/splashscreen",d:"إنشاء شاشة بداية."},
-{c:"/appsettings",d:"إنشاء صفحة إعدادات."},
-{c:"/pushnotification",d:"إضافة إشعارات للتطبيق."},
-
-{c:"/securecode",d:"مراجعة الكود لتحسين الأمان."},
-{c:"/securityreview",d:"فحص تصميم التطبيق بحثًا عن مشكلات أمنية."},
-{c:"/sanitize",d:"تنظيف المدخلات قبل معالجتها."},
-{c:"/validateinput",d:"التحقق من صحة المدخلات."},
-{c:"/passwordhash",d:"تخزين كلمات المرور باستخدام التجزئة الآمنة."},
-{c:"/csrfprotection",d:"إضافة حماية من CSRF."},
-{c:"/xssprotection",d:"تقليل مخاطر XSS."},
-{c:"/sqlinjection",d:"مراجعة الاستعلامات لمنع SQL Injection."},
-{c:"/permissions",d:"تنظيم الصلاحيات."},
-{c:"/accesscontrol",d:"إنشاء التحكم في الوصول."},
-{c:"/secureupload",d:"جعل رفع الملفات أكثر أمانًا."},
-{c:"/env",d:"نقل كلمات المرور والمفاتيح إلى متغيرات البيئة."},
-{c:"/secrets",d:"تنظيم الأسرار ومفاتيح الخدمات بطريقة آمنة."},
-
-{c:"/test",d:"إنشاء اختبارات للكود."},
-{c:"/unittest",d:"إنشاء Unit Tests."},
-{c:"/integrationtest",d:"إنشاء اختبارات تكامل."},
-{c:"/uitest",d:"اختبار واجهة المستخدم."},
-{c:"/testcases",d:"إنشاء حالات اختبار."},
-{c:"/edgecases",d:"البحث عن الحالات الاستثنائية."},
-{c:"/codereview",d:"مراجعة الكود واقتراح تحسينات."},
-{c:"/performance",d:"تحليل الأداء."},
-{c:"/optimize",d:"تحسين سرعة وأداء البرنامج."},
-{c:"/accessibility",d:"تحسين إمكانية الوصول."},
-{c:"/seo",d:"تحسين الصفحة لمحركات البحث."},
-{c:"/lighthouse",d:"اقتراح تحسينات الأداء وإمكانية الوصول وSEO."},
-
-{c:"/git",d:"شرح أو إنشاء أوامر Git."},
-{c:"/gitinit",d:"تهيئة مستودع Git."},
-{c:"/gitignore",d:"إنشاء ملف .gitignore."},
-{c:"/commit",d:"اقتراح رسالة Commit."},
-{c:"/branch",d:"إنشاء وتنظيم الفروع."},
-{c:"/merge",d:"شرح دمج الفروع."},
-{c:"/github",d:"تجهيز المشروع لـ GitHub."},
-{c:"/readme",d:"إنشاء README للمشروع."},
-{c:"/changelog",d:"إنشاء سجل تغييرات."},
-{c:"/release",d:"تجهيز إصدار جديد."},
-{c:"/deploy",d:"تجهيز المشروع للنشر."},
-{c:"/githubpages",d:"تجهيز موقع للنشر على GitHub Pages."},
-
-{c:"/website",d:"إنشاء موقع كامل."},
-{c:"/webapp",d:"إنشاء تطبيق ويب."},
-{c:"/store",d:"إنشاء متجر إلكتروني."},
-{c:"/portfolio",d:"إنشاء موقع أعمال شخصية."},
-{c:"/blog",d:"إنشاء مدونة."},
-{c:"/schoolwebsite",d:"إنشاء موقع مدرسة."},
-{c:"/restaurantwebsite",d:"إنشاء موقع مطعم."},
-{c:"/companywebsite",d:"إنشاء موقع شركة."},
-{c:"/booking",d:"إنشاء نظام حجوزات."},
-{c:"/inventory",d:"إنشاء نظام مخزون."},
-{c:"/products",d:"إنشاء نظام منتجات."},
-{c:"/orders",d:"إنشاء نظام طلبات."},
-{c:"/customers",d:"إنشاء نظام عملاء."},
-{c:"/invoice",d:"إنشاء نظام فواتير."},
-{c:"/pos",d:"تصميم نظام نقاط بيع."},
-{c:"/cms",d:"إنشاء نظام إدارة محتوى."},
-{c:"/adminsystem",d:"إنشاء نظام إدارة متكامل."},
-
-{c:"/buildproject",d:"إنشاء هيكل مشروع كامل من البداية."},
-{c:"/frontend",d:"إنشاء الواجهة الأمامية."},
-{c:"/backend",d:"إنشاء الجزء الخلفي والخادم."},
-{c:"/fullstack",d:"إنشاء Frontend + Backend + Database."},
-{c:"/htmlcssjs",d:"إنشاء المشروع باستخدام HTML وCSS وJavaScript."},
-{c:"/phpmysqlproject",d:"إنشاء مشروع PHP + MySQL."},
-{c:"/firebaseproject",d:"إنشاء مشروع متكامل باستخدام Firebase."},
-{c:"/responsiveproject",d:"إنشاء مشروع متجاوب للجوال والكمبيوتر."},
-{c:"/debugandfix",d:"فحص الكود ثم إصلاح جميع المشاكل المكتشفة."},
-{c:"/reviewandimprove",d:"مراجعة الكود وتحسينه."},
-{c:"/refactorandoptimize",d:"تنظيم الكود وتحسين أدائه."},
-{c:"/secureandoptimize",d:"تحسين الأمان والأداء."},
-{c:"/explainandfix",d:"شرح المشكلة ثم إصلاحها."},
-{c:"/fullcodewithcomments",d:"إرسال الكود كاملًا مع تعليقات توضيحية."},
-{c:"/productionready",d:"تجهيز الكود للاستخدام الفعلي مع مراعاة الأمان والأخطاء."},
-{c:"/projectstructure",d:"اقتراح هيكل المجلدات والملفات للمشروع."},
-{c:"/requirements",d:"تحديد متطلبات المشروع قبل البرمجة."},
-{c:"/databaseandapi",d:"تصميم قاعدة البيانات وAPI المناسب لها."}
-
-]
+      {c:"/code",d:"إنشاء كود برمجي حسب المطلوب."},
+      {c:"/writecode",d:"كتابة كود كامل لتنفيذ فكرة محددة."},
+      {c:"/generatecode",d:"توليد كود بناءً على وصف المشروع."},
+      {c:"/completecode",d:"إكمال الأجزاء الناقصة من الكود."},
+      {c:"/fullcode",d:"إرسال الكود كاملًا وجاهزًا للاستخدام."},
+      {c:"/continuecode",d:"متابعة كتابة الكود من آخر جزء."},
+      {c:"/explaincode",d:"شرح الكود ووظيفة كل جزء."},
+      {c:"/codewalkthrough",d:"شرح تنفيذ الكود خطوة بخطوة."},
+      {c:"/simplifycode",d:"تبسيط الكود وجعله أسهل للفهم."},
+      {c:"/refactor",d:"إعادة تنظيم الكود بدون تغيير وظيفته."},
+      {c:"/cleancode",d:"تحسين الكود ليصبح أنظف وأكثر تنظيمًا."},
+      {c:"/optimizecode",d:"تحسين أداء الكود."},
+      {c:"/shortencode",d:"اختصار الكود مع الحفاظ على وظيفته."},
+      {c:"/modernizecode",d:"تحديث الكود لاستخدام أساليب وتقنيات أحدث."},
+      {c:"/convertcode",d:"تحويل الكود من لغة برمجة إلى أخرى."},
+      {c:"/pseudocode",d:"تحويل الفكرة إلى كود شبه برمجي."},
+      {c:"/algorithm",d:"إنشاء خوارزمية لحل المشكلة."},
+      {c:"/logic",d:"تصميم المنطق البرمجي للمشروع."},
+      {c:"/debug",d:"البحث عن الأخطاء البرمجية وإصلاحها."},
+      {c:"/fixcode",d:"إصلاح الكود الذي لا يعمل."},
+      {c:"/findbug",d:"البحث عن سبب المشكلة في الكود."},
+      {c:"/fixerror",d:"إصلاح رسالة خطأ محددة."},
+      {c:"/syntaxfix",d:"إصلاح أخطاء الكتابة والصياغة البرمجية."},
+      {c:"/logicfix",d:"إصلاح الأخطاء المنطقية."},
+      {c:"/runtimefix",d:"إصلاح أخطاء وقت التشغيل."},
+      {c:"/consoleerror",d:"تحليل وإصلاح أخطاء Console."},
+      {c:"/servererror",d:"تحليل أخطاء الخادم."},
+      {c:"/databaseerror",d:"تحليل أخطاء قاعدة البيانات."},
+      {c:"/fix404",d:"البحث عن سبب خطأ 404 وإصلاحه."},
+      {c:"/fix500",d:"البحث عن سبب خطأ 500 وإصلاحه."},
+      {c:"/debugstep",d:"تشخيص المشكلة خطوة بخطوة."},
+      {c:"/errorhandling",d:"إضافة معالجة للأخطاء والاستثناءات."},
+      {c:"/validation",d:"إضافة التحقق من صحة البيانات."},
+      {c:"/html",d:"إنشاء صفحة HTML."},
+      {c:"/html5",d:"إنشاء صفحة باستخدام HTML5."},
+      {c:"/webpage",d:"إنشاء صفحة ويب كاملة."},
+      {c:"/landingpage",d:"إنشاء صفحة هبوط."},
+      {c:"/homepage",d:"إنشاء الصفحة الرئيسية."},
+      {c:"/aboutpage",d:"إنشاء صفحة من نحن."},
+      {c:"/contactpage",d:"إنشاء صفحة تواصل."},
+      {c:"/form",d:"إنشاء نموذج إدخال بيانات."},
+      {c:"/loginform",d:"إنشاء نموذج تسجيل دخول."},
+      {c:"/registerform",d:"إنشاء نموذج إنشاء حساب."},
+      {c:"/searchform",d:"إنشاء مربع ونموذج بحث."},
+      {c:"/table",d:"إنشاء جدول HTML."},
+      {c:"/navbar",d:"إنشاء شريط تنقل."},
+      {c:"/sidebar",d:"إنشاء قائمة جانبية."},
+      {c:"/footer",d:"إنشاء تذييل الصفحة."},
+      {c:"/header",d:"إنشاء رأس الصفحة."},
+      {c:"/card",d:"إنشاء بطاقة محتوى."},
+      {c:"/modal",d:"إنشاء نافذة منبثقة."},
+      {c:"/accordion",d:"إنشاء قوائم قابلة للفتح والإغلاق."},
+      {c:"/tabs",d:"إنشاء تبويبات."},
+      {c:"/dropdown",d:"إنشاء قائمة منسدلة."},
+      {c:"/gallery",d:"إنشاء معرض صور."},
+      {c:"/slider",d:"إنشاء سلايدر."},
+      {c:"/carousel",d:"إنشاء معرض صور متحرك."},
+      {c:"/dashboard",d:"إنشاء لوحة تحكم."},
+      {c:"/adminpanel",d:"إنشاء لوحة إدارة."},
+      {c:"/profilepage",d:"إنشاء صفحة ملف شخصي."},
+      {c:"/productpage",d:"إنشاء صفحة منتج."},
+      {c:"/cartpage",d:"إنشاء صفحة سلة مشتريات."},
+      {c:"/checkoutpage",d:"إنشاء صفحة إتمام الطلب."},
+      {c:"/responsivepage",d:"إنشاء صفحة متجاوبة مع الجوال والكمبيوتر."},
+      {c:"/css",d:"إنشاء أو تعديل CSS."},
+      {c:"/style",d:"تصميم عناصر الصفحة."},
+      {c:"/moderncss",d:"تحويل التصميم إلى مظهر حديث."},
+      {c:"/responsive",d:"جعل الصفحة متجاوبة مع جميع الشاشات."},
+      {c:"/mobilefirst",d:"تصميم الصفحة للجوال أولًا."},
+      {c:"/darkmode",d:"إضافة الوضع الداكن."},
+      {c:"/lightmode",d:"إنشاء تصميم فاتح."},
+      {c:"/rtl",d:"دعم اللغة العربية واتجاه RTL."},
+      {c:"/animation",d:"إضافة حركة للعناصر."},
+      {c:"/transition",d:"إضافة انتقالات ناعمة."},
+      {c:"/hover",d:"إضافة تأثير عند تمرير المؤشر."},
+      {c:"/gradient",d:"إنشاء تدرجات لونية."},
+      {c:"/shadow",d:"إضافة ظلال احترافية."},
+      {c:"/glassmorphism",d:"إنشاء تأثير الزجاج الشفاف."},
+      {c:"/neumorphism",d:"استخدام أسلوب التصميم البارز الناعم."},
+      {c:"/grid",d:"تنظيم العناصر باستخدام CSS Grid."},
+      {c:"/flexbox",d:"تنظيم العناصر باستخدام Flexbox."},
+      {c:"/sticky",d:"تثبيت عنصر أثناء التمرير."},
+      {c:"/fixed",d:"تثبيت عنصر على الشاشة."},
+      {c:"/printcss",d:"إنشاء تنسيق خاص بالطباعة."},
+      {c:"/a4",d:"تنسيق الصفحة للطباعة بحجم A4."},
+      {c:"/csscleanup",d:"تنظيف CSS وحذف التكرار."},
+      {c:"/cssvariables",d:"تنظيم الألوان والقيم باستخدام CSS Variables."},
+      {c:"/javascript",d:"إنشاء JavaScript."},
+      {c:"/js",d:"كتابة كود JavaScript."},
+      {c:"/addevent",d:"إضافة حدث لعنصر."},
+      {c:"/onclick",d:"إضافة وظيفة عند الضغط."},
+      {c:"/formvalidation",d:"التحقق من بيانات النموذج."},
+      {c:"/search",d:"إنشاء بحث داخل الصفحة."},
+      {c:"/filter",d:"إنشاء فلترة للبيانات."},
+      {c:"/sort",d:"ترتيب البيانات."},
+      {c:"/pagination",d:"تقسيم النتائج إلى صفحات."},
+      {c:"/copybutton",d:"إنشاء زر نسخ."},
+      {c:"/downloadbutton",d:"إنشاء زر تحميل."},
+      {c:"/save",d:"إنشاء وظيفة حفظ."},
+      {c:"/autosave",d:"إضافة حفظ تلقائي."},
+      {c:"/localstorage",d:"حفظ البيانات داخل المتصفح."},
+      {c:"/sessionstorage",d:"حفظ البيانات مؤقتًا داخل الجلسة."},
+      {c:"/clipboard",d:"نسخ النصوص إلى الحافظة."},
+      {c:"/exportjson",d:"تصدير البيانات بصيغة JSON."},
+      {c:"/importjson",d:"استيراد بيانات JSON."},
+      {c:"/exportcsv",d:"تصدير البيانات CSV."},
+      {c:"/print",d:"إضافة وظيفة طباعة."},
+      {c:"/savepng",d:"حفظ عنصر أو تصميم كصورة PNG."},
+      {c:"/notification",d:"إضافة إشعارات."},
+      {c:"/toast",d:"إنشاء رسالة تنبيه صغيرة."},
+      {c:"/confirm",d:"إنشاء نافذة تأكيد."},
+      {c:"/timer",d:"إنشاء مؤقت."},
+      {c:"/countdown",d:"إنشاء عد تنازلي."},
+      {c:"/random",d:"توليد قيمة عشوائية."},
+      {c:"/generator",d:"إنشاء مولد بيانات أو محتوى."},
+      {c:"/fetch",d:"جلب بيانات من API."},
+      {c:"/async",d:"استخدام البرمجة غير المتزامنة."},
+      {c:"/promise",d:"إنشاء أو التعامل مع Promise."},
+      {c:"/php",d:"إنشاء كود PHP."},
+      {c:"/phpform",d:"معالجة نموذج HTML باستخدام PHP."},
+      {c:"/phpmysql",d:"ربط PHP بقاعدة MySQL."},
+      {c:"/dbconnect",d:"إنشاء اتصال بقاعدة البيانات."},
+      {c:"/insert",d:"إضافة بيانات إلى قاعدة البيانات."},
+      {c:"/select",d:"قراءة البيانات من قاعدة البيانات."},
+      {c:"/update",d:"تحديث البيانات."},
+      {c:"/delete",d:"حذف البيانات."},
+      {c:"/crud",d:"إنشاء إضافة وعرض وتعديل وحذف كامل."},
+      {c:"/login",d:"إنشاء نظام تسجيل دخول."},
+      {c:"/logout",d:"إنشاء تسجيل خروج."},
+      {c:"/register",d:"إنشاء نظام تسجيل مستخدم."},
+      {c:"/session",d:"إدارة جلسات المستخدم."},
+      {c:"/cookie",d:"التعامل مع Cookies."},
+      {c:"/upload",d:"رفع الملفات إلى السيرفر."},
+      {c:"/uploadimage",d:"رفع الصور."},
+      {c:"/deleteimage",d:"حذف صورة من السيرفر."},
+      {c:"/authentication",d:"إنشاء نظام مصادقة."},
+      {c:"/authorization",d:"إدارة صلاحيات المستخدمين."},
+      {c:"/adminlogin",d:"إنشاء تسجيل دخول للإدارة."},
+      {c:"/userroles",d:"إنشاء مستويات وصلاحيات المستخدمين."},
+      {c:"/paginationphp",d:"تقسيم نتائج قاعدة البيانات إلى صفحات."},
+      {c:"/searchphp",d:"إنشاء بحث PHP في قاعدة البيانات."},
+      {c:"/preparedstatements",d:"استخدام الاستعلامات المجهزة لقاعدة البيانات."},
+      {c:"/sql",d:"إنشاء استعلام SQL."},
+      {c:"/createdatabase",d:"إنشاء قاعدة بيانات."},
+      {c:"/createtable",d:"إنشاء جدول."},
+      {c:"/altertable",d:"تعديل بنية جدول."},
+      {c:"/insertdata",d:"إضافة بيانات."},
+      {c:"/selectdata",d:"استرجاع بيانات."},
+      {c:"/updatedata",d:"تحديث سجل."},
+      {c:"/deletedata",d:"حذف سجل."},
+      {c:"/join",d:"ربط عدة جداول."},
+      {c:"/where",d:"إنشاء شروط للاستعلام."},
+      {c:"/orderby",d:"ترتيب النتائج."},
+      {c:"/groupby",d:"تجميع النتائج."},
+      {c:"/database",d:"تصميم قاعدة بيانات."},
+      {c:"/databaseschema",d:"إنشاء مخطط قاعدة البيانات."},
+      {c:"/relationship",d:"إنشاء العلاقات بين الجداول."},
+      {c:"/primarykey",d:"إعداد المفتاح الأساسي."},
+      {c:"/foreignkey",d:"إنشاء مفتاح أجنبي."},
+      {c:"/index",d:"إنشاء فهرس لتحسين الاستعلام."},
+      {c:"/migration",d:"إنشاء أو تعديل بنية قاعدة البيانات."},
+      {c:"/backupdatabase",d:"إنشاء آلية نسخ احتياطي."},
+      {c:"/seeddata",d:"إنشاء بيانات تجريبية."},
+      {c:"/firebase",d:"إنشاء وربط Firebase."},
+      {c:"/firebaseconfig",d:"إعداد Firebase للمشروع."},
+      {c:"/realtimedatabase",d:"استخدام Firebase Realtime Database."},
+      {c:"/firestore",d:"استخدام Cloud Firestore."},
+      {c:"/firebaseauth",d:"إضافة Firebase Authentication."},
+      {c:"/firebaseupload",d:"رفع البيانات أو الملفات."},
+      {c:"/firebaseread",d:"قراءة البيانات."},
+      {c:"/firebasewrite",d:"كتابة البيانات."},
+      {c:"/firebaseupdate",d:"تحديث البيانات."},
+      {c:"/firebasedelete",d:"حذف البيانات."},
+      {c:"/firebasequery",d:"البحث والاستعلام عن البيانات."},
+      {c:"/firebaselistener",d:"الاستماع للتغييرات بشكل مباشر."},
+      {c:"/firebaserules",d:"إنشاء قواعد أمان Firebase."},
+      {c:"/firebasecrud",d:"إنشاء CRUD كامل باستخدام Firebase."},
+      {c:"/firebasepagination",d:"تقسيم نتائج Firebase."},
+      {c:"/firebaseimage",d:"ربط الصور مع Firebase Storage."},
+      {c:"/api",d:"إنشاء أو التعامل مع API."},
+      {c:"/restapi",d:"إنشاء REST API."},
+      {c:"/endpoint",d:"إنشاء Endpoint."},
+      {c:"/getrequest",d:"إنشاء طلب GET."},
+      {c:"/postrequest",d:"إنشاء طلب POST."},
+      {c:"/putrequest",d:"إنشاء طلب PUT."},
+      {c:"/patchrequest",d:"إنشاء طلب PATCH."},
+      {c:"/deleterequest",d:"إنشاء طلب DELETE."},
+      {c:"/fetchapi",d:"جلب بيانات API باستخدام JavaScript."},
+      {c:"/apiconnect",d:"ربط الموقع بخدمة API."},
+      {c:"/jsonapi",d:"التعامل مع API يعيد JSON."},
+      {c:"/apiresponse",d:"تنظيم استجابة API."},
+      {c:"/apierror",d:"معالجة أخطاء API."},
+      {c:"/apitest",d:"اختبار API."},
+      {c:"/apikey",d:"شرح طريقة استخدام مفتاح API بأمان."},
+      {c:"/ratelimit",d:"إضافة حدود لعدد طلبات API."},
+      {c:"/react",d:"إنشاء كود React."},
+      {c:"/component",d:"إنشاء Component."},
+      {c:"/reactpage",d:"إنشاء صفحة React."},
+      {c:"/reactform",d:"إنشاء نموذج React."},
+      {c:"/reactstate",d:"إدارة State."},
+      {c:"/reacthook",d:"إنشاء أو استخدام Hook."},
+      {c:"/useeffect",d:"استخدام useEffect."},
+      {c:"/usestate",d:"استخدام useState."},
+      {c:"/context",d:"إنشاء Context."},
+      {c:"/reactrouter",d:"إضافة التنقل بين الصفحات."},
+      {c:"/nextjs",d:"إنشاء مشروع أو صفحة Next.js."},
+      {c:"/typescript",d:"إنشاء TypeScript."},
+      {c:"/tailwind",d:"تصميم باستخدام Tailwind CSS."},
+      {c:"/bootstrap",d:"تصميم باستخدام Bootstrap."},
+      {c:"/python",d:"إنشاء برنامج Python."},
+      {c:"/pythonscript",d:"إنشاء سكربت Python."},
+      {c:"/pythonfunction",d:"إنشاء Function."},
+      {c:"/pythonclass",d:"إنشاء Class."},
+      {c:"/pythonfile",d:"قراءة وكتابة الملفات."},
+      {c:"/pythonjson",d:"التعامل مع JSON."},
+      {c:"/pythoncsv",d:"التعامل مع CSV."},
+      {c:"/pythonexcel",d:"التعامل مع ملفات Excel."},
+      {c:"/pythonautomation",d:"إنشاء أتمتة باستخدام Python."},
+      {c:"/pythonapi",d:"التعامل مع API باستخدام Python."},
+      {c:"/pythonweb",d:"إنشاء تطبيق ويب Python."},
+      {c:"/flask",d:"إنشاء تطبيق Flask."},
+      {c:"/django",d:"إنشاء تطبيق Django."},
+      {c:"/fastapi",d:"إنشاء API باستخدام FastAPI."},
+      {c:"/pandas",d:"تحليل ومعالجة البيانات."},
+      {c:"/matplotlib",d:"إنشاء رسوم بيانية."},
+      {c:"/mobileapp",d:"تصميم فكرة تطبيق جوال."},
+      {c:"/android",d:"إنشاء كود Android."},
+      {c:"/kotlin",d:"إنشاء كود Kotlin."},
+      {c:"/java",d:"إنشاء كود Java."},
+      {c:"/flutter",d:"إنشاء تطبيق Flutter."},
+      {c:"/dart",d:"كتابة كود Dart."},
+      {c:"/reactnative",d:"إنشاء تطبيق React Native."},
+      {c:"/mobileui",d:"إنشاء واجهة تطبيق جوال."},
+      {c:"/bottomnav",d:"إنشاء شريط تنقل سفلي."},
+      {c:"/splashscreen",d:"إنشاء شاشة بداية."},
+      {c:"/appsettings",d:"إنشاء صفحة إعدادات."},
+      {c:"/pushnotification",d:"إضافة إشعارات للتطبيق."},
+      {c:"/securecode",d:"مراجعة الكود لتحسين الأمان."},
+      {c:"/securityreview",d:"فحص تصميم التطبيق بحثًا عن مشكلات أمنية."},
+      {c:"/sanitize",d:"تنظيف المدخلات قبل معالجتها."},
+      {c:"/validateinput",d:"التحقق من صحة المدخلات."},
+      {c:"/passwordhash",d:"تخزين كلمات المرور باستخدام التجزئة الآمنة."},
+      {c:"/csrfprotection",d:"إضافة حماية من CSRF."},
+      {c:"/xssprotection",d:"تقليل مخاطر XSS."},
+      {c:"/sqlinjection",d:"مراجعة الاستعلامات لمنع SQL Injection."},
+      {c:"/permissions",d:"تنظيم الصلاحيات."},
+      {c:"/accesscontrol",d:"إنشاء التحكم في الوصول."},
+      {c:"/secureupload",d:"جعل رفع الملفات أكثر أمانًا."},
+      {c:"/env",d:"نقل كلمات المرور والمفاتيح إلى متغيرات البيئة."},
+      {c:"/secrets",d:"تنظيم الأسرار ومفاتيح الخدمات بطريقة آمنة."},
+      {c:"/test",d:"إنشاء اختبارات للكود."},
+      {c:"/unittest",d:"إنشاء Unit Tests."},
+      {c:"/integrationtest",d:"إنشاء اختبارات تكامل."},
+      {c:"/uitest",d:"اختبار واجهة المستخدم."},
+      {c:"/testcases",d:"إنشاء حالات اختبار."},
+      {c:"/edgecases",d:"البحث عن الحالات الاستثنائية."},
+      {c:"/codereview",d:"مراجعة الكود واقتراح تحسينات."},
+      {c:"/performance",d:"تحليل الأداء."},
+      {c:"/optimize",d:"تحسين سرعة وأداء البرنامج."},
+      {c:"/accessibility",d:"تحسين إمكانية الوصول."},
+      {c:"/seo",d:"تحسين الصفحة لمحركات البحث."},
+      {c:"/lighthouse",d:"اقتراح تحسينات الأداء وإمكانية الوصول وSEO."},
+      {c:"/git",d:"شرح أو إنشاء أوامر Git."},
+      {c:"/gitinit",d:"تهيئة مستودع Git."},
+      {c:"/gitignore",d:"إنشاء ملف .gitignore."},
+      {c:"/commit",d:"اقتراح رسالة Commit."},
+      {c:"/branch",d:"إنشاء وتنظيم الفروع."},
+      {c:"/merge",d:"شرح دمج الفروع."},
+      {c:"/github",d:"تجهيز المشروع لـ GitHub."},
+      {c:"/readme",d:"إنشاء README للمشروع."},
+      {c:"/changelog",d:"إنشاء سجل تغييرات."},
+      {c:"/release",d:"تجهيز إصدار جديد."},
+      {c:"/deploy",d:"تجهيز المشروع للنشر."},
+      {c:"/githubpages",d:"تجهيز موقع للنشر على GitHub Pages."},
+      {c:"/website",d:"إنشاء موقع كامل."},
+      {c:"/webapp",d:"إنشاء تطبيق ويب."},
+      {c:"/store",d:"إنشاء متجر إلكتروني."},
+      {c:"/portfolio",d:"إنشاء موقع أعمال شخصية."},
+      {c:"/blog",d:"إنشاء مدونة."},
+      {c:"/schoolwebsite",d:"إنشاء موقع مدرسة."},
+      {c:"/restaurantwebsite",d:"إنشاء موقع مطعم."},
+      {c:"/companywebsite",d:"إنشاء موقع شركة."},
+      {c:"/booking",d:"إنشاء نظام حجوزات."},
+      {c:"/inventory",d:"إنشاء نظام مخزون."},
+      {c:"/products",d:"إنشاء نظام منتجات."},
+      {c:"/orders",d:"إنشاء نظام طلبات."},
+      {c:"/customers",d:"إنشاء نظام عملاء."},
+      {c:"/invoice",d:"إنشاء نظام فواتير."},
+      {c:"/pos",d:"تصميم نظام نقاط بيع."},
+      {c:"/cms",d:"إنشاء نظام إدارة محتوى."},
+      {c:"/adminsystem",d:"إنشاء نظام إدارة متكامل."},
+      {c:"/buildproject",d:"إنشاء هيكل مشروع كامل من البداية."},
+      {c:"/frontend",d:"إنشاء الواجهة الأمامية."},
+      {c:"/backend",d:"إنشاء الجزء الخلفي والخادم."},
+      {c:"/fullstack",d:"إنشاء Frontend + Backend + Database."},
+      {c:"/htmlcssjs",d:"إنشاء المشروع باستخدام HTML وCSS وJavaScript."},
+      {c:"/phpmysqlproject",d:"إنشاء مشروع PHP + MySQL."},
+      {c:"/firebaseproject",d:"إنشاء مشروع متكامل باستخدام Firebase."},
+      {c:"/responsiveproject",d:"إنشاء مشروع متجاوب للجوال والكمبيوتر."},
+      {c:"/debugandfix",d:"فحص الكود ثم إصلاح جميع المشاكل المكتشفة."},
+      {c:"/reviewandimprove",d:"مراجعة الكود وتحسينه."},
+      {c:"/refactorandoptimize",d:"تنظيم الكود وتحسين أدائه."},
+      {c:"/secureandoptimize",d:"تحسين الأمان والأداء."},
+      {c:"/explainandfix",d:"شرح المشكلة ثم إصلاحها."},
+      {c:"/fullcodewithcomments",d:"إرسال الكود كاملًا مع تعليقات توضيحية."},
+      {c:"/productionready",d:"تجهيز الكود للاستخدام الفعلي مع مراعاة الأمان والأخطاء."},
+      {c:"/projectstructure",d:"اقتراح هيكل المجلدات والملفات للمشروع."},
+      {c:"/requirements",d:"تحديد متطلبات المشروع قبل البرمجة."},
+      {c:"/databaseandapi",d:"تصميم قاعدة البيانات وAPI المناسب لها."}
+    ]
   };
 
   let currentCategory = "الكل";
@@ -473,7 +418,7 @@
 
   function toggleFavFilter() {
     showOnlyFavs = !showOnlyFavs;
-    document.getElementById("favFilterBtn").style.borderColor = showOnlyFavs ? "var(--primary)" : "var(--border)";
+    document.getElementById("favFilterBtn").style.borderColor = showOnlyFavs ? "var(--primary-neon)" : "var(--border)";
     renderCategories();
     renderCommands();
   }
@@ -491,14 +436,14 @@
     });
 
     if(filtered.length === 0) {
-      grid.innerHTML = `<div style="text-align:center; color:var(--text-secondary); padding:30px; grid-column: 1 / -1;">لا توجد نتائج مطابقة</div>`;
+      grid.innerHTML = `<div style="text-align:center; color:var(--text-secondary); padding:30px;">لا توجد نتائج مطابقة</div>`;
       return;
     }
 
     filtered.forEach(item => {
       const isFav = favorites.includes(item.c);
       const card = document.createElement("div");
-      card.className = "command-card card";
+      card.className = "command-card";
       card.innerHTML = `
         <div>
           <div class="command-code">${item.c}</div>
@@ -625,7 +570,6 @@
 
   document.getElementById("searchInput").addEventListener("input", renderCommands);
   
-  // Initialization
   renderCategories(); 
   renderCommands();
 </script>
