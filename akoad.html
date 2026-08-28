@@ -1,1 +1,1471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكتبة أوامر التوليد البصري الاحترافية</title>
+<!-- html2canvas لتحويل العناصر إلى صور PNG -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+:root{
+    --bg: #0f172a;
+    --card: #1e293b;
+    --card-hover: #334155;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --primary: #38bdf8;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --border: #334155;
+    --soft: #1e293b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    --glow: 0 0 20px rgba(56, 189, 248, 0.15);
+}
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family: 'Tajawal', Arial, Tahoma, sans-serif;
+    line-height: 1.6;
+}
+
+button,input,textarea{
+    font:inherit;
+}
+
+button{cursor:pointer; transition: all 0.2s ease;}
+
+.header{
+    background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.25), transparent 70%),
+                linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color:white;
+    padding: 40px 20px 60px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+
+.header-inner{
+    max-width:1400px;
+    margin:auto;
+}
+
+.header h1{
+    margin:0 0 12px;
+    font-size:clamp(30px,5vw,48px);
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.header p{
+    margin:0 auto;
+    max-width: 600px;
+    line-height:1.8;
+    color:var(--muted);
+    font-size: 16px;
+}
+
+.stats{
+    margin-top:25px;
+    display:flex;
+    justify-content: center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.stat{
+    background:rgba(255,255,255,.05);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:8px 16px;
+    font-size: 14px;
+    color: var(--muted);
+    backdrop-filter: blur(5px);
+}
+
+.stat strong {
+    color: var(--primary);
+    margin-right: 4px;
+}
+
+.main{
+    max-width:1400px;
+    padding:0 18px;
+    margin:-35px auto 50px;
+}
+
+.panel{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    backdrop-filter: blur(10px);
+}
+
+.toolbar{
+    padding:20px;
+    position:sticky;
+    top:12px;
+    z-index:20;
+    background: rgba(30, 41, 59, 0.95);
+}
+
+.toolbar-top{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:12px;
+}
+
+.search-wrap{
+    position:relative;
+}
+
+.search{
+    width:100%;
+    height:50px;
+    padding:0 45px 0 14px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    outline:none;
+    background:#0f172a;
+    color: white;
+}
+
+.search:focus{
+    border-color:var(--primary);
+    box-shadow:var(--glow);
+}
+
+.search-icon{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color: var(--muted);
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:0;
+    border-radius:12px;
+    padding:10px 16px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btn-primary{ background:var(--primary); color:#0f172a; }
+.btn-primary:hover{ background:#7dd3fc; }
+
+.btn-blue{ background:var(--accent); color:#fff; }
+.btn-blue:hover{ background:var(--accent-hover); }
+
+.btn-light{ background:rgba(255,255,255,0.08); color:var(--text); border:1px solid var(--border); }
+.btn-light:hover{ background:rgba(255,255,255,0.15); }
+
+.btn-danger{ background:rgba(239, 68, 68, 0.2); color:#fca5a5; border:1px solid rgba(239, 68, 68, 0.4); }
+.btn-danger:hover{ background:rgba(239, 68, 68, 0.3); }
+
+.categories{
+    margin-top:16px;
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:5px;
+    scrollbar-width: thin;
+}
+
+.cat-btn{
+    border:1px solid var(--border);
+    background:#0f172a;
+    color: var(--muted);
+    padding:8px 16px;
+    border-radius:999px;
+    white-space:nowrap;
+    font-size: 14px;
+}
+
+.cat-btn.active, .cat-btn:hover{
+    background:var(--accent);
+    color:white;
+    border-color:var(--accent);
+}
+
+.builder{
+    margin-top:20px;
+    padding:20px;
+}
+
+.builder-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.builder h2{
+    margin:0;
+    font-size:20px;
+    color: var(--primary);
+}
+
+.builder textarea{
+    width:100%;
+    min-height:120px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#0f172a;
+    color:#38bdf8;
+    padding:16px;
+    direction:ltr;
+    text-align:left;
+    line-height:1.8;
+    outline:none;
+    resize:vertical;
+    font-family: Consolas, monospace;
+    font-size: 15px;
+}
+
+.builder textarea:focus{
+    border-color:var(--accent);
+    box-shadow:var(--glow);
+}
+
+.builder-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:12px;
+}
+
+.layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 300px;
+    gap:20px;
+    margin-top:20px;
+}
+
+.library{ padding:20px; }
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.section-head h2{ margin:0; font-size:22px; }
+.count{ color:var(--muted); font-size:14px; }
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:16px;
+}
+
+.command-card{
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px;
+    background:#0f172a;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.command-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--accent);
+    box-shadow:var(--glow);
+}
+
+.command-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px;
+}
+
+.command{
+    direction:ltr;
+    text-align:left;
+    font-family:Consolas,monospace;
+    font-weight:bold;
+    font-size:16px;
+    color: var(--primary);
+    word-break: break-all;
+}
+
+.favorite-btn{
+    border:0;
+    background:transparent;
+    font-size:22px;
+    padding:0;
+    color: var(--muted);
+    line-height: 1;
+}
+
+.favorite-btn.active{
+    color: #f59e0b;
+}
+
+.description{
+    margin-top:12px;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.7;
+    flex-grow: 1;
+}
+
+.badge{
+    display:inline-block;
+    margin-top:12px;
+    background:rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px;
+    width: fit-content;
+}
+
+.card-actions{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:8px;
+}
+
+.card-actions-full {
+    grid-column: span 2;
+}
+
+.small-btn{
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,0.05);
+    color: var(--text);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.small-btn:hover{ background:rgba(255,255,255,0.12); }
+
+.small-btn.add{
+    background:rgba(56, 189, 248, 0.1);
+    border-color:rgba(56, 189, 248, 0.3);
+    color:var(--primary);
+}
+.small-btn.add:hover{ background:rgba(56, 189, 248, 0.2); }
+
+.small-btn.png-btn{
+    background:rgba(16, 185, 129, 0.1);
+    border-color:rgba(16, 185, 129, 0.3);
+    color:var(--success);
+}
+.small-btn.png-btn:hover{ background:rgba(16, 185, 129, 0.2); }
+
+.sidebar{ display:flex; flex-direction:column; gap:20px; }
+.side-card{ padding:20px; }
+.side-card h3{ margin:0 0 15px; font-size: 18px; color: var(--primary); }
+.side-list{ display:flex; flex-direction:column; gap:10px; }
+
+.side-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#0f172a;
+}
+
+.side-item code{
+    direction:ltr;
+    font-size:13px;
+    color: var(--primary);
+    word-break:break-all;
+}
+
+.icon-btn{
+    border:0;
+    background:rgba(255,255,255,0.1);
+    color: white;
+    border-radius:8px;
+    padding:6px 9px;
+    font-size: 12px;
+}
+.icon-btn:hover{ background:var(--accent); }
+
+.empty{
+    display:none;
+    text-align:center;
+    color:var(--muted);
+    padding:60px 10px;
+    font-size: 16px;
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:30px;
+    transform:translate(-50%,30px);
+    opacity:0;
+    background:var(--accent);
+    color:white;
+    padding:12px 24px;
+    border-radius:999px;
+    pointer-events:none;
+    transition:.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index:9999;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    font-weight: bold;
+}
+
+.toast.show{ opacity:1; transform:translate(-50%,0); }
+
+/* تصميم بطاقة التصدير المخفية */
+#exportCardCanvas {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 600px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 2px solid #38bdf8;
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    color: #f8fafc;
+    font-family: 'Tajawal', Arial, sans-serif;
+    direction: rtl;
+}
+
+#exportCardCanvas .brand {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+#exportCardCanvas .brand-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #38bdf8;
+}
+
+#exportCardCanvas .brand-tag {
+    font-size: 13px;
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    padding: 4px 12px;
+    border-radius: 99px;
+}
+
+#exportCardCanvas .content-cmd {
+    font-family: Consolas, monospace;
+    font-size: 26px;
+    color: #38bdf8;
+    direction: ltr;
+    text-align: left;
+    background: #090d16;
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid #1e293b;
+    margin-bottom: 20px;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+#exportCardCanvas .content-desc {
+    font-size: 18px;
+    color: #cbd5e1;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+#exportCardCanvas .footer-tag {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #64748b;
+    border-top: 1px solid #334155;
+    padding-top: 15px;
+}
+
+.footer{ padding:30px; text-align:center; color:var(--muted); font-size: 14px;}
+
+@media(max-width:900px){
+    .layout{ grid-template-columns:1fr; }
+    .sidebar{ grid-template-columns:1fr 1fr; display:grid; }
+}
+
+@media(max-width:650px){
+    .toolbar{ position:relative; top:auto; }
+    .toolbar-top{ grid-template-columns:1fr; }
+    .actions{ display:grid; grid-template-columns:1fr 1fr; }
+    .grid{ grid-template-columns:1fr; }
+    .sidebar{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+<div class="header-inner">
+    <h1>مكتبة أوامر التوليد البصري</h1>
+    <p>اختر الأمر المناسب واعرف وظيفته، ثم انسخه أو أضفه إلى مولد البرومبت، أو احفظه كبطاقة صورة PNG أنيقة للمشاركة.</p>
+
+    <div class="stats">
+        <div class="stat">الأوامر: <strong id="totalCommands">0</strong></div>
+        <div class="stat">التصنيفات: <strong id="totalCategories">0</strong></div>
+        <div class="stat">المفضلة: <strong id="favoritesCount">0</strong></div>
+    </div>
+</div>
+</header>
+
+<main class="main">
+
+<section class="panel toolbar">
+<div class="toolbar-top">
+    <div class="search-wrap">
+        <span class="search-icon">🔎</span>
+        <input id="searchInput" class="search" placeholder="ابحث عن أمر أو وظيفته...">
+    </div>
+    <div class="actions">
+        <button class="btn btn-light" onclick="showFavorites()">⭐ المفضلة</button>
+        <button class="btn btn-light" onclick="exportTXT()">💾 حفظ TXT</button>
+        <button class="btn btn-light" onclick="exportJSON()">JSON</button>
+    </div>
+</div>
+<div class="categories" id="categories"></div>
+</section>
+
+<section class="panel builder">
+<div class="builder-head">
+    <h2>✨ مولد البرومبت (Prompt Builder)</h2>
+    <span class="count" id="builderCount">0 أوامر</span>
+</div>
+<textarea id="promptBuilder" placeholder="/productshot&#10;/studio&#10;/softbox&#10;/photorealistic&#10;/9:16"></textarea>
+<div class="builder-actions">
+    <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكل</button>
+    <button class="btn btn-blue" onclick="downloadBuilder()">💾 حفظ TXT</button>
+    <button class="btn btn-blue" style="background:#10b981;" onclick="exportBuilderPNG()">🖼️ حفظ كبطاقة PNG</button>
+    <button class="btn btn-light" onclick="builderToOneLine()">↔ سطر واحد</button>
+    <button class="btn btn-light" onclick="removeDuplicatesBuilder()">🧹 حذف التكرار</button>
+    <button class="btn btn-danger" onclick="clearBuilder()">🗑 مسح</button>
+</div>
+</section>
+
+<div class="layout">
+<section class="panel library">
+    <div class="section-head">
+        <h2 id="libraryTitle">جميع الأوامر</h2>
+        <div class="count">النتائج: <strong id="resultCount">0</strong></div>
+    </div>
+    <div class="grid" id="commandsGrid"></div>
+    <div class="empty" id="emptyState">لا توجد نتائج مطابقة لبحثك.</div>
+</section>
+
+<aside class="sidebar">
+    <section class="panel side-card">
+        <h3>⭐ المفضلة</h3>
+        <div class="side-list" id="favoriteList"></div>
+    </section>
+    <section class="panel side-card">
+        <h3>🕘 آخر الأوامر المستعملة</h3>
+        <div class="side-list" id="recentList"></div>
+    </section>
+</aside>
+</div>
+
+</main>
+
+<footer class="footer">
+مكتبة الأوامر البصرية الاحترافية © 2026
+</footer>
+
+<div class="toast" id="toast">تم النسخ بنجاح</div>
+
+<!-- عنصر مخفي لتوليد بطاقات PNG -->
+<div id="exportCardCanvas">
+    <div class="brand">
+        <span class="brand-title">🎨 Visual Prompt Library</span>
+        <span class="brand-tag" id="cardCategoryTag">تصنيف</span>
+    </div>
+    <div class="content-cmd" id="cardCommandText">/command</div>
+    <div class="content-desc" id="cardDescText">وصف الأمر وتفاصيله...</div>
+    <div class="footer-tag">
+        <span>مكتبة أوامر التوليد البصري</span>
+        <span>Generated Card</span>
+    </div>
+</div>
+
+<script>
+const library={
+"الهندسة والتقنية":[
+{c:"/explodedview",d:"يفصل أجزاء المنتج أو الجهاز عن بعضها ويعرضها بشكل هندسي يوضح طريقة التركيب."},
+{c:"/exploded_view",d:"نسخة أخرى من أمر العرض التفكيكي لإظهار المكونات منفصلة."},
+{c:"/explode_assembly",d:"يفكك مجموعة أو جهاز كامل إلى القطع التي يتكون منها."},
+{c:"/cutaway",d:"يزيل جزءًا من الهيكل الخارجي لإظهار المكونات الموجودة بداخله."},
+{c:"/cutawayview",d:"يعرض العنصر بمنظور مقطوع يكشف الجزء الداخلي."},
+{c:"/crosssection",d:"ينشئ مقطعًا عرضيًا يكشف الطبقات والمكونات الداخلية."},
+{c:"/xray",d:"يعرض الجسم بشكل شبيه بالأشعة السينية لإظهار الأجزاء الداخلية."},
+{c:"/xrayview",d:"يعطي منظور أشعة يكشف الهيكل الداخلي للعنصر."},
+{c:"/transparent",d:"يجعل الغلاف أو الهيكل الخارجي شفافًا."},
+{c:"/transparentview",d:"يعرض المكونات الداخلية من خلال غلاف شفاف."},
+{c:"/see_through",d:"يجعل العنصر شبه شفاف لرؤية ما بداخله."},
+{c:"/internalview",d:"يركز على الأجزاء الداخلية للمنتج أو الجهاز."},
+{c:"/internalcomponents",d:"يعرض المكونات الداخلية بشكل واضح ومنظم."},
+{c:"/componentview",d:"يعرض مكونات المنتج بشكل منفصل أو واضح."},
+{c:"/assemblyview",d:"يوضح كيفية تجميع القطع والمكونات."},
+{c:"/disassembly",d:"يعرض عملية تفكيك المنتج أو الجهاز."},
+{c:"/technicaldrawing",d:"يحول العنصر إلى رسم تقني هندسي منظم."},
+{c:"/technicalillustration",d:"ينشئ رسماً توضيحياً تقنياً مناسباً للشرح والهندسة."},
+{c:"/engineeringdrawing",d:"يعطي النتيجة شكل رسم هندسي احترافي."},
+{c:"/blueprint",d:"يحول العنصر إلى مخطط هندسي بأسلوب Blueprint."},
+{c:"/schematic",d:"ينشئ مخططًا مبسطًا يوضح العلاقات والمكونات."},
+{c:"/wireframe",d:"يعرض المجسم كبنية شبكية ثلاثية الأبعاد."},
+{c:"/wireframe_model",d:"ينشئ نموذجًا ثلاثي الأبعاد مكوّنًا من خطوط وشبكات."},
+{c:"/cad",d:"يعطي التصميم شكل نموذج CAD هندسي."},
+{c:"/isometric",d:"يعرض العنصر بمنظور هندسي متساوي القياس."},
+{c:"/orthographic",d:"يعرض العنصر بدون تشويه المنظور الهندسي."},
+{c:"/frontview",d:"يعرض العنصر من الأمام مباشرة."},
+{c:"/rearview",d:"يعرض العنصر من الخلف."},
+{c:"/sideview",d:"يعرض الجانب الجانبي للعنصر."},
+{c:"/topview",d:"يعرض العنصر من الأعلى مباشرة."},
+{c:"/bottomview",d:"يعرض العنصر من الأسفل."},
+{c:"/multiview",d:"يعرض العنصر من عدة زوايا في صورة واحدة."},
+{c:"/detailview",d:"يركز على جزء صغير لإظهار التفاصيل."},
+{c:"/macrodetail",d:"يعرض التفاصيل الدقيقة بتكبير شديد."},
+{c:"/anatomicalview",d:"يعرض البنية الداخلية بأسلوب تشريحي."},
+{c:"/layers",d:"يفصل طبقات العنصر لإظهار بنيته."},
+{c:"/layeredview",d:"يعرض المكونات أو الطبقات فوق بعضها بطريقة منظمة."},
+{c:"/partsdiagram",d:"ينشئ مخططًا يوضح جميع قطع المنتج."},
+{c:"/labeleddiagram",d:"ينشئ رسمًا توضيحيًا مع تسميات للأجزاء."},
+{c:"/instructionmanual",d:"يعطي النتيجة شكل رسومات دليل استخدام أو تركيب."},
+{c:"/patentdrawing",d:"يحوّل العنصر إلى أسلوب رسومات براءات الاختراع."},
+{c:"/productanatomy",d:"يوضح التركيب الداخلي والتشريح الكامل للمنتج."},
+{c:"/mechanicaldiagram",d:"ينشئ مخططًا ميكانيكيًا للمكونات والأجزاء."}
+],
+"تصوير المنتجات":[
+{c:"/productshot",d:"يحول المنتج إلى لقطة تصوير إعلانية احترافية."},
+{c:"/productphotography",d:"يعطي المنتج أسلوب تصوير تجاري احترافي."},
+{c:"/commercial",d:"يجعل الصورة مناسبة للإعلانات التجارية."},
+{c:"/commercialphotography",d:"يحاكي أسلوب التصوير التجاري عالي الجودة."},
+{c:"/catalog",d:"يعطي الصورة تنسيقًا مناسبًا لكتالوج المنتجات."},
+{c:"/catalogshot",d:"يصور المنتج بشكل واضح ونظيف مناسب للمتاجر."},
+{c:"/ecommerce",d:"ينشئ صورة منتج مناسبة للمتاجر الإلكترونية."},
+{c:"/ecommercephoto",d:"يعطي المنتج أسلوب تصوير تجارة إلكترونية."},
+{c:"/packshot",d:"تصوير منتج معزول وواضح بأسلوب الإعلانات."},
+{c:"/heroshot",d:"ينشئ لقطة رئيسية قوية تبرز المنتج."},
+{c:"/beautyshot",d:"يجعل المنتج يظهر بأفضل شكل جمالي ممكن."},
+{c:"/luxuryproduct",d:"يعطي المنتج مظهر إعلان فاخر."},
+{c:"/premiumproduct",d:"يجعل المنتج يبدو عالي القيمة والجودة."},
+{c:"/advertising",d:"ينشئ تكوينًا بصريًا مناسبًا للإعلانات."},
+{c:"/adcampaign",d:"يعطي الصورة مظهر حملة إعلانية."},
+{c:"/studio",d:"يضع المنتج في بيئة تصوير استوديو احترافية."},
+{c:"/clean",d:"يجعل الصورة نظيفة وبسيطة وخالية من التشتيت."},
+{c:"/minimal",d:"يستخدم تصميمًا بسيطًا بعناصر قليلة."},
+{c:"/isolated",d:"يعزل العنصر عن محيطه والخلفية."},
+{c:"/whitebackground",d:"يضع خلفية بيضاء نظيفة."},
+{c:"/blackbackground",d:"يضع خلفية سوداء داكنة."},
+{c:"/gradientbackground",d:"يضيف خلفية بتدرج لوني."},
+{c:"/seamlessbackground",d:"يستخدم خلفية استوديو بدون حدود أو فواصل ظاهرة."},
+{c:"/pedestal",d:"يضع المنتج على قاعدة عرض."},
+{c:"/displaystand",d:"يضيف حاملًا أو منصة لعرض المنتج."},
+{c:"/floatingproduct",d:"يجعل المنتج يبدو معلقًا في الهواء."},
+{c:"/reflection",d:"يضيف انعكاسًا للعنصر على السطح."},
+{c:"/productcloseup",d:"ينشئ لقطة قريبة تركز على تفاصيل المنتج."},
+{c:"/detailshot",d:"يركز على التفاصيل الدقيقة للمنتج."}
+],
+"الإضاءة":[
+{c:"/cinematiclighting",d:"يضيف إضاءة سينمائية درامية مشابهة للأفلام."},
+{c:"/studiolighting",d:"يستخدم إضاءة استوديو احترافية ومتوازنة."},
+{c:"/studio_lighting",d:"نسخة أخرى لأمر إضاءة الاستوديو."},
+{c:"/softlight",d:"يضيف ضوءًا ناعمًا يقلل الظلال القاسية."},
+{c:"/hardlight",d:"يستخدم إضاءة قوية تنتج ظلالًا واضحة."},
+{c:"/softbox",d:"يحاكي إضاءة سوفت بوكس ناعمة."},
+{c:"/rimlight",d:"يضيف إضاءة على حواف العنصر لفصله عن الخلفية."},
+{c:"/backlight",d:"يضع مصدر الضوء خلف العنصر."},
+{c:"/frontlight",d:"يضيء العنصر مباشرة من الأمام."},
+{c:"/sidelight",d:"يضيف الإضاءة من أحد جانبي العنصر."},
+{c:"/toplight",d:"يضع مصدر الضوء أعلى العنصر."},
+{c:"/underlighting",d:"يضيء العنصر من الأسفل."},
+{c:"/keylight",d:"يحدد مصدر الإضاءة الرئيسي في المشهد."},
+{c:"/filllight",d:"يضيف ضوءًا مساعدًا لتقليل الظلال."},
+{c:"/threepointlighting",d:"يستخدم نظام الإضاءة الثلاثية الاحترافي."},
+{c:"/volumetriclighting",d:"يظهر أشعة الضوء داخل الضباب أو الهواء."},
+{c:"/godrays",d:"يضيف أشعة ضوئية قوية تخترق المشهد."},
+{c:"/dramaticlighting",d:"يضيف إضاءة درامية بتباين قوي."},
+{c:"/dramaticshadows",d:"ينشئ ظلالًا قوية وعميقة."},
+{c:"/highkey",d:"يستخدم إضاءة مشرقة بظلال قليلة."},
+{c:"/lowkey",d:"يستخدم إضاءة داكنة ودرامية."},
+{c:"/naturallight",d:"يحاكي الإضاءة الطبيعية."},
+{c:"/windowlight",d:"يحاكي ضوءًا طبيعيًا داخلًا من النافذة."},
+{c:"/sunlight",d:"يضيف ضوء الشمس الطبيعي."},
+{c:"/dappledlight",d:"يضيف بقع ضوء وظلال مثل الضوء بين الأشجار."},
+{c:"/moodylighting",d:"يخلق جوًا عاطفيًا وداكنًا بالإضاءة."},
+{c:"/neonlighting",d:"يضيف إضاءة نيون ملونة."},
+{c:"/candlelight",d:"يحاكي ضوء الشموع الدافئ."},
+{c:"/firelight",d:"يحاكي ضوء النار البرتقالي المتحرك."},
+{c:"/moonlight",d:"يحاكي ضوء القمر الليلي."},
+{c:"/goldenhour",d:"يضيف إضاءة ذهبية دافئة مثل وقت الشروق أو الغروب."},
+{c:"/bluehour",d:"يستخدم أجواء الساعة الزرقاء قبل الشروق أو بعد الغروب."},
+{c:"/sunrise",d:"يحاكي إضاءة وألوان شروق الشمس."},
+{c:"/sunset",d:"يحاكي ألوان وإضاءة غروب الشمس."},
+{c:"/bioluminescent",d:"يضيف توهجًا حيويًا مضيئًا."},
+{c:"/caustics",d:"يضيف انعكاسات الضوء الناتجة عن الماء أو الزجاج."},
+{c:"/globalillumination",d:"يحاكي انعكاس وانتشار الضوء بشكل واقعي."}
+],
+"الكاميرا والتصوير":[
+{c:"/wideangle",d:"يحاكي عدسة واسعة تظهر مساحة أكبر."},
+{c:"/ultrawide",d:"يحاكي عدسة فائقة الاتساع."},
+{c:"/fisheye",d:"يستخدم تأثير عدسة عين السمكة."},
+{c:"/telephoto",d:"يحاكي عدسة بعيدة تقرب المشهد وتضغط الخلفية."},
+{c:"/macro",d:"ينشئ تصويرًا شديد القرب للتفاصيل."},
+{c:"/macro_photography",d:"يعطي الصورة أسلوب تصوير ماكرو احترافي."},
+{c:"/microscopic",d:"يعرض التفاصيل كما لو كانت تحت المجهر."},
+{c:"/closeup",d:"لقطة قريبة تركز على العنصر."},
+{c:"/extremecloseup",d:"لقطة قريبة جدًا لتفاصيل دقيقة."},
+{c:"/mediumshot",d:"لقطة متوسطة تظهر جزءًا رئيسيًا من العنصر أو الشخص."},
+{c:"/fullshot",d:"يعرض العنصر أو الشخص بالكامل."},
+{c:"/longshot",d:"لقطة بعيدة تظهر البيئة المحيطة."},
+{c:"/bokeh",d:"يضيف ضبابية جميلة ومضيئة في الخلفية."},
+{c:"/depthoffield",d:"يستخدم عمق مجال لعزل العناصر حسب المسافة."},
+{c:"/shallowdof",d:"يجعل الخلفية شديدة العزل والتركيز على عنصر واحد."},
+{c:"/deepfocus",d:"يجعل معظم أجزاء المشهد في تركيز واضح."},
+{c:"/tiltshift",d:"يحاكي عدسة Tilt Shift ويعطي أحيانًا مظهر المجسمات المصغرة."},
+{c:"/droneview",d:"يعطي زاوية تصوير جوية بطائرة مسيرة."},
+{c:"/aerialview",d:"يعرض المشهد من ارتفاع كبير."},
+{c:"/satelliteview",d:"يعرض المشهد من زاوية تشبه صور الأقمار الصناعية."},
+{c:"/eyelevel",d:"يجعل الكاميرا في مستوى العين."},
+{c:"/lowangle",d:"يصوّر العنصر من زاوية منخفضة ليبدو أكثر قوة."},
+{c:"/highangle",d:"يصوّر العنصر من زاوية مرتفعة."},
+{c:"/dutchangle",d:"يميل الكاميرا لإضافة إحساس درامي."},
+{c:"/pov",d:"يعرض المشهد من منظور الشخص نفسه."},
+{c:"/firstperson",d:"منظور الشخص الأول."},
+{c:"/overtheshoulder",d:"تصوير من خلف كتف شخص."},
+{c:"/35mm",d:"يحاكي عدسة 35 مم المناسبة للمشاهد السينمائية والشارع."},
+{c:"/50mm",d:"يحاكي عدسة 50 مم الطبيعية."},
+{c:"/85mm",d:"يحاكي عدسة 85 مم المناسبة للبورتريه والمنتجات."},
+{c:"/100mmmacro",d:"يحاكي عدسة ماكرو 100 مم للتفاصيل الدقيقة."},
+{c:"/200mm",d:"يحاكي عدسة تيليفوتو طويلة."},
+{c:"/anamorphic",d:"يعطي الصورة مظهر عدسات السينما الأنمورفية."},
+{c:"/cinemascope",d:"يعطي المشهد تكوينًا سينمائيًا عريضًا."},
+{c:"/lensflare",d:"يضيف وهجًا ضوئيًا ناتجًا عن العدسة."},
+{c:"/motionblur",d:"يضيف ضبابية حركة."},
+{c:"/longexposure",d:"يحاكي التعريض الطويل للضوء والحركة."},
+{c:"/highspeed",d:"يحاكي تصويرًا سريعًا جدًا لتجميد الحركة."},
+{c:"/freezeaction",d:"يجمد الحركة في لحظة واضحة."}
+],
+"السينمائي":[
+{c:"/cinematic",d:"يعطي الصورة مظهر لقطة فيلم سينمائي."},
+{c:"/filmstill",d:"يجعل الصورة كأنها إطار مأخوذ من فيلم."},
+{c:"/movieframe",d:"ينشئ لقطة تشبه مشهدًا سينمائيًا."},
+{c:"/blockbuster",d:"يعطي المشهد أسلوب الأفلام الضخمة."},
+{c:"/hollywood",d:"يحاكي الإضاءة والمعالجة المستخدمة في أفلام هوليوود."},
+{c:"/documentary",d:"يعطي الصورة طابع التصوير الوثائقي."},
+{c:"/editorial",d:"يحاكي أسلوب التصوير التحريري للمجلات."},
+{c:"/dramatic",d:"يزيد الطابع الدرامي للمشهد."},
+{c:"/moody",d:"يضيف جوًا عاطفيًا وداكنًا."},
+{c:"/epic",d:"يجعل المشهد أكثر ضخامة وهيبة."},
+{c:"/atmospheric",d:"يضيف جوًا بصريًا غنيًا بالضباب والضوء."},
+{c:"/filmgrain",d:"يضيف حبيبات مشابهة للأفلام القديمة."},
+{c:"/analogfilm",d:"يحاكي التصوير بالفيلم التناظري."},
+{c:"/vintagefilm",d:"يعطي الصورة مظهر فيلم قديم."},
+{c:"/35mmfilm",d:"يحاكي خامة وتصوير أفلام 35 مم."},
+{c:"/70mmfilm",d:"يحاكي جودة الأفلام السينمائية 70 مم."},
+{c:"/widescreen",d:"يجعل التكوين مناسبًا للشاشة العريضة."},
+{c:"/colorgrading",d:"يضيف معالجة ألوان سينمائية."},
+{c:"/tealandorange",d:"يستخدم تدرج ألوان تركوازي وبرتقالي الشائع في الأفلام."},
+{c:"/desaturated",d:"يقلل تشبع الألوان."},
+{c:"/highcontrast",d:"يزيد الفرق بين المناطق الفاتحة والداكنة."},
+{c:"/cinematiccomposition",d:"ينظم عناصر الصورة بأسلوب سينمائي."}
+],
+"الطقس والبيئة":[
+{c:"/rain",d:"يضيف أجواء وأمطارًا إلى المشهد."},
+{c:"/heavyrain",d:"يضيف أمطارًا غزيرة وقوية."},
+{c:"/drizzle",d:"يضيف مطرًا خفيفًا ورذاذًا."},
+{c:"/storm",d:"يضيف أجواء عاصفة."},
+{c:"/thunderstorm",d:"يضيف عاصفة رعدية."},
+{c:"/lightning",d:"يضيف البرق إلى السماء أو المشهد."},
+{c:"/snow",d:"يضيف تساقط الثلج."},
+{c:"/blizzard",d:"يضيف عاصفة ثلجية قوية."},
+{c:"/fog",d:"يضيف ضبابًا كثيفًا."},
+{c:"/mist",d:"يضيف ضبابًا خفيفًا ورقيقًا."},
+{c:"/haze",d:"يضيف غشاوة جوية بعيدة."},
+{c:"/dust",d:"يضيف جزيئات الغبار."},
+{c:"/duststorm",d:"يضيف عاصفة غبار."},
+{c:"/sandstorm",d:"يضيف عاصفة رملية."},
+{c:"/wind",d:"يعطي إحساسًا بالرياح وحركة العناصر."},
+{c:"/cloudy",d:"يجعل السماء مليئة بالغيوم."},
+{c:"/overcast",d:"يجعل الجو غائمًا بالكامل وإضاءته ناعمة."},
+{c:"/sunny",d:"يجعل الجو مشمسًا وواضحًا."},
+{c:"/night",d:"يحوّل المشهد إلى أجواء ليلية."},
+{c:"/day",d:"يجعل المشهد نهاريًا."},
+{c:"/dawn",d:"يحاكي وقت الفجر."},
+{c:"/dusk",d:"يحاكي وقت الغسق."},
+{c:"/wetground",d:"يجعل الأرض مبللة مع انعكاسات."},
+{c:"/wetstreets",d:"يجعل الشوارع مبللة."},
+{c:"/puddles",d:"يضيف برك ماء على الأرض."},
+{c:"/raindrops",d:"يضيف قطرات المطر على الأسطح أو العدسة."},
+{c:"/smoke",d:"يضيف دخانًا."},
+{c:"/steam",d:"يضيف بخارًا."},
+{c:"/fire",d:"يضيف النار واللهب."},
+{c:"/embers",d:"يضيف جمرًا وشررًا متوهجًا."}
+],
+"الأساليب الفنية":[
+{c:"/photorealistic",d:"يجعل الصورة أقرب إلى صورة فوتوغرافية حقيقية."},
+{c:"/hyperrealistic",d:"يزيد الواقعية والتفاصيل بشكل شديد."},
+{c:"/realistic",d:"يستخدم مظهرًا واقعيًا."},
+{c:"/semirealistic",d:"يمزج بين الواقعية والرسم الفني."},
+{c:"/illustration",d:"يحول النتيجة إلى رسم توضيحي."},
+{c:"/digitalart",d:"يعطي الصورة أسلوب فن رقمي."},
+{c:"/conceptart",d:"ينشئ أسلوب رسومات تصميم الأفكار."},
+{c:"/fantasyart",d:"يعطي الصورة طابع الفن الخيالي."},
+{c:"/surreal",d:"ينشئ مشهدًا سرياليًا غير واقعي."},
+{c:"/abstract",d:"يعطي الصورة أسلوبًا تجريديًا."},
+{c:"/minimalism",d:"يستخدم بساطة شديدة وعدد عناصر قليل."},
+{c:"/maximalism",d:"يستخدم تفاصيل وعناصر كثيرة وغنية."},
+{c:"/lowpoly",d:"يجعل العنصر مكوّنًا من مضلعات قليلة."},
+{c:"/highpoly",d:"يزيد عدد تفاصيل المجسم ثلاثي الأبعاد."},
+{c:"/voxel",d:"يعطي العناصر مظهر مكعبات ثلاثية الأبعاد."},
+{c:"/pixelart",d:"يحوّل المشهد إلى فن بكسل."},
+{c:"/lineart",d:"يحول العنصر إلى خطوط واضحة وبسيطة."},
+{c:"/pencilsketch",d:"يحاكي الرسم بقلم الرصاص."},
+{c:"/charcoaldrawing",d:"يحاكي الرسم بالفحم."},
+{c:"/inkdrawing",d:"يحاكي الرسم بالحبر."},
+{c:"/watercolor",d:"يحاكي الرسم بالألوان المائية."},
+{c:"/oilpainting",d:"يحاكي لوحة زيتية."},
+{c:"/acrylicpainting",d:"يحاكي الرسم بألوان الأكريليك."},
+{c:"/gouache",d:"يحاكي الرسم بألوان الغواش."},
+{c:"/pastel",d:"يحاكي الرسم بألوان الباستيل."},
+{c:"/vector",d:"يعطي الصورة مظهر رسوم متجهة نظيفة."},
+{c:"/flatdesign",d:"يستخدم أسلوب تصميم مسطح وبسيط."},
+{c:"/geometric",d:"يعتمد على الأشكال الهندسية."},
+{c:"/papercut",d:"يجعل التصميم يبدو كقصاصات ورق."},
+{c:"/papercraft",d:"يجعل المجسمات تبدو مصنوعة من الورق."},
+{c:"/collage",d:"يجمع عناصر مختلفة بأسلوب الكولاج."},
+{c:"/claystyle",d:"يجعل العناصر تبدو مصنوعة من الصلصال."},
+{c:"/diorama",d:"يجعل المشهد يبدو كمجسم مصغر."},
+{c:"/miniature",d:"يجعل العناصر تبدو كنماذج مصغرة."},
+{c:"/comic",d:"يحول الصورة إلى أسلوب قصص مصورة."},
+{c:"/graphicnovel",d:"يحاكي أسلوب الروايات المصورة."}
+],
+"العمارة والديكور":[
+{c:"/architectural",d:"يعطي الصورة أسلوب عرض معماري."},
+{c:"/architecture",d:"يركز على المباني والتصميم المعماري."},
+{c:"/interiordesign",d:"يعرض تصميمًا داخليًا احترافيًا."},
+{c:"/exteriordesign",d:"يركز على التصميم الخارجي للمبنى."},
+{c:"/architecturalvisualization",d:"ينشئ تصورًا معماريًا واقعيًا."},
+{c:"/archviz",d:"اختصار للتصور المعماري ثلاثي الأبعاد."},
+{c:"/floorplan",d:"ينشئ مخططًا علويًا لتوزيع الغرف."},
+{c:"/siteplan",d:"يعرض مخطط الموقع والمباني المحيطة."},
+{c:"/elevation",d:"يعرض واجهة المبنى هندسيًا."},
+{c:"/section",d:"يعرض مقطعًا هندسيًا داخل المبنى."},
+{c:"/isometricroom",d:"يعرض الغرفة بمنظور إيزومتري."},
+{c:"/cutawayroom",d:"يفتح جانب الغرفة لإظهار محتوياتها."},
+{c:"/dollhouse",d:"يعرض المنزل كأنه بيت دمى مفتوح."},
+{c:"/axonometric",d:"يعرض التصميم بمنظور محوري هندسي."},
+{c:"/3dfloorplan",d:"ينشئ مخطط طابق ثلاثي الأبعاد."},
+{c:"/interiorphotography",d:"يحاكي تصوير الديكور الداخلي الاحترافي."},
+{c:"/realestatephotography",d:"يعطي الصورة أسلوب تصوير العقارات."},
+{c:"/minimalinterior",d:"ديكور داخلي بسيط ونظيف."},
+{c:"/luxuryinterior",d:"ديكور داخلي فاخر."},
+{c:"/moderninterior",d:"تصميم داخلي حديث."},
+{c:"/classicinterior",d:"تصميم داخلي كلاسيكي."},
+{c:"/industrialinterior",d:"ديكور بطابع صناعي."},
+{c:"/scandinavian",d:"ديكور إسكندنافي بسيط ومشرق."},
+{c:"/brutalist",d:"أسلوب معماري خرساني جريء."},
+{c:"/futuristicarchitecture",d:"تصميم معماري مستقبلي."},
+{c:"/landscapearchitecture",d:"تصميم الحدائق والمساحات الخارجية."}
+],
+"الخامات والمواد":[
+{c:"/metallic",d:"يجعل السطح يبدو معدنيًا."},
+{c:"/metal",d:"يستخدم خامة معدنية."},
+{c:"/brushedmetal",d:"يعطي المعدن ملمسًا مصقولًا بخطوط دقيقة."},
+{c:"/polishedmetal",d:"يجعل المعدن لامعًا ومصقولًا."},
+{c:"/chrome",d:"يستخدم سطح كروم شديد الانعكاس."},
+{c:"/gold",d:"يضيف خامة ذهبية."},
+{c:"/silver",d:"يضيف خامة فضية."},
+{c:"/copper",d:"يضيف خامة نحاسية."},
+{c:"/brass",d:"يضيف خامة نحاس أصفر."},
+{c:"/carbonfiber",d:"يستخدم نسيج ألياف الكربون."},
+{c:"/glass",d:"يجعل المادة زجاجية."},
+{c:"/clearglass",d:"زجاج شفاف وواضح."},
+{c:"/frostedglass",d:"زجاج ضبابي غير شفاف بالكامل."},
+{c:"/crystal",d:"يجعل العنصر شبيهًا بالكريستال."},
+{c:"/glossy",d:"يجعل السطح لامعًا."},
+{c:"/matte",d:"يجعل السطح مطفيًا بدون لمعان."},
+{c:"/satin",d:"يعطي لمعانًا خفيفًا وناعمًا."},
+{c:"/velvet",d:"يضيف ملمس المخمل."},
+{c:"/silk",d:"يضيف ملمس الحرير."},
+{c:"/leather",d:"يضيف ملمس الجلد."},
+{c:"/wood",d:"يجعل السطح خشبيًا."},
+{c:"/marble",d:"يضيف خامة الرخام."},
+{c:"/granite",d:"يضيف خامة الجرانيت."},
+{c:"/concrete",d:"يضيف خامة الخرسانة."},
+{c:"/ceramic",d:"يضيف خامة السيراميك."},
+{c:"/porcelain",d:"يضيف خامة البورسلان."},
+{c:"/plastic",d:"يجعل المادة بلاستيكية."},
+{c:"/rubber",d:"يجعل المادة مطاطية."},
+{c:"/clay",d:"يجعل المادة شبيهة بالطين."},
+{c:"/paper",d:"يجعل العنصر يبدو مصنوعًا من الورق."},
+{c:"/fabric",d:"يضيف خامة القماش."},
+{c:"/holographic",d:"يضيف سطحًا هولوغرافيًا متغير الألوان."},
+{c:"/iridescent",d:"يضيف لمعانًا متغير اللون حسب الزاوية."},
+{c:"/translucent",d:"يجعل المادة تسمح بمرور جزء من الضوء."},
+{c:"/subsurfacescattering",d:"يحاكي مرور الضوء داخل مواد مثل الجلد والشمع."}
+],
+"الرندر والجودة":[
+{c:"/3d",d:"يحول المشهد إلى مظهر ثلاثي الأبعاد."},
+{c:"/3drender",d:"يعطي الصورة مظهر رندر ثلاثي الأبعاد."},
+{c:"/cgi",d:"يحاكي الرسومات المولدة بالحاسوب."},
+{c:"/octanerender",d:"يحاكي جودة رندر Octane."},
+{c:"/redshift",d:"يحاكي أسلوب رندر Redshift."},
+{c:"/unrealengine5",d:"يحاكي جودة ورسوم Unreal Engine 5."},
+{c:"/unrealengine",d:"يعطي الصورة طابع رسوم Unreal Engine."},
+{c:"/vray",d:"يحاكي جودة V-Ray الواقعية."},
+{c:"/blender",d:"يعطي المشهد طابع رندر Blender."},
+{c:"/cycles",d:"يحاكي محرك Cycles في Blender."},
+{c:"/corona",d:"يحاكي Corona Renderer."},
+{c:"/raytracing",d:"يستخدم مظهر انعكاسات وإضاءة بتتبع الأشعة."},
+{c:"/pathtracing",d:"يحاكي تتبع الضوء الواقعي المتقدم."},
+{c:"/pbr",d:"يستخدم مواد مبنية على خصائص فيزيائية."},
+{c:"/physicallybased",d:"يجعل المواد والإضاءة أكثر واقعية فيزيائيًا."},
+{c:"/realisticmaterials",d:"يطلب خامات واقعية جدًا."},
+{c:"/ultradetail",d:"يزيد التفاصيل بشكل شديد."},
+{c:"/8k",d:"يطلب دقة وتفاصيل عالية جدًا."},
+{c:"/8kresolution",d:"يطلب مظهر جودة 8K."},
+{c:"/4k",d:"يطلب جودة عالية شبيهة بدقة 4K."},
+{c:"/4kresolution",d:"يطلب مظهر دقة 4K."},
+{c:"/uhd",d:"يطلب جودة Ultra HD."},
+{c:"/hdr",d:"يزيد تفاصيل الإضاءة والظلال."},
+{c:"/hdr10",d:"يحاكي نطاقًا ديناميكيًا عاليًا."},
+{c:"/highquality",d:"يرفع الجودة العامة للصورة."},
+{c:"/ultraquality",d:"يطلب أعلى مستوى من الجودة."},
+{c:"/highdetail",d:"يزيد التفاصيل."},
+{c:"/ultradetailed",d:"يطلب تفاصيل دقيقة جدًا."},
+{c:"/finedetail",d:"يركز على التفاصيل الصغيرة."},
+{c:"/sharp",d:"يزيد وضوح وحدّة الصورة."},
+{c:"/tacksharp",d:"يطلب تركيزًا حادًا جدًا."},
+{c:"/professional",d:"يجعل النتيجة أقرب لعمل احترافي."},
+{c:"/premium",d:"يعطي الصورة مظهرًا فاخرًا وعالي الجودة."},
+{c:"/commercialquality",d:"يجعل النتيجة مناسبة للإعلانات التجارية."},
+{c:"/editorialquality",d:"يعطي جودة شبيهة بصور المجلات."},
+{c:"/cinematicquality",d:"يرفع جودة الطابع السينمائي."}
+],
+"تعديل الصور":[
+{c:"/enhance",d:"يحسن جودة الصورة العامة."},
+{c:"/upscale",d:"يرفع الدقة ويحسن التفاصيل."},
+{c:"/restore",d:"يرمم صورة قديمة أو متضررة."},
+{c:"/restoration",d:"يعيد ترميم وتحسين الصور القديمة."},
+{c:"/repair",d:"يصلح العيوب والتلف في الصورة."},
+{c:"/cleanup",d:"ينظف الصورة من العيوب والعناصر المزعجة."},
+{c:"/denoise",d:"يقلل التشويش والحبوب."},
+{c:"/deblur",d:"يقلل الضبابية ويحسن الوضوح."},
+{c:"/sharpen",d:"يزيد حدة التفاصيل."},
+{c:"/colorize",d:"يلون الصور القديمة بالأبيض والأسود."},
+{c:"/recolor",d:"يغير ألوان العنصر أو الصورة."},
+{c:"/relight",d:"يغير أو يحسن إضاءة الصورة."},
+{c:"/removebackground",d:"يزيل الخلفية."},
+{c:"/transparentbackground",d:"يجعل الخلفية شفافة."},
+{c:"/replacebackground",d:"يستبدل الخلفية بخلفية أخرى."},
+{c:"/removeobject",d:"يزيل عنصرًا غير مرغوب فيه."},
+{c:"/addobject",d:"يضيف عنصرًا جديدًا."},
+{c:"/replaceobject",d:"يستبدل عنصرًا بعنصر آخر."},
+{c:"/extend",d:"يوسع حدود الصورة."},
+{c:"/outpaint",d:"ينشئ أجزاء جديدة خارج حدود الصورة الأصلية."},
+{c:"/inpaint",d:"يعدل أو يعيد إنشاء جزء داخل الصورة."},
+{c:"/crop",d:"يقص الصورة."},
+{c:"/reframe",d:"يعيد ضبط إطار وتكوين الصورة."},
+{c:"/recompose",d:"يعيد ترتيب عناصر المشهد."},
+{c:"/retouch",d:"ينفذ رتوشًا وتحسينات دقيقة."},
+{c:"/beautify",d:"يحسن المظهر الجمالي للصورة."},
+{c:"/fixlighting",d:"يصلح مشاكل الإضاءة."},
+{c:"/fixcolors",d:"يصحح ألوان الصورة."},
+{c:"/fixperspective",d:"يصحح الميل والمنظور."},
+{c:"/removeglare",d:"يقلل أو يزيل الوهج."},
+{c:"/removereflection",d:"يقلل الانعكاسات غير المرغوبة."},
+{c:"/removepeople",d:"يزيل الأشخاص من المشهد."},
+{c:"/removeclutter",d:"يزيل العناصر المشتتة والفوضى."}
+],
+"السيارات":[
+{c:"/carphotography",d:"تصوير سيارات احترافي."},
+{c:"/automotive",d:"يعطي الصورة طابع تصوير السيارات."},
+{c:"/automotivephotography",d:"يحاكي جلسة تصوير سيارات تجارية."},
+{c:"/carstudio",d:"يضع السيارة في استوديو تصوير."},
+{c:"/carcommercial",d:"يجعل السيارة تبدو كإعلان رسمي."},
+{c:"/carconfigurator",d:"يعطي السيارة مظهر صفحات تكوين السيارات الرسمية."},
+{c:"/rolling_shot",d:"يحاكي تصوير السيارة أثناء القيادة."},
+{c:"/tracking_shot",d:"يحاكي كاميرا تتبع السيارة أثناء الحركة."},
+{c:"/panning",d:"يثبت السيارة بصريًا مع خلفية متحركة."},
+{c:"/lowanglecar",d:"يصوّر السيارة من زاوية منخفضة وقوية."},
+{c:"/detailing",d:"يركز على نظافة ولمعان وتفاصيل السيارة."},
+{c:"/showroom",d:"يضع السيارة في صالة عرض."},
+{c:"/garage",d:"يضع السيارة في بيئة مرآب."},
+{c:"/racetrack",d:"يضع السيارة على حلبة سباق."},
+{c:"/roadshot",d:"يضع السيارة في مشهد طريق احترافي."},
+{c:"/carinterior",d:"يركز على المقصورة الداخلية للسيارة."},
+{c:"/enginebay",d:"يركز على حجرة المحرك."},
+{c:"/chassis",d:"يعرض هيكل الشاصي."},
+{c:"/drivetrain",d:"يعرض منظومة نقل الحركة."},
+{c:"/suspension",d:"يعرض نظام التعليق."},
+{c:"/engineexplodedview",d:"يفكك المحرك إلى أجزائه بصريًا."},
+{c:"/carcutaway",d:"يفتح جزءًا من هيكل السيارة لإظهار الداخل."},
+{c:"/carxray",d:"يعرض السيارة بطريقة أشعة تكشف المكونات."},
+{c:"/carblueprint",d:"يحّول السيارة إلى رسم Blueprint هندسي."},
+{c:"/car360",d:"يعرض السيارة بأسلوب مناسب لرؤية 360 درجة."},
+{c:"/wheelcloseup",d:"يركز على الجنط والإطار بتفاصيل عالية."}
+],
+"البورتريه":[
+{c:"/portrait",d:"ينشئ صورة بورتريه احترافية."},
+{c:"/headshot",d:"يركز على الرأس والكتفين."},
+{c:"/fullbody",d:"يعرض الشخص كامل الجسم."},
+{c:"/halfbody",d:"يعرض النصف العلوي من الجسم."},
+{c:"/closeupportrait",d:"بورتريه قريب للوجه."},
+{c:"/environmentalportrait",d:"يصور الشخص مع البيئة المحيطة."},
+{c:"/editorialportrait",d:"بورتريه بأسلوب المجلات."},
+{c:"/fashionportrait",d:"بورتريه أزياء احترافي."},
+{c:"/studioportrait",d:"بورتريه داخل استوديو."},
+{c:"/candid",d:"لقطة طبيعية وغير متكلفة."},
+{c:"/profile",d:"يعرض الشخص من الجانب."},
+{c:"/sideprofile",d:"يركز على الملامح الجانبية."},
+{c:"/frontportrait",d:"بورتريه مباشر من الأمام."},
+{c:"/beautylighting",d:"إضاءة ناعمة مخصصة للجمال والبورتريه."},
+{c:"/rembrandtlighting",d:"إضاءة كلاسيكية بظل مثلث على جانب الوجه."},
+{c:"/butterflylighting",d:"إضاءة أمامية علوية تنتج ظلًا تحت الأنف."},
+{c:"/splitlighting",d:"يقسم الوجه بين الضوء والظل."},
+{c:"/rimlighting",d:"يضيء حواف الشخص من الخلف."},
+{c:"/catchlight",d:"يضيف انعكاسًا ضوئيًا جذابًا في العين."}
+],
+"الطعام":[
+{c:"/foodphotography",d:"ينشئ تصوير طعام احترافي."},
+{c:"/foodstyling",d:"يرتب الطعام بطريقة جذابة للإعلانات."},
+{c:"/restaurantphotography",d:"يحاكي صور الطعام الخاصة بالمطاعم."},
+{c:"/menuphoto",d:"ينشئ صورة مناسبة لقائمة الطعام."},
+{c:"/foodcommercial",d:"يجعل الطعام كإعلان تجاري."},
+{c:"/topdownfood",d:"يصوّر الطعام من الأعلى مباشرة."},
+{c:"/flatlayfood",d:"يرتب الطعام كتصوير Flat Lay."},
+{c:"/macrofood",d:"يركز على تفاصيل الطعام عن قرب."},
+{c:"/fresh",d:"يعطي الطعام مظهرًا طازجًا."},
+{c:"/crispy",d:"يبرز الملمس المقرمش."},
+{c:"/juicy",d:"يبرز العصارة والرطوبة في الطعام."},
+{c:"/glossyfood",d:"يضيف لمعانًا جذابًا للطعام."},
+{c:"/darkfoodphotography",d:"تصوير طعام بخلفية وإضاءة داكنة."},
+{c:"/brightfoodphotography",d:"تصوير طعام مشرق ونظيف."}
+],
+"المستقبلي والخيال العلمي":[
+{c:"/scifi",d:"يعطي المشهد طابع خيال علمي."},
+{c:"/futuristic",d:"يضيف تصاميم وعناصر مستقبلية."},
+{c:"/cyberpunk",d:"أسلوب مستقبلي داكن مع إضاءة نيون."},
+{c:"/solarpunk",d:"مستقبل متقدم ممتزج بالطبيعة والطاقة النظيفة."},
+{c:"/steampunk",d:"أسلوب خيالي يجمع الآلات القديمة والبخار."},
+{c:"/neon",d:"يضيف ألوان وإضاءة نيون."},
+{c:"/hologram",d:"يضيف عناصر هولوغرام مضيئة."},
+{c:"/holographic",d:"يضيف تأثير ألوان هولوغرافي."},
+{c:"/dystopian",d:"ينشئ عالمًا مستقبليًا قاتمًا."},
+{c:"/utopian",d:"ينشئ عالمًا مستقبليًا مثاليًا."},
+{c:"/spaceship",d:"يضيف أو يركز على مركبات فضائية."},
+{c:"/space",d:"يضع المشهد في الفضاء."},
+{c:"/alienworld",d:"ينشئ كوكبًا أو عالمًا فضائيًا."},
+{c:"/mecha",d:"يستخدم روبوتات وآلات ضخمة."},
+{c:"/robotic",d:"يعطي العنصر طابعًا آليًا وروبوتيًا."},
+{c:"/hightech",d:"يضيف تكنولوجيا متقدمة."},
+{c:"/futuristicinterface",d:"يضيف واجهات رقمية مستقبلية."}
+],
+"الخلفيات":[
+{c:"/graybackground",d:"يضع خلفية رمادية."},
+{c:"/studiobackground",d:"يستخدم خلفية استوديو احترافية."},
+{c:"/minimalbackground",d:"يستخدم خلفية بسيطة."},
+{c:"/luxurybackground",d:"يضع خلفية فاخرة."},
+{c:"/darkbackground",d:"يستخدم خلفية داكنة."},
+{c:"/pastelbackground",d:"يستخدم ألوان باستيل ناعمة في الخلفية."},
+{c:"/abstractbackground",d:"يضع خلفية تجريدية."},
+{c:"/naturebackground",d:"يستخدم خلفية طبيعية."},
+{c:"/bokehbackground",d:"يضع خلفية ضبابية مع بوكيه."},
+{c:"/texturedbackground",d:"يستخدم خلفية ذات ملمس واضح."}
+],
+"المؤثرات":[
+{c:"/glow",d:"يضيف توهجًا حول العنصر."},
+{c:"/bloom",d:"يضيف توهجًا ناعمًا حول المناطق المضيئة."},
+{c:"/lightleaks",d:"يضيف تسربات ضوء مشابهة للأفلام."},
+{c:"/sparks",d:"يضيف شررًا متطايرًا."},
+{c:"/particles",d:"يضيف جزيئات معلقة في الهواء."},
+{c:"/dustparticles",d:"يضيف جزيئات غبار مضيئة."},
+{c:"/splash",d:"يضيف تناثر سوائل."},
+{c:"/watersplash",d:"يضيف تناثر ماء."},
+{c:"/freeze",d:"يضيف تأثير التجمد أو الثلج."},
+{c:"/frost",d:"يضيف صقيعًا على الأسطح."},
+{c:"/electricity",d:"يضيف مؤثرات كهربائية."},
+{c:"/speedlines",d:"يضيف خطوط حركة وسرعة."},
+{c:"/refraction",d:"يحاكي انكسار الضوء."},
+{c:"/prism",d:"يضيف تشتت ألوان يشبه المنشور."},
+{c:"/chromaticaberration",d:"يضيف انحرافًا لونيًا على الحواف."}
+],
+"المخططات والعرض":[
+{c:"/flowchart",d:"ينشئ مخطط تدفق للخطوات."},
+{c:"/venndiagram",d:"ينشئ مخطط دوائر للمقارنة بين مجموعات."},
+{c:"/ganttchart",d:"ينشئ مخططًا زمنيًا للمشروعات."},
+{c:"/mindmap",d:"ينشئ خريطة ذهنية."},
+{c:"/infographic",d:"ينشئ إنفوجرافيك بصري."},
+{c:"/timeline",d:"ينشئ خطًا زمنيًا للأحداث."},
+{c:"/processdiagram",d:"يوضح مراحل عملية معينة."},
+{c:"/networkdiagram",d:"ينشئ مخطط شبكة وعلاقات."},
+{c:"/orgchart",d:"ينشئ هيكلًا تنظيميًا."},
+{c:"/treechart",d:"ينشئ مخططًا شجريًا."},
+{c:"/hierarchy",d:"يعرض العناصر حسب التسلسل الهرمي."},
+{c:"/comparisonchart",d:"ينشئ مخطط مقارنة."},
+{c:"/matrix",d:"ينشئ مصفوفة لتنظيم البيانات."},
+{c:"/dashboard",d:"ينشئ واجهة لوحة معلومات."},
+{c:"/dataflow",d:"يعرض مسار تدفق البيانات."},
+{c:"/systemdiagram",d:"يوضح مكونات نظام وعلاقاتها."},
+{c:"/architecturediagram",d:"ينشئ مخطط بنية تقنية أو نظام."},
+{c:"/conceptmap",d:"يعرض العلاقات بين المفاهيم."},
+{c:"/roadmap",d:"ينشئ خارطة طريق للمراحل."},
+{c:"/storyboard",d:"ينشئ سلسلة مشاهد لتخطيط قصة أو فيديو."},
+{c:"/moodboard",d:"يجمع صورًا وألوانًا ومواد تحدد أسلوب المشروع."},
+{c:"/userflow",d:"يوضح رحلة المستخدم بين الشاشات والخطوات."},
+{c:"/flatlay",d:"يرتب العناصر مسطحة ويصورها من الأعلى."},
+{c:"/knolling",d:"يرتب العناصر بزوايا متوازية ومسافات منظمة."},
+{c:"/gridlayout",d:"يرتب العناصر ضمن شبكة."},
+{c:"/organized",d:"يرتب المشهد بشكل منظم."},
+{c:"/cataloglayout",d:"يرتب العناصر بأسلوب كتالوج."},
+{c:"/showcase",d:"يعرض العنصر بطريقة استعراضية."},
+{c:"/collection",d:"يعرض مجموعة عناصر معًا."},
+{c:"/specsheet",d:"ينشئ ورقة مواصفات للمنتج."},
+{c:"/comparison",d:"يعرض مقارنة بين عنصرين أو أكثر."},
+{c:"/beforeafter",d:"يعرض النتيجة قبل وبعد."}
+],
+"نسب الأبعاد":[
+{c:"/1:1",d:"نسبة مربعة مناسبة لمنشورات السوشيال."},
+{c:"/4:5",d:"نسبة عمودية مناسبة لمنشورات إنستغرام."},
+{c:"/3:4",d:"نسبة عمودية تقليدية."},
+{c:"/2:3",d:"نسبة مناسبة للصور الفوتوغرافية العمودية."},
+{c:"/9:16",d:"نسبة عمودية مناسبة للريلز والتيك توك والستوري."},
+{c:"/16:9",d:"نسبة أفقية مناسبة للفيديو والشاشات."},
+{c:"/21:9",d:"نسبة سينمائية شديدة الاتساع."},
+{c:"/3:2",d:"نسبة تصوير فوتوغرافي شائعة."},
+{c:"/4:3",d:"نسبة أفقية تقليدية."}
+]
+};
+
+let category="الكل";
+let favOnly=false;
+let favorites=JSON.parse(localStorage.getItem("promptFav")||"[]");
+let recent=JSON.parse(localStorage.getItem("promptRecent")||"[]");
+
+const builder=document.getElementById("promptBuilder");
+builder.value=localStorage.getItem("promptBuilder")||"";
+
+function allItems(){
+    let arr=[];
+    Object.entries(library).forEach(([cat,items])=>{
+        items.forEach(item=>{
+            arr.push({...item, category:cat});
+        });
+    });
+    return arr;
+}
+
+function renderCategories(){
+    const el=document.getElementById("categories");
+    el.innerHTML="";
+    ["الكل",...Object.keys(library)].forEach(cat=>{
+        const b=document.createElement("button");
+        b.className="cat-btn";
+        if(cat===category && !favOnly) b.classList.add("active");
+        b.textContent=cat;
+        b.onclick=()=>{
+            category=cat;
+            favOnly=false;
+            renderCategories();
+            renderCommands();
+        };
+        el.appendChild(b);
+    });
+}
+
+function renderCommands(){
+    const query=document.getElementById("searchInput").value.trim().toLowerCase();
+    let items=allItems().filter(item=>{
+        const matchCategory=category==="الكل"||item.category===category;
+        const matchSearch=!query||item.c.toLowerCase().includes(query)||item.d.toLowerCase().includes(query)||item.category.toLowerCase().includes(query);
+        const matchFav=!favOnly||favorites.includes(item.c);
+        return matchCategory && matchSearch && matchFav;
+    });
+
+    document.getElementById("resultCount").textContent=items.length;
+    document.getElementById("libraryTitle").textContent=favOnly?"⭐ الأوامر المفضلة":category==="الكل"?"جميع الأوامر":category;
+
+    const grid=document.getElementById("commandsGrid");
+    grid.innerHTML="";
+    document.getElementById("emptyState").style.display=items.length?"none":"block";
+
+    items.forEach(item=>{
+        const card=document.createElement("div");
+        card.className="command-card";
+        const activeFav=favorites.includes(item.c);
+
+        card.innerHTML=`
+            <div>
+                <div class="command-top">
+                    <div class="command">${escapeHTML(item.c)}</div>
+                    <button class="favorite-btn ${activeFav?'active':''}">${activeFav?"★":"☆"}</button>
+                </div>
+                <div class="description">${escapeHTML(item.d)}</div>
+            </div>
+            <div>
+                <span class="badge">${escapeHTML(item.category)}</span>
+                <div class="card-actions">
+                    <button class="small-btn copy">📋 نسخ</button>
+                    <button class="small-btn add">＋ إضافة</button>
+                    <button class="small-btn png-btn card-actions-full">🖼️ حفظ كبطاقة PNG</button>
+                </div>
+            </div>
+        `;
+
+        card.querySelector(".copy").onclick=()=>copyCommand(item.c);
+        card.querySelector(".add").onclick=()=>addBuilder(item.c);
+        card.querySelector(".favorite-btn").onclick=()=>toggleFavorite(item.c);
+        card.querySelector(".png-btn").onclick=()=>generateCardPNG(item.c, item.d, item.category);
+
+        grid.appendChild(card);
+    });
+}
+
+async function copyText(text){
+    try{
+        await navigator.clipboard.writeText(text);
+    }catch{
+        const t=document.createElement("textarea");
+        t.value=text;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand("copy");
+        t.remove();
+    }
+    toast("تم النسخ بنجاح ✓");
+}
+
+function copyCommand(c){
+    copyText(c);
+    recent=[c,...recent.filter(x=>x!==c)].slice(0,10);
+    saveRecent();
+    renderRecent();
+}
+
+function addBuilder(c){
+    let lines=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+    if(!lines.includes(c)) lines.push(c);
+    builder.value=lines.join("\n");
+    saveBuilder();
+    toast("تمت إضافة الأمر");
+}
+
+function toggleFavorite(c){
+    if(favorites.includes(c)){
+        favorites=favorites.filter(x=>x!==c);
+    }else{
+        favorites.push(c);
+    }
+    localStorage.setItem("promptFav",JSON.stringify(favorites));
+    renderCommands();
+    renderFavorites();
+    updateStats();
+}
+
+function showFavorites(){
+    favOnly=true;
+    renderCategories();
+    renderCommands();
+}
+
+function renderFavorites(){
+    const el=document.getElementById("favoriteList");
+    el.innerHTML="";
+    if(!favorites.length){
+        el.innerHTML='<div class="count">لا توجد عناصر في المفضلة</div>';
+        return;
+    }
+    favorites.slice(0,15).forEach(c=>{
+        const row=document.createElement("div");
+        row.className="side-item";
+        row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">📋</button>`;
+        row.querySelector("button").onclick=()=>copyCommand(c);
+        el.appendChild(row);
+    });
+}
+
+function renderRecent(){
+    const el=document.getElementById("recentList");
+    el.innerHTML="";
+    if(!recent.length){
+        el.innerHTML='<div class="count">لا يوجد سجل استخدام</div>';
+        return;
+    }
+    recent.forEach(c=>{
+        const row=document.createElement("div");
+        row.className="side-item";
+        row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">＋</button>`;
+        row.querySelector("button").onclick=()=>addBuilder(c);
+        el.appendChild(row);
+    });
+}
+
+function saveRecent(){ localStorage.setItem("promptRecent",JSON.stringify(recent)); }
+function saveBuilder(){ localStorage.setItem("promptBuilder",builder.value); updateBuilderCount(); }
+
+builder.addEventListener("input",saveBuilder);
+
+function updateBuilderCount(){
+    const count=builder.value.split(/\s+/).filter(x=>x.startsWith("/")).length;
+    document.getElementById("builderCount").textContent=count+" أوامر";
+}
+
+function copyBuilder(){
+    if(!builder.value.trim()){ toast("لا توجد أوامر للنسخ"); return; }
+    copyText(builder.value.trim());
+}
+
+function clearBuilder(){
+    if(!builder.value.trim()) return;
+    if(!confirm("هل أنت تأكد من مسح كافة الأوامر؟")) return;
+    builder.value="";
+    saveBuilder();
+}
+
+function removeDuplicatesBuilder(){
+    let commands=builder.value.split(/\s+/).map(x=>x.trim()).filter(Boolean);
+    commands=[...new Set(commands)];
+    builder.value=commands.join("\n");
+    saveBuilder();
+    toast("تم حذف التكرار");
+}
+
+function builderToOneLine(){
+    builder.value=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean).join(" ");
+    saveBuilder();
+}
+
+function downloadBuilder(){
+    const text=builder.value.trim();
+    if(!text){ toast("لا توجد أوامر للحفظ"); return; }
+    downloadFile(text,"my-prompt.txt","text/plain;charset=utf-8");
+}
+
+// دالة تصدير كرت مفرد PNG
+function generateCardPNG(commandText, descText, catText){
+    document.getElementById("cardCommandText").textContent = commandText;
+    document.getElementById("cardDescText").textContent = descText;
+    document.getElementById("cardCategoryTag").textContent = catText;
+
+    const cardElement = document.getElementById("exportCardCanvas");
+    
+    toast("جاري التوليد والحفظ...");
+    
+    html2canvas(cardElement, {
+        backgroundColor: null,
+        scale: 2
+    }).then(canvas => {
+        const image = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = image;
+        a.download = `${commandText.replace('/', '')}-card.png`;
+        a.click();
+        toast("تم حفظ بطاقة PNG 🖼️");
+    });
+}
+
+// دالة تصدير البرومبت المجمع بالكامل كبطاقة PNG
+function exportBuilderPNG(){
+    const text = builder.value.trim();
+    if(!text){ toast("لا توجد أوامر مجمعة!"); return; }
+
+    generateCardPNG(text, "مجموعة الأوامر البصرية التي تم إنشاؤها عبر مولد البرومبت.", "مولد البرومبت");
+}
+
+function exportTXT(){
+    let txt="مكتبة أوامر التوليد البصري\n\n";
+    Object.entries(library).forEach(([cat,items])=>{
+        txt+="\n============================\n"+cat+"\n============================\n\n";
+        items.forEach(item=>{ txt+=item.c+"\nالوظيفة: "+item.d+"\n\n"; });
+    });
+    downloadFile(txt,"visual-prompts-library.txt","text/plain;charset=utf-8");
+}
+
+function exportJSON(){
+    const data={ library, favorites, builder:builder.value };
+    downloadFile(JSON.stringify(data,null,2),"visual-prompts-library.json","application/json");
+}
+
+function downloadFile(content,name,type){
+    const blob=new Blob([content],{type});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download=name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast("تم حفظ الملف");
+}
+
+function updateStats(){
+    const items=allItems();
+    document.getElementById("totalCommands").textContent=new Set(items.map(x=>x.c)).size;
+    document.getElementById("totalCategories").textContent=Object.keys(library).length;
+    document.getElementById("favoritesCount").textContent=favorites.length;
+}
+
+function toast(msg){
+    const t=document.getElementById("toast");
+    t.textContent=msg;
+    t.classList.add("show");
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>t.classList.remove("show"),2000);
+}
+
+function escapeHTML(str){
+    return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+
+document.getElementById("searchInput").addEventListener("input",renderCommands);
+
+renderCategories();
+renderCommands();
+renderFavorites();
+renderRecent();
+updateStats();
+updateBuilderCount();
+</script>
+
+</body>
+</html>
 
