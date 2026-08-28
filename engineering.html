@@ -1,1 +1,1148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مكتبة الأوامر البصرية | تصميم محسّن</title>
+  <!-- html2canvas for png export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Google Font for Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0b1120;
+      --surface: #131c2c;
+      --surface-2: #1a2638;
+      --surface-3: #222f42;
+      --border: #2b3b52;
+      --primary: #38bdf8;
+      --accent: #818cf8;
+      --accent2: #c084fc;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --success: #34d399;
+      --danger: #f87171;
+      --shadow: 0 20px 35px -15px rgba(0,0,0,0.6);
+      --glow: 0 0 25px rgba(56,189,248,0.2);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
 
+    *{box-sizing:border-box; margin:0; padding:0;}
+    html {scroll-behavior: smooth;}
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    button, input, textarea { font: inherit; }
+    button{cursor:pointer; transition: all 0.2s ease; border:none;}
+
+    /* شريط تمرير مخصص */
+    ::-webkit-scrollbar{ width: 8px; height: 6px; }
+    ::-webkit-scrollbar-track{ background: var(--surface); }
+    ::-webkit-scrollbar-thumb{ background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover{ background: var(--primary); }
+
+    .header{
+      background: radial-gradient(circle at 20% 10%, rgba(129,140,248,0.2), transparent 50%),
+                  radial-gradient(circle at 90% 20%, rgba(56,189,248,0.15), transparent 40%),
+                  var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 20px 55px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .header-inner{ max-width: 1300px; margin: auto; }
+    .header h1{
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .header p{
+      color: var(--muted);
+      max-width: 650px;
+      margin: 0 auto 28px;
+      font-size: 1.1rem;
+    }
+    .stats{
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .stat{
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .stat strong{ color: var(--primary); font-size: 1.2rem; }
+
+    .main{
+      max-width: 1400px;
+      margin: -30px auto 50px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 3;
+    }
+    .panel{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .toolbar{
+      padding: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 50;
+      background: rgba(19,28,44,0.95);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 25px -10px rgba(0,0,0,0.7);
+    }
+    .toolbar-top{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .search-wrap{
+      flex: 1 1 240px;
+      position: relative;
+    }
+    .search-icon{
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search{
+      width: 100%;
+      height: 52px;
+      padding: 0 48px 0 18px;
+      border-radius: 60px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    .search:focus{ border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56,189,248,0.2); }
+    .actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn{
+      padding: 10px 18px;
+      border-radius: 60px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+    .btn-primary{ background: var(--primary); color: #0b1120; }
+    .btn-primary:hover{ background: #7dd3fc; transform: translateY(-2px); }
+    .btn-blue{ background: var(--accent); color: white; }
+    .btn-blue:hover{ background: #667eea; transform: translateY(-2px); }
+    .btn-light{ background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border); }
+    .btn-light:hover{ background: rgba(255,255,255,0.12); }
+    .btn-danger{ background: rgba(248,113,113,0.2); color: #fca5a5; border: 1px solid rgba(248,113,113,0.4); }
+    .btn-danger:hover{ background: rgba(248,113,113,0.35); }
+
+    .categories{
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 0;
+      scrollbar-width: thin;
+    }
+    .cat-btn{
+      background: var(--bg);
+      color: var(--muted);
+      padding: 8px 20px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+    .cat-btn.active, .cat-btn:hover{
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 6px 15px rgba(129,140,248,0.3);
+    }
+
+    .builder{
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .builder-head{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .builder-head h2{ font-size: 1.4rem; color: var(--primary); font-weight: 700; }
+    .count{ color: var(--muted); font-size: 0.9rem; }
+    .builder textarea{
+      width: 100%;
+      min-height: 130px;
+      background: #0e1523;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      color: #7dd3fc;
+      padding: 18px;
+      direction: ltr;
+      text-align: left;
+      font-family: 'Consolas','Courier New',monospace;
+      font-size: 1rem;
+      resize: vertical;
+      outline: none;
+      transition: 0.2s;
+      line-height: 1.8;
+    }
+    .builder textarea:focus{ border-color: var(--accent); box-shadow: 0 0 0 3px rgba(129,140,248,0.2); }
+    .builder-actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    .layout{
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 310px;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .library{ padding: 20px; }
+    .section-head{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .section-head h2{ font-size: 1.6rem; font-weight: 700; }
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 16px;
+    }
+    .command-card{
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .command-card:hover{
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      background: var(--surface-3);
+    }
+    .command-top{ display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .command{
+      direction: ltr;
+      text-align: left;
+      font-family: 'Consolas', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary);
+      word-break: break-word;
+      background: #0e1523;
+      padding: 6px 12px;
+      border-radius: 12px;
+      flex: 1;
+    }
+    .favorite-btn{
+      background: transparent;
+      font-size: 1.7rem;
+      color: var(--muted);
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .favorite-btn.active{ color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.5); }
+    .description{
+      color: var(--muted);
+      font-size: 0.9rem;
+      flex: 1;
+    }
+    .badge{
+      background: rgba(129,140,248,0.15);
+      color: #a5b4fc;
+      padding: 3px 12px;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      width: fit-content;
+      border: 1px solid rgba(129,140,248,0.3);
+    }
+    .card-actions{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .card-actions-full{ grid-column: span 2; }
+    .small-btn{
+      padding: 10px 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-weight: 600;
+    }
+    .small-btn:hover{ background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .small-btn.add{ background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.3); color: var(--primary); }
+    .small-btn.png-btn{ background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); color: var(--success); }
+
+    .sidebar{ display: flex; flex-direction: column; gap: 20px; }
+    .side-card{ padding: 18px; }
+    .side-card h3{ font-size: 1.2rem; margin-bottom: 15px; color: var(--accent); }
+    .side-list{ display: flex; flex-direction: column; gap: 8px; }
+    .side-item{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .side-item code{
+      direction: ltr;
+      font-size: 0.85rem;
+      color: var(--primary);
+      word-break: break-all;
+      font-family: 'Consolas', monospace;
+    }
+    .icon-btn{
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .icon-btn:hover{ background: var(--accent); transform: scale(1.05); }
+    .empty{
+      display: none;
+      text-align: center;
+      color: var(--muted);
+      padding: 60px 10px;
+      font-size: 1.1rem;
+    }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 30px;
+      transform: translate(-50%, 30px);
+      opacity: 0;
+      background: var(--accent);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 60px;
+      pointer-events: none;
+      transition: 0.35s cubic-bezier(0.18,0.89,0.32,1.28);
+      z-index: 9999;
+      font-weight: 700;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    }
+    .toast.show{ opacity: 1; transform: translate(-50%,0); }
+
+    #exportCardCanvas {
+      position: absolute;
+      left: -9999px;
+      top: -9999px;
+      width: 600px;
+      background: linear-gradient(135deg, #0e1523, #1a2638);
+      border: 2px solid var(--primary);
+      border-radius: 24px;
+      padding: 30px;
+      color: white;
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+    }
+    #exportCardCanvas .brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    #exportCardCanvas .brand-title{ font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    #exportCardCanvas .brand-tag{ background: rgba(129,140,248,0.2); color: #c4b5fd; padding: 4px 14px; border-radius: 30px; font-size: 0.8rem; }
+    #exportCardCanvas .content-cmd{
+      font-family: 'Consolas', monospace;
+      font-size: 1.8rem;
+      color: #7dd3fc;
+      direction: ltr;
+      text-align: left;
+      background: #0b1120;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    #exportCardCanvas .content-desc{ font-size: 1.1rem; color: #e2e8f0; line-height: 1.8; margin-bottom: 25px; }
+    #exportCardCanvas .footer-tag{
+      display: flex;
+      justify-content: space-between;
+      color: #64748b;
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      padding-top: 15px;
+    }
+    footer{ padding: 30px; text-align: center; color: var(--muted); border-top: 1px solid var(--border); margin-top: 20px; }
+
+    @media(max-width: 900px){
+      .layout{ grid-template-columns: 1fr; }
+      .sidebar{ grid-template-columns: 1fr 1fr; display: grid; }
+    }
+    @media(max-width: 650px){
+      .toolbar{ position: relative; top: auto; }
+      .toolbar-top{ flex-direction: column; }
+      .actions{ display: grid; grid-template-columns: 1fr 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      .sidebar{ grid-template-columns: 1fr; }
+      .header h1{ font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <h1>✨ مكتبة الأوامر البصرية الاحترافية</h1>
+    <p>اختر الأمر المناسب، انسخه أو أضفه إلى المولد، واحفظه كبطاقة PNG أنيقة للمشاركة.</p>
+    <div class="stats">
+      <div class="stat">الأوامر: <strong id="totalCommands">0</strong></div>
+      <div class="stat">التصنيفات: <strong id="totalCategories">0</strong></div>
+      <div class="stat">المفضلة: <strong id="favoritesCount">0</strong></div>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <!-- شريط الأدوات -->
+  <section class="panel toolbar">
+    <div class="toolbar-top">
+      <div class="search-wrap">
+        <span class="search-icon">🔎</span>
+        <input id="searchInput" class="search" placeholder="ابحث عن أمر أو وظيفته...">
+      </div>
+      <div class="actions">
+        <button class="btn btn-light" onclick="showFavorites()">⭐ المفضلة</button>
+        <button class="btn btn-light" onclick="exportTXT()">💾 TXT</button>
+        <button class="btn btn-light" onclick="exportJSON()">JSON</button>
+      </div>
+    </div>
+    <div class="categories" id="categories"></div>
+  </section>
+
+  <!-- مولد البرومبت -->
+  <section class="panel builder">
+    <div class="builder-head">
+      <h2>🧩 مولد البرومبت</h2>
+      <span class="count" id="builderCount">0 أوامر</span>
+    </div>
+    <textarea id="promptBuilder" placeholder="/productshot&#10;/studio&#10;/softbox&#10;/photorealistic"></textarea>
+    <div class="builder-actions">
+      <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكل</button>
+      <button class="btn btn-blue" onclick="downloadBuilder()">💾 حفظ TXT</button>
+      <button class="btn btn-blue" style="background:#10b981;" onclick="exportBuilderPNG()">🖼️ بطاقة PNG</button>
+      <button class="btn btn-light" onclick="builderToOneLine()">↔ سطر واحد</button>
+      <button class="btn btn-light" onclick="removeDuplicatesBuilder()">🧹 حذف التكرار</button>
+      <button class="btn btn-danger" onclick="clearBuilder()">🗑 مسح</button>
+    </div>
+  </section>
+
+  <!-- المحتوى الرئيسي -->
+  <div class="layout">
+    <!-- المكتبة -->
+    <section class="panel library">
+      <div class="section-head">
+        <h2 id="libraryTitle">جميع الأوامر</h2>
+        <div class="count">النتائج: <strong id="resultCount">0</strong></div>
+      </div>
+      <div class="grid" id="commandsGrid"></div>
+      <div class="empty" id="emptyState">لا توجد نتائج مطابقة.</div>
+    </section>
+
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar">
+      <section class="panel side-card">
+        <h3>⭐ المفضلة</h3>
+        <div class="side-list" id="favoriteList"></div>
+      </section>
+      <section class="panel side-card">
+        <h3>🕘 آخر المستعملة</h3>
+        <div class="side-list" id="recentList"></div>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<footer class="footer">مكتبة الأوامر البصرية الاحترافية © 2026 - تصميم مُحسّن</footer>
+
+<div class="toast" id="toast">تم النسخ بنجاح</div>
+
+<!-- عنصر تصدير مخفي -->
+<div id="exportCardCanvas">
+  <div class="brand">
+    <span class="brand-title">🎨 Visual Prompt Library</span>
+    <span class="brand-tag" id="cardCategoryTag">تصنيف</span>
+  </div>
+  <div class="content-cmd" id="cardCommandText">/command</div>
+  <div class="content-desc" id="cardDescText">وصف الأمر وتفاصيله...</div>
+  <div class="footer-tag">
+    <span>مكتبة الأوامر البصرية</span>
+    <span>Generated Card</span>
+  </div>
+</div>
+
+<script>
+  // قاعدة البيانات
+const library={
+  "الهندسة والتقنية":[
+{c:"/explodedview",d:"يفصل أجزاء المنتج أو الجهاز عن بعضها ويعرضها بشكل هندسي يوضح طريقة التركيب."},
+{c:"/exploded_view",d:"نسخة أخرى من العرض التفكيكي لإظهار المكونات منفصلة."},
+{c:"/explode_assembly",d:"يفكك جهازًا أو مجموعة ميكانيكية إلى القطع المكوّنة لها."},
+{c:"/disassembly",d:"يعرض المنتج أثناء التفكيك خطوة بخطوة."},
+{c:"/assemblyview",d:"يوضح كيفية تجميع الأجزاء والمكونات."},
+{c:"/assemblydiagram",d:"ينشئ مخططًا يوضح ترتيب تركيب الأجزاء."},
+{c:"/partsdiagram",d:"يعرض جميع قطع المنتج أو الجهاز في مخطط واحد."},
+{c:"/componentview",d:"يركز على مكونات الجهاز بشكل منفصل وواضح."},
+{c:"/internalcomponents",d:"يعرض المكونات الداخلية للجهاز أو المنتج."},
+{c:"/internalview",d:"يكشف الأجزاء الداخلية المخفية داخل الهيكل."},
+
+{c:"/cutaway",d:"يزيل جزءًا من الغلاف الخارجي لإظهار المكونات الداخلية."},
+{c:"/cutawayview",d:"يعرض العنصر بمنظور مقطوع يكشف ما بداخله."},
+{c:"/sectionview",d:"يعرض مقطعًا هندسيًا داخل العنصر."},
+{c:"/crosssection",d:"ينشئ مقطعًا عرضيًا يوضح الطبقات والمكونات الداخلية."},
+{c:"/longitudinalsection",d:"يعرض مقطعًا طوليًا داخل الجهاز أو الهيكل."},
+{c:"/transversesection",d:"يعرض مقطعًا عرضيًا عبر الجسم أو الجهاز."},
+{c:"/xray",d:"يعرض الجسم بأسلوب الأشعة السينية لإظهار مكوناته الداخلية."},
+{c:"/xrayview",d:"يكشف الهيكل الداخلي من خلال منظور أشعة."},
+{c:"/transparent",d:"يجعل الهيكل الخارجي شفافًا."},
+{c:"/transparentview",d:"يعرض الأجزاء الداخلية خلف غلاف شفاف."},
+{c:"/see_through",d:"يجعل العنصر شبه شفاف لرؤية ما بداخله."},
+{c:"/ghostedview",d:"يجعل الهيكل الخارجي باهتًا مع إبراز المكونات الداخلية."},
+
+{c:"/technicaldrawing",d:"يحوّل العنصر إلى رسم تقني هندسي منظم."},
+{c:"/engineeringdrawing",d:"ينشئ رسمًا هندسيًا احترافيًا للعنصر."},
+{c:"/technicalillustration",d:"ينشئ رسمًا توضيحيًا تقنيًا مناسبًا للشرح."},
+{c:"/mechanicaldrawing",d:"ينشئ رسمًا ميكانيكيًا دقيقًا."},
+{c:"/manufacturingdrawing",d:"يعرض التصميم بشكل مناسب لرسومات التصنيع."},
+{c:"/productiondrawing",d:"ينشئ رسومات توضح تفاصيل المنتج للتصنيع."},
+{c:"/detaildrawing",d:"يركز على تفاصيل جزء هندسي صغير."},
+{c:"/workingdrawing",d:"ينشئ رسم عمل هندسي يحتوي على تفاصيل التنفيذ."},
+{c:"/shopdrawing",d:"يعطي التصميم مظهر رسومات الورشة التنفيذية."},
+{c:"/fabricationdrawing",d:"ينشئ رسمًا مناسبًا لتصنيع القطع المعدنية أو الميكانيكية."},
+
+{c:"/blueprint",d:"يحوّل العنصر إلى مخطط Blueprint هندسي."},
+{c:"/blueprintstyle",d:"يعطي التصميم أسلوب المخططات الهندسية الزرقاء."},
+{c:"/schematic",d:"ينشئ مخططًا مبسطًا يوضح المكونات والعلاقات."},
+{c:"/schematicdiagram",d:"ينشئ رسمًا تخطيطيًا تقنيًا واضحًا."},
+{c:"/systemdiagram",d:"يعرض مكونات نظام وعلاقاتها مع بعضها."},
+{c:"/blockdiagram",d:"ينشئ مخطط كتل يوضح أقسام النظام."},
+{c:"/flowdiagram",d:"يعرض تدفق العملية أو الطاقة أو البيانات بين المكونات."},
+{c:"/processdiagram",d:"يوضح مراحل عملية هندسية أو صناعية."},
+{c:"/architecturediagram",d:"ينشئ مخطط بنية لنظام تقني أو هندسي."},
+{c:"/networkdiagram",d:"ينشئ مخطط شبكة يوضح الأجهزة والاتصالات."},
+
+{c:"/wireframe",d:"يعرض الجسم كبنية شبكية ثلاثية الأبعاد."},
+{c:"/wireframe_model",d:"ينشئ نموذجًا ثلاثي الأبعاد مكوّنًا من خطوط وشبكات."},
+{c:"/mesh",d:"يعرض شبكة المجسم ثلاثية الأبعاد."},
+{c:"/polygonmesh",d:"يعرض المجسم كمجموعة مضلعات."},
+{c:"/lowpolyengineering",d:"يعرض النموذج الهندسي بعدد مضلعات منخفض."},
+{c:"/highpolyengineering",d:"يعرض النموذج الهندسي بتفاصيل هندسية عالية."},
+{c:"/surface_model",d:"يعرض النموذج كسطوح هندسية."},
+{c:"/solidmodel",d:"يعرض العنصر كنموذج هندسي صلب."},
+{c:"/parametricmodel",d:"يعطي التصميم مظهر نموذج هندسي بارامتري."},
+
+{c:"/cad",d:"يعطي العنصر مظهر نموذج CAD هندسي."},
+{c:"/cadmodel",d:"ينشئ نموذجًا شبيهًا ببرامج التصميم الهندسي CAD."},
+{c:"/3dcad",d:"يعرض التصميم كنموذج CAD ثلاثي الأبعاد."},
+{c:"/2dcad",d:"يعرض التصميم كرسم CAD ثنائي الأبعاد."},
+{c:"/solidworksstyle",d:"يحاكي مظهر النماذج في برامج التصميم الميكانيكي."},
+{c:"/autocadstyle",d:"يعطي الرسم مظهر مخططات CAD ثنائية الأبعاد."},
+{c:"/fusion360style",d:"يحاكي نموذجًا هندسيًا ثلاثي الأبعاد بأسلوب برامج CAD الحديثة."},
+{c:"/inventorstyle",d:"يعطي النموذج طابع تصميم ميكانيكي احترافي."},
+{c:"/revitstyle",d:"يحاكي عرض النماذج المعمارية والهندسية ثلاثية الأبعاد."},
+
+{c:"/isometric",d:"يعرض العنصر بمنظور هندسي متساوي القياس."},
+{c:"/isometricview",d:"يعرض العنصر بزاوية إيزومترية واضحة."},
+{c:"/axonometric",d:"يعرض العنصر بمنظور محوري هندسي."},
+{c:"/orthographic",d:"يعرض العنصر بدون تشويه المنظور."},
+{c:"/orthographicview",d:"ينشئ إسقاطًا هندسيًا مستقيمًا."},
+{c:"/frontview",d:"يعرض العنصر من الأمام."},
+{c:"/rearview",d:"يعرض العنصر من الخلف."},
+{c:"/sideview",d:"يعرض العنصر من الجانب."},
+{c:"/leftview",d:"يعرض الجانب الأيسر للعنصر."},
+{c:"/rightview",d:"يعرض الجانب الأيمن للعنصر."},
+{c:"/topview",d:"يعرض العنصر من الأعلى."},
+{c:"/bottomview",d:"يعرض العنصر من الأسفل."},
+{c:"/multiview",d:"يعرض العنصر من عدة زوايا في صورة واحدة."},
+{c:"/sixview",d:"يعرض الواجهات الست الأساسية للعنصر."},
+
+{c:"/dimensioned",d:"يضيف أبعادًا وقياسات إلى الرسم الهندسي."},
+{c:"/dimensions",d:"يعرض قياسات الطول والعرض والارتفاع."},
+{c:"/dimensionlines",d:"يضيف خطوط الأبعاد الهندسية."},
+{c:"/measurements",d:"يضيف القياسات الأساسية إلى التصميم."},
+{c:"/scale",d:"يعرض التصميم وفق مقياس هندسي واضح."},
+{c:"/scaledrawing",d:"ينشئ رسمًا هندسيًا بمقياس محدد."},
+{c:"/tolerance",d:"يضيف أو يوضح سماحات التصنيع."},
+{c:"/geometrictolerance",d:"يعرض رموز السماحات الهندسية GD&T."},
+{c:"/gdt",d:"يعرض الأبعاد والتفاوتات الهندسية GD&T."},
+{c:"/datum",d:"يضيف نقاط أو محاور مرجعية هندسية."},
+
+{c:"/labeleddiagram",d:"ينشئ مخططًا مع تسميات للأجزاء."},
+{c:"/callouts",d:"يضيف أسهمًا ونصوصًا للإشارة إلى الأجزاء."},
+{c:"/annotations",d:"يضيف ملاحظات هندسية على الرسم."},
+{c:"/partlabels",d:"يضع اسم كل جزء على المخطط."},
+{c:"/numberedparts",d:"يرقم مكونات الجهاز أو المنتج."},
+{c:"/bom",d:"ينشئ عرضًا مناسبًا لقائمة المواد والأجزاء BOM."},
+{c:"/billofmaterials",d:"يوضح قائمة المكونات والمواد الداخلة في التجميع."},
+{c:"/partslist",d:"ينشئ قائمة قطع مرتبطة بالرسم."},
+
+{c:"/patentdrawing",d:"يحوّل العنصر إلى أسلوب رسومات براءات الاختراع."},
+{c:"/patentillustration",d:"ينشئ رسومات تقنية مناسبة لوثائق البراءات."},
+{c:"/manualdiagram",d:"يعطي التصميم مظهر رسومات دليل الاستخدام."},
+{c:"/instructionmanual",d:"ينشئ رسومات مناسبة لدليل التركيب أو الاستخدام."},
+{c:"/installationdiagram",d:"يوضح طريقة تركيب الجهاز أو المنتج."},
+{c:"/installationsteps",d:"يعرض خطوات التركيب بالتسلسل."},
+{c:"/maintenanceguide",d:"ينشئ مخططًا يوضح نقاط الصيانة."},
+{c:"/serviceguide",d:"يعرض أجزاء الجهاز بطريقة مناسبة لدليل الصيانة."},
+
+{c:"/mechanicaldiagram",d:"ينشئ مخططًا ميكانيكيًا للمكونات."},
+{c:"/mechanism",d:"يوضح آلية عمل الأجزاء المتحركة."},
+{c:"/kinematicdiagram",d:"يوضح الحركة والعلاقات بين الوصلات الميكانيكية."},
+{c:"/geartrain",d:"يعرض مجموعة التروس وطريقة انتقال الحركة بينها."},
+{c:"/gearbox",d:"يعرض مكونات علبة التروس."},
+{c:"/gears",d:"يركز على التروس وترابطها."},
+{c:"/bearing",d:"يعرض الرولمان أو المحمل وتكوينه."},
+{c:"/shaft",d:"يركز على العمود الميكانيكي."},
+{c:"/coupling",d:"يعرض وصلة نقل الحركة بين عمودين."},
+{c:"/pulley",d:"يعرض البكرات ونظام الحركة."},
+{c:"/beltDrive",d:"يعرض نقل الحركة بواسطة السيور."},
+{c:"/chainDrive",d:"يعرض نقل الحركة بواسطة السلسلة."},
+{c:"/cammechanism",d:"يوضح آلية الكامات والحركة الناتجة عنها."},
+{c:"/linkagemechanism",d:"يعرض منظومة الوصلات الميكانيكية."},
+
+{c:"/hydraulic",d:"يعرض نظامًا هيدروليكيًا."},
+{c:"/hydraulicschematic",d:"ينشئ مخطط دائرة هيدروليكية."},
+{c:"/pneumatic",d:"يعرض نظامًا يعمل بالهواء المضغوط."},
+{c:"/pneumaticschematic",d:"ينشئ مخطط دائرة نيوماتيكية."},
+{c:"/pump",d:"يعرض المضخة ومكوناتها."},
+{c:"/valve",d:"يعرض الصمام وتركيبه الداخلي."},
+{c:"/cylinder",d:"يعرض الأسطوانة الهيدروليكية أو الهوائية."},
+{c:"/fluidflow",d:"يوضح اتجاه حركة السوائل داخل النظام."},
+{c:"/pressureflow",d:"يعرض مناطق الضغط ومسار التدفق."},
+
+{c:"/electricaldiagram",d:"ينشئ مخططًا كهربائيًا للمكونات."},
+{c:"/wiringdiagram",d:"يوضح توصيل الأسلاك بين المكونات."},
+{c:"/circuitdiagram",d:"ينشئ مخطط دائرة إلكترونية أو كهربائية."},
+{c:"/electricalschematic",d:"يعرض رموز وتوصيلات الدائرة الكهربائية."},
+{c:"/singleline",d:"ينشئ مخطط خط واحد للأنظمة الكهربائية."},
+{c:"/singlelinediagram",d:"يعرض شبكة الطاقة الكهربائية بمخطط خط أحادي."},
+{c:"/controlcircuit",d:"يعرض دائرة التحكم الكهربائية."},
+{c:"/powercircuit",d:"يعرض دائرة القدرة الكهربائية."},
+{c:"/relaydiagram",d:"يوضح توصيل المرحلات والكونتاكتورات."},
+{c:"/motorwiring",d:"يعرض توصيلات محرك كهربائي."},
+{c:"/panelwiring",d:"يوضح التوصيلات داخل لوحة كهربائية."},
+{c:"/distributionboard",d:"يعرض لوحة التوزيع ومكوناتها."},
+
+{c:"/pcb",d:"يعرض لوحة دائرة مطبوعة PCB."},
+{c:"/pcbdesign",d:"ينشئ تصميمًا بصريًا للوحة إلكترونية."},
+{c:"/pcblayout",d:"يعرض توزيع المكونات والمسارات على PCB."},
+{c:"/pcbexplodedview",d:"يفصل طبقات ومكونات لوحة الدائرة المطبوعة."},
+{c:"/circuitboard",d:"يعرض لوحة إلكترونية ومكوناتها."},
+{c:"/electroniccomponents",d:"يركز على المكونات الإلكترونية."},
+{c:"/microcontroller",d:"يعرض المتحكم الدقيق وتوصيلاته."},
+{c:"/processor",d:"يركز على المعالج وبنيته."},
+{c:"/chip",d:"يعرض شريحة إلكترونية بتفاصيل تقنية."},
+{c:"/semiconductor",d:"يعطي المكون مظهرًا تقنيًا مرتبطًا بأشباه الموصلات."},
+{c:"/integratedcircuit",d:"يعرض دائرة متكاملة IC."},
+
+{c:"/motherboard",d:"يعرض اللوحة الأم ومكوناتها."},
+{c:"/computerinternals",d:"يكشف مكونات الحاسوب الداخلية."},
+{c:"/serverinternals",d:"يعرض المكونات الداخلية للخادم."},
+{c:"/datacenter",d:"ينشئ مشهدًا تقنيًا لمركز بيانات."},
+{c:"/serverrack",d:"يعرض رفوف الخوادم والمعدات."},
+{c:"/networkrack",d:"يعرض معدات الشبكات داخل الراك."},
+{c:"/router",d:"يعرض جهاز الراوتر ومكوناته."},
+{c:"/switch",d:"يعرض جهاز سويتش شبكة."},
+{c:"/fiberoptic",d:"يركز على الألياف البصرية ومسار الضوء."},
+{c:"/cablemanagement",d:"يعرض تنظيم وتمديد الكابلات."},
+
+{c:"/robot",d:"يعرض روبوتًا بأسلوب هندسي."},
+{c:"/robotics",d:"يركز على الأنظمة الروبوتية."},
+{c:"/robotarm",d:"يعرض ذراعًا روبوتية صناعية."},
+{c:"/robotexplodedview",d:"يفكك الروبوت إلى مكوناته."},
+{c:"/robotxray",d:"يعرض المكونات الداخلية للروبوت."},
+{c:"/actuator",d:"يعرض المشغل الميكانيكي أو الكهربائي."},
+{c:"/servo",d:"يعرض محرك سيرفو ومكوناته."},
+{c:"/steppermotor",d:"يعرض محرك الخطوات."},
+{c:"/sensor",d:"يركز على المستشعر أو آلية عمله."},
+{c:"/lidar",d:"يعرض نظام LiDAR والمسح ثلاثي الأبعاد."},
+{c:"/machinevision",d:"يوضح نظام رؤية آلية بالكاميرات والمستشعرات."},
+
+{c:"/automation",d:"يعرض نظام أتمتة صناعية."},
+{c:"/industrialautomation",d:"يركز على أنظمة التحكم والأتمتة الصناعية."},
+{c:"/plc",d:"يعرض وحدة تحكم PLC."},
+{c:"/plcwiring",d:"يوضح توصيلات وحدة PLC."},
+{c:"/controlpanel",d:"يعرض لوحة تحكم صناعية."},
+{c:"/hmi",d:"يعرض واجهة تشغيل وتحكم HMI."},
+{c:"/scada",d:"يعرض تصورًا لنظام مراقبة وتحكم SCADA."},
+{c:"/industrialnetwork",d:"يعرض شبكة اتصالات صناعية."},
+{c:"/factoryautomation",d:"يعرض خط إنتاج مؤتمت."},
+{c:"/productionline",d:"يعرض تسلسل معدات خط الإنتاج."},
+
+{c:"/cnc",d:"يعرض ماكينة CNC أو عملية تشغيل آلي."},
+{c:"/cncmachining",d:"يحاكي عملية تصنيع باستخدام CNC."},
+{c:"/milling",d:"يعرض عملية التفريز."},
+{c:"/turning",d:"يعرض عملية الخراطة."},
+{c:"/lathe",d:"يعرض ماكينة مخرطة."},
+{c:"/drilling",d:"يعرض عملية الثقب الميكانيكي."},
+{c:"/laserCutting",d:"يعرض عملية القطع بالليزر."},
+{c:"/waterjet",d:"يعرض القطع بنفث الماء."},
+{c:"/welding",d:"يعرض عملية لحام صناعية."},
+{c:"/casting",d:"يعرض عملية صب المعادن."},
+{c:"/forging",d:"يعرض عملية تشكيل المعادن بالطرق."},
+{c:"/sheetmetal",d:"يركز على تصميم وتشكيل الصفائح المعدنية."},
+{c:"/bending",d:"يعرض عملية ثني المعدن."},
+
+{c:"/3dprinting",d:"يعرض عملية الطباعة ثلاثية الأبعاد."},
+{c:"/additivemanufacturing",d:"يعرض التصنيع بالإضافة طبقة فوق طبقة."},
+{c:"/fdm",d:"يحاكي الطباعة ثلاثية الأبعاد بتقنية FDM."},
+{c:"/sla",d:"يحاكي الطباعة بالراتنج بتقنية SLA."},
+{c:"/sls",d:"يحاكي الطباعة بتقنية SLS."},
+{c:"/printlayers",d:"يوضح طبقات الطباعة ثلاثية الأبعاد."},
+{c:"/prototype",d:"يعطي التصميم مظهر نموذج أولي هندسي."},
+{c:"/rapidprototype",d:"يعرض نموذجًا أوليًا سريع التصنيع."},
+
+{c:"/structural",d:"يعطي التصميم طابع الهندسة الإنشائية."},
+{c:"/structuralanalysis",d:"يعرض تصورًا لتحليل هيكلي."},
+{c:"/structure",d:"يركز على الهيكل الإنشائي."},
+{c:"/steelstructure",d:"يعرض منشأ فولاذيًا."},
+{c:"/concretestructure",d:"يعرض منشأ خرسانيًا."},
+{c:"/beam",d:"يركز على الكمرة الإنشائية."},
+{c:"/column",d:"يركز على العمود الإنشائي."},
+{c:"/truss",d:"يعرض جمالون أو هيكل شبكي."},
+{c:"/foundation",d:"يعرض الأساسات."},
+{c:"/reinforcement",d:"يعرض حديد التسليح داخل الخرسانة."},
+{c:"/rebar",d:"يركز على قضبان التسليح."},
+{c:"/loadpath",d:"يوضح مسار انتقال الأحمال داخل المنشأ."},
+
+{c:"/fea",d:"يعطي التصميم مظهر تحليل العناصر المحددة FEA."},
+{c:"/stressanalysis",d:"يعرض توزيع الإجهادات على العنصر."},
+{c:"/strainanalysis",d:"يعرض مناطق الانفعال والتشوه."},
+{c:"/deformation",d:"يبرز تشوه العنصر تحت الحمل."},
+{c:"/loadsimulation",d:"يحاكي تأثير الأحمال على التصميم."},
+{c:"/thermalanalysis",d:"يعرض توزيع الحرارة على العنصر."},
+{c:"/heatmapengineering",d:"يعرض نتائج هندسية كتدرج حراري."},
+{c:"/vibrationanalysis",d:"يعرض تصورًا للاهتزازات."},
+{c:"/modalanalysis",d:"يعرض أنماط الاهتزاز الطبيعية."},
+{c:"/fatigueanalysis",d:"يعرض تصورًا لمناطق الإجهاد المتكرر."},
+
+{c:"/cfd",d:"يعطي التصميم مظهر محاكاة ديناميكا الموائع CFD."},
+{c:"/airflow",d:"يوضح تدفق الهواء حول أو داخل جسم."},
+{c:"/fluiddynamics",d:"يعرض حركة السوائل والغازات."},
+{c:"/streamlines",d:"يضيف خطوط انسياب توضح حركة المائع."},
+{c:"/aerodynamics",d:"يركز على الديناميكا الهوائية."},
+{c:"/windtunnel",d:"يحاكي اختبار نفق الرياح."},
+{c:"/pressuremap",d:"يعرض توزيع الضغط على الأسطح."},
+{c:"/velocitymap",d:"يعرض توزيع سرعة المائع."},
+{c:"/turbulence",d:"يوضح مناطق الاضطراب في التدفق."},
+
+{c:"/thermal",d:"يعرض العنصر وفق منظور حراري."},
+{c:"/thermalcamera",d:"يحاكي تصوير كاميرا حرارية."},
+{c:"/thermography",d:"يعرض درجات الحرارة بالألوان."},
+{c:"/heatflow",d:"يوضح انتقال الحرارة."},
+{c:"/heatsink",d:"يركز على المشتت الحراري."},
+{c:"/cooling",d:"يوضح نظام التبريد."},
+{c:"/heatexchanger",d:"يعرض المبادل الحراري وتركيبه."},
+{c:"/thermalcutaway",d:"يكشف مسار الحرارة داخل الجهاز."},
+
+{c:"/productanatomy",d:"يوضح التركيب الداخلي الكامل للمنتج."},
+{c:"/deviceanatomy",d:"يعرض تشريح جهاز تقني."},
+{c:"/machineanatomy",d:"يكشف المكونات الداخلية للآلة."},
+{c:"/technologycutaway",d:"ينشئ عرضًا مقطوعًا لجهاز تقني."},
+{c:"/techxray",d:"يعرض جهازًا تقنيًا بطريقة أشعة."},
+{c:"/techdiagram",d:"ينشئ مخططًا تقنيًا مبسطًا."},
+{c:"/innovationconcept",d:"يعرض فكرة تقنية أو هندسية مستقبلية."},
+{c:"/engineeringconcept",d:"يعطي التصميم مظهر تصور هندسي أولي."},
+{c:"/conceptprototype",d:"يعرض نموذجًا أوليًا لمفهوم هندسي."},
+
+{c:"/smartdevice",d:"يعرض جهازًا ذكيًا بأسلوب تقني."},
+{c:"/iot",d:"يعرض نظام إنترنت الأشياء وأجهزته."},
+{c:"/iotsystem",d:"ينشئ مخططًا لنظام أجهزة مترابطة عبر الإنترنت."},
+{c:"/smartfactory",d:"يعرض مصنعًا ذكيًا متصلًا رقميًا."},
+{c:"/smartbuilding",d:"يعرض نظام مبنى ذكي."},
+{c:"/smarthome",d:"يعرض أنظمة منزل ذكي متصلة."},
+{c:"/digitaltwin",d:"يعرض مفهوم التوأم الرقمي لنظام أو آلة."},
+{c:"/industry40",d:"يعطي المشهد طابع تقنيات الثورة الصناعية الرابعة."},
+
+{c:"/aihardware",d:"يعرض عتادًا مخصصًا للذكاء الاصطناعي."},
+{c:"/gpu",d:"يعرض بطاقة رسومية ومكوناتها."},
+{c:"/gpuexplodedview",d:"يفكك بطاقة الرسوميات إلى أجزائها."},
+{c:"/cpu",d:"يعرض وحدة المعالجة المركزية."},
+{c:"/cpuxray",d:"يكشف البنية الداخلية للمعالج."},
+{c:"/dataprocessing",d:"يوضح تدفق البيانات داخل نظام تقني."},
+{c:"/computingarchitecture",d:"يعرض بنية نظام حوسبة."},
+
+{c:"/renewableenergy",d:"يعرض نظام طاقة متجددة."},
+{c:"/solarsystem",d:"يعرض منظومة ألواح وطاقة شمسية."},
+{c:"/solarpanel",d:"يركز على اللوح الشمسي وتركيبه."},
+{c:"/inverter",d:"يعرض جهاز العاكس الكهربائي."},
+{c:"/batterybank",d:"يعرض مجموعة بطاريات تخزين الطاقة."},
+{c:"/windturbine",d:"يعرض توربين رياح ومكوناته."},
+{c:"/energystorage",d:"يعرض نظام تخزين الطاقة."},
+{c:"/powerflow",d:"يوضح تدفق الطاقة الكهربائية بين مكونات النظام."},
+
+{c:"/evsystem",d:"يعرض منظومة سيارة كهربائية."},
+{c:"/electricmotor",d:"يعرض محركًا كهربائيًا."},
+{c:"/motorexplodedview",d:"يفكك المحرك الكهربائي إلى أجزائه."},
+{c:"/batterycell",d:"يعرض خلية بطارية وتركيبها."},
+{c:"/batterypack",d:"يعرض حزمة بطاريات كاملة."},
+{c:"/bms",d:"يعرض نظام إدارة البطارية BMS."},
+{c:"/chargingcircuit",d:"يعرض دائرة الشحن الكهربائي."},
+
+{c:"/telecommunication",d:"يعرض نظام اتصالات."},
+{c:"/antenna",d:"يركز على الهوائي وتصميمه."},
+{c:"/rf",d:"يعرض مفهوم أنظمة الترددات اللاسلكية."},
+{c:"/signalflow",d:"يوضح مسار الإشارة بين المكونات."},
+{c:"/5g",d:"يعرض بنية أو تجهيزات شبكة الجيل الخامس."},
+{c:"/satellitecommunication",d:"يعرض نظام اتصالات عبر الأقمار الصناعية."},
+{c:"/communicationdiagram",d:"ينشئ مخططًا لتدفق الاتصالات."},
+
+{c:"/aerospace",d:"يعطي التصميم طابع الهندسة الجوية والفضائية."},
+{c:"/aircraftexplodedview",d:"يفكك الطائرة إلى أنظمتها وأجزائها."},
+{c:"/aircraftcutaway",d:"يعرض مقطعًا داخليًا للطائرة."},
+{c:"/jetengine",d:"يعرض محركًا نفاثًا."},
+{c:"/jetenginecutaway",d:"يكشف المكونات الداخلية للمحرك النفاث."},
+{c:"/turbine",d:"يركز على التوربين ومكوناته."},
+{c:"/rocket",d:"يعرض صاروخًا بأسلوب هندسي."},
+{c:"/rocketcutaway",d:"يكشف الأنظمة الداخلية للصاروخ."},
+{c:"/spacecraft",d:"يعرض مركبة فضائية بأسلوب تقني."},
+
+{c:"/civilengineering",d:"يعطي المشهد طابع الهندسة المدنية."},
+{c:"/roadengineering",d:"يعرض تفاصيل تصميم الطرق."},
+{c:"/bridgeengineering",d:"يركز على تصميم الجسور."},
+{c:"/bridgecutaway",d:"يعرض مقطعًا إنشائيًا داخل الجسر."},
+{c:"/tunnel",d:"يعرض تصميم نفق هندسي."},
+{c:"/drainagesystem",d:"يعرض شبكة تصريف المياه."},
+{c:"/watersupply",d:"يعرض شبكة إمداد المياه."},
+{c:"/sewerage",d:"يعرض شبكة الصرف الصحي."},
+
+{c:"/pipeline",d:"يعرض شبكة أنابيب."},
+{c:"/piping",d:"يركز على تمديدات الأنابيب."},
+{c:"/pipingdiagram",d:"ينشئ مخطط تمديدات الأنابيب."},
+{c:"/pid",d:"يعرض مخطط الأنابيب والأجهزة P&ID."},
+{c:"/processplant",d:"يعرض منشأة صناعية ومعداتها."},
+{c:"/tank",d:"يعرض خزانًا صناعيًا."},
+{c:"/pressurevessel",d:"يعرض وعاء ضغط ومكوناته."},
+{c:"/boiler",d:"يعرض غلاية صناعية."},
+{c:"/compressor",d:"يعرض ضاغطًا ومكوناته."},
+
+{c:"/precisionengineering",d:"يعطي التصميم طابع الهندسة الدقيقة."},
+{c:"/micromechanics",d:"يعرض أجزاء ميكانيكية صغيرة جدًا."},
+{c:"/microtechnology",d:"يركز على التقنيات والمكونات الميكروية."},
+{c:"/nanotechnology",d:"يعطي المشهد طابع تقنيات النانو."},
+{c:"/microscopicengineering",d:"يعرض المكونات الهندسية بتكبير شديد."},
+
+{c:"/cleanengineering",d:"يعرض التصميم الهندسي بخلفية نظيفة وواضحة."},
+{c:"/whiteengineeringbackground",d:"يضع الرسم أو النموذج على خلفية بيضاء."},
+{c:"/darktechnical",d:"يعرض التصميم التقني على خلفية داكنة."},
+{c:"/technicalposter",d:"ينشئ ملصقًا تقنيًا منظمًا."},
+{c:"/engineeringinfographic",d:"ينشئ إنفوجرافيك هندسيًا يشرح المكونات أو العملية."},
+{c:"/specsheet",d:"ينشئ ورقة مواصفات فنية للمنتج."},
+{c:"/datasheet",d:"يعرض التصميم في شكل ورقة بيانات تقنية."},
+{c:"/technicalpresentation",d:"ينظم العنصر بأسلوب عرض هندسي احترافي."}
+]
+  };
+
+  let category="الكل";
+  let favOnly=false;
+  let favorites=JSON.parse(localStorage.getItem("promptFav")||"[]");
+  let recent=JSON.parse(localStorage.getItem("promptRecent")||"[]");
+
+  const builder=document.getElementById("promptBuilder");
+  builder.value=localStorage.getItem("promptBuilder")||"";
+
+  function allItems(){
+    let arr=[];
+    Object.entries(library).forEach(([cat,items])=>{
+      items.forEach(item=>{
+        arr.push({...item, category:cat});
+      });
+    });
+    return arr;
+  }
+
+  function renderCategories(){
+    const el=document.getElementById("categories");
+    el.innerHTML="";
+    ["الكل",...Object.keys(library)].forEach(cat=>{
+      const b=document.createElement("button");
+      b.className="cat-btn";
+      if(cat===category && !favOnly) b.classList.add("active");
+      b.textContent=cat;
+      b.onclick=()=>{
+        category=cat;
+        favOnly=false;
+        renderCategories();
+        renderCommands();
+      };
+      el.appendChild(b);
+    });
+  }
+
+  function renderCommands(){
+    const query=document.getElementById("searchInput").value.trim().toLowerCase();
+    let items=allItems().filter(item=>{
+      const matchCategory=category==="الكل"||item.category===category;
+      const matchSearch=!query||item.c.toLowerCase().includes(query)||item.d.toLowerCase().includes(query)||item.category.toLowerCase().includes(query);
+      const matchFav=!favOnly||favorites.includes(item.c);
+      return matchCategory && matchSearch && matchFav;
+    });
+
+    document.getElementById("resultCount").textContent=items.length;
+    document.getElementById("libraryTitle").textContent=favOnly?"⭐ الأوامر المفضلة":category==="الكل"?"جميع الأوامر":category;
+
+    const grid=document.getElementById("commandsGrid");
+    grid.innerHTML="";
+    document.getElementById("emptyState").style.display=items.length?"none":"block";
+
+    items.forEach(item=>{
+      const card=document.createElement("div");
+      card.className="command-card";
+      const activeFav=favorites.includes(item.c);
+
+      card.innerHTML=`
+        <div>
+          <div class="command-top">
+            <div class="command">${escapeHTML(item.c)}</div>
+            <button class="favorite-btn ${activeFav?'active':''}">${activeFav?"★":"☆"}</button>
+          </div>
+          <div class="description">${escapeHTML(item.d)}</div>
+        </div>
+        <div>
+          <span class="badge">${escapeHTML(item.category)}</span>
+          <div class="card-actions">
+            <button class="small-btn copy">📋 نسخ</button>
+            <button class="small-btn add">＋ إضافة</button>
+            <button class="small-btn png-btn card-actions-full">🖼️ حفظ PNG</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector(".copy").onclick=()=>copyCommand(item.c);
+      card.querySelector(".add").onclick=()=>addBuilder(item.c);
+      card.querySelector(".favorite-btn").onclick=()=>toggleFavorite(item.c);
+      card.querySelector(".png-btn").onclick=()=>generateCardPNG(item.c, item.d, item.category);
+      grid.appendChild(card);
+    });
+  }
+
+  async function copyText(text){
+    try{ await navigator.clipboard.writeText(text); } catch {
+      const t=document.createElement("textarea");
+      t.value=text; document.body.appendChild(t); t.select();
+      document.execCommand("copy"); t.remove();
+    }
+    toast("تم النسخ بنجاح ✓");
+  }
+
+  function copyCommand(c){
+    copyText(c);
+    recent=[c,...recent.filter(x=>x!==c)].slice(0,10);
+    saveRecent(); renderRecent();
+  }
+
+  function addBuilder(c){
+    let lines=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+    if(!lines.includes(c)) lines.push(c);
+    builder.value=lines.join("\n");
+    saveBuilder(); toast("تمت إضافة الأمر");
+  }
+
+  function toggleFavorite(c){
+    if(favorites.includes(c)) favorites=favorites.filter(x=>x!==c);
+    else favorites.push(c);
+    localStorage.setItem("promptFav",JSON.stringify(favorites));
+    renderCommands(); renderFavorites(); updateStats();
+  }
+
+  function showFavorites(){ favOnly=true; renderCategories(); renderCommands(); }
+
+  function renderFavorites(){
+    const el=document.getElementById("favoriteList");
+    el.innerHTML="";
+    if(!favorites.length){ el.innerHTML='<div class="count">لا توجد عناصر في المفضلة</div>'; return; }
+    favorites.slice(0,15).forEach(c=>{
+      const row=document.createElement("div");
+      row.className="side-item";
+      row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">📋</button>`;
+      row.querySelector("button").onclick=()=>copyCommand(c);
+      el.appendChild(row);
+    });
+  }
+
+  function renderRecent(){
+    const el=document.getElementById("recentList");
+    el.innerHTML="";
+    if(!recent.length){ el.innerHTML='<div class="count">لا يوجد سجل استخدام</div>'; return; }
+    recent.forEach(c=>{
+      const row=document.createElement("div");
+      row.className="side-item";
+      row.innerHTML=`<code>${escapeHTML(c)}</code><button class="icon-btn">＋</button>`;
+      row.querySelector("button").onclick=()=>addBuilder(c);
+      el.appendChild(row);
+    });
+  }
+
+  function saveRecent(){ localStorage.setItem("promptRecent",JSON.stringify(recent)); }
+  function saveBuilder(){ localStorage.setItem("promptBuilder",builder.value); updateBuilderCount(); }
+  builder.addEventListener("input",saveBuilder);
+
+  function updateBuilderCount(){
+    const count=builder.value.split(/\s+/).filter(x=>x.startsWith("/")).length;
+    document.getElementById("builderCount").textContent=count+" أوامر";
+  }
+
+  function copyBuilder(){ if(!builder.value.trim()) { toast("لا توجد أوامر"); return; } copyText(builder.value.trim()); }
+  function clearBuilder(){ if(builder.value.trim() && confirm("مسح كل الأوامر؟")) { builder.value=""; saveBuilder(); } }
+  function removeDuplicatesBuilder(){
+    let commands=builder.value.split(/\s+/).map(x=>x.trim()).filter(Boolean);
+    commands=[...new Set(commands)];
+    builder.value=commands.join("\n"); saveBuilder(); toast("تم حذف التكرار");
+  }
+  function builderToOneLine(){ builder.value=builder.value.split(/\n/).map(x=>x.trim()).filter(Boolean).join(" "); saveBuilder(); }
+
+  function downloadBuilder(){
+    const text=builder.value.trim();
+    if(!text){ toast("لا توجد أوامر للحفظ"); return; }
+    downloadFile(text,"my-prompt.txt","text/plain;charset=utf-8");
+  }
+
+  function generateCardPNG(commandText, descText, catText){
+    document.getElementById("cardCommandText").textContent = commandText;
+    document.getElementById("cardDescText").textContent = descText;
+    document.getElementById("cardCategoryTag").textContent = catText;
+    const cardElement = document.getElementById("exportCardCanvas");
+    toast("جاري التوليد والحفظ...");
+    html2canvas(cardElement, { backgroundColor: null, scale: 2 }).then(canvas => {
+      const image = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = image;
+      a.download = `${commandText.replace('/', '')}-card.png`;
+      a.click();
+      toast("تم حفظ بطاقة PNG 🖼️");
+    });
+  }
+
+  function exportBuilderPNG(){
+    const text = builder.value.trim();
+    if(!text){ toast("لا توجد أوامر مجمعة!"); return; }
+    generateCardPNG(text, "مجموعة الأوامر البصرية التي تم إنشاؤها عبر مولد البرومبت.", "مولد البرومبت");
+  }
+
+  function exportTXT(){
+    let txt="مكتبة أوامر التوليد البصري\n\n";
+    Object.entries(library).forEach(([cat,items])=>{
+      txt+="\n=========="+cat+"==========\n\n";
+      items.forEach(item=>{ txt+=item.c+"\nالوظيفة: "+item.d+"\n\n"; });
+    });
+    downloadFile(txt,"visual-prompts-library.txt","text/plain;charset=utf-8");
+  }
+
+  function exportJSON(){
+    const data={ library, favorites, builder:builder.value };
+    downloadFile(JSON.stringify(data,null,2),"visual-prompts-library.json","application/json");
+  }
+
+  function downloadFile(content,name,type){
+    const blob=new Blob([content],{type});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    toast("تم حفظ الملف");
+  }
+
+  function updateStats(){
+    const items=allItems();
+    document.getElementById("totalCommands").textContent=new Set(items.map(x=>x.c)).size;
+    document.getElementById("totalCategories").textContent=Object.keys(library).length;
+    document.getElementById("favoritesCount").textContent=favorites.length;
+  }
+
+  function toast(msg){
+    const t=document.getElementById("toast");
+    t.textContent=msg; t.classList.add("show");
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>t.classList.remove("show"),2000);
+  }
+
+  function escapeHTML(str){ return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+
+  document.getElementById("searchInput").addEventListener("input",renderCommands);
+
+  // Init
+  renderCategories();
+  renderCommands();
+  renderFavorites();
+  renderRecent();
+  updateStats();
+  updateBuilderCount();
+</script>
+</body>
+</html>
