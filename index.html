@@ -1,937 +1,796 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بطاقات مصروفات البنزين</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <style>
-        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease-out;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f1f5f9;
-        }
-        .modal-close {
-            cursor: pointer;
-            font-size: 24px;
-            color: #94a3b8;
-            transition: color 0.3s;
-            background: none;
-            border: none;
-        }
-        .modal-close:hover {
-            color: #ef4444;
-        }
-        .pin-dots {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin: 10px 0;
-        }
-        .pin-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #e2e8f0;
-            transition: all 0.3s;
-        }
-        .pin-dot.filled {
-            background: #4f46e5;
-            transform: scale(1.1);
-        }
-        .pin-input {
-            letter-spacing: 8px;
-            font-size: 20px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .action-buttons .btn {
-            flex: 1;
-            min-width: 150px;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
-        }
-        
-        .car-item-inline {
-            display: inline-block;
-            background: #334155;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin: 2px 4px;
-            color: white;
-        }
-        .car-item-inline .fuel-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-left: 4px;
-        }
-        .fuel-dot-95 { background: #ef4444; }
-        .fuel-dot-91 { background: #22c55e; }
-        .fuel-dot-98 { background: #3b82f6; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* Card Preview */
-        #cardPreview {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 450px;
-            width: 100%;
-            margin: 0 auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        #cardPreview .card-header {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 12px;
-            padding: 18px;
-            color: white;
-            margin-bottom: 15px;
-        }
-        #cardPreview .record-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 13px;
-        }
-        .loading-spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 4px solid #e2e8f0;
-            border-radius: 50%;
-            border-top-color: #4f46e5;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+<title>مكتبة الأوامر الذكية</title>
 
-        /* زر الطباعة المباشر */
-        .btn-print-card {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-        }
-        .btn-print-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
-        }
-    </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#07111f;
+    --bg-soft:#0c192a;
+    --card:#101f32;
+    --card-hover:#13263d;
+    --primary:#5da9ff;
+    --primary-2:#7ac7ff;
+    --text:#f7fbff;
+    --muted:#9fb0c5;
+    --border:rgba(255,255,255,.08);
+    --shadow:0 25px 60px rgba(0,0,0,.30);
+    --radius:24px;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    font-family:'Cairo',sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 20% 10%,rgba(50,127,255,.15),transparent 25%),
+        radial-gradient(circle at 85% 30%,rgba(25,161,255,.12),transparent 25%),
+        linear-gradient(135deg,#06101c,#0a1626 50%,#07111f);
+}
+
+
+/* ===========================
+   NAVBAR
+=========================== */
+
+.navbar{
+    width:100%;
+    padding:18px 6%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:100;
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    background:rgba(5,15,28,.72);
+    border-bottom:1px solid var(--border);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.brand-icon{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.5rem;
+    background:linear-gradient(135deg,#156bc8,#52adff);
+    box-shadow:0 8px 25px rgba(50,140,255,.25);
+}
+
+.brand-text{
+    font-size:1.2rem;
+    font-weight:800;
+}
+
+.nav-badge{
+    color:#9ed1ff;
+    border:1px solid rgba(100,180,255,.2);
+    background:rgba(80,160,255,.08);
+    padding:8px 15px;
+    border-radius:50px;
+    font-size:.8rem;
+    font-weight:700;
+}
+
+
+/* ===========================
+   HERO
+=========================== */
+
+.hero{
+    max-width:1200px;
+    margin:auto;
+    padding:90px 25px 60px;
+    text-align:center;
+}
+
+.hero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 18px;
+    border-radius:50px;
+    border:1px solid rgba(94,170,255,.18);
+    background:rgba(63,140,230,.08);
+    color:#9ccfff;
+    font-size:.85rem;
+    font-weight:700;
+    margin-bottom:22px;
+}
+
+.hero h1{
+    font-size:clamp(2.3rem,6vw,4.8rem);
+    line-height:1.25;
+    letter-spacing:-2px;
+    font-weight:900;
+    margin-bottom:20px;
+}
+
+.hero h1 span{
+    background:linear-gradient(90deg,#ffffff,#72c1ff,#ffffff);
+    background-size:200% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:shine 6s linear infinite;
+}
+
+@keyframes shine{
+    to{
+        background-position:200% center;
+    }
+}
+
+.hero p{
+    max-width:700px;
+    margin:auto;
+    color:var(--muted);
+    font-size:1.08rem;
+    line-height:2;
+}
+
+
+/* ===========================
+   SEARCH / INFO BAR
+=========================== */
+
+.info-bar{
+    max-width:850px;
+    margin:35px auto 0;
+    padding:12px 18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--border);
+    border-radius:18px;
+    color:#aec0d6;
+    font-size:.9rem;
+}
+
+.info-item{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+
+/* ===========================
+   SECTION
+=========================== */
+
+.section{
+    max-width:1200px;
+    margin:auto;
+    padding:30px 25px 90px;
+}
+
+.section-head{
+    margin-bottom:30px;
+}
+
+.section-head h2{
+    font-size:1.7rem;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.section-head p{
+    color:var(--muted);
+    font-size:.95rem;
+}
+
+
+/* ===========================
+   CARDS GRID
+=========================== */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+
+/* ===========================
+   CARD
+=========================== */
+
+.card{
+    position:relative;
+    min-height:310px;
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.05),
+            rgba(255,255,255,.015)
+        );
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+    transition:
+        transform .35s ease,
+        border-color .35s ease,
+        background .35s ease,
+        box-shadow .35s ease;
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    width:170px;
+    height:170px;
+    border-radius:50%;
+    background:var(--glow);
+    filter:blur(55px);
+    opacity:.11;
+    top:-50px;
+    left:-40px;
+    pointer-events:none;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    border-color:rgba(120,190,255,.22);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.025)
+        );
+    box-shadow:0 25px 60px rgba(0,0,0,.28);
+}
+
+
+/* ===========================
+   ICON
+=========================== */
+
+.icon-box{
+    width:64px;
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:18px;
+    font-size:2rem;
+    margin-bottom:26px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.01);
+}
+
+.card h3{
+    font-size:1.35rem;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.card p{
+    color:var(--muted);
+    font-size:.92rem;
+    line-height:1.9;
+}
+
+
+/* ===========================
+   CARD BUTTON
+=========================== */
+
+.card-link{
+    margin-top:30px;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    text-decoration:none;
+    color:white;
+    padding:13px 16px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.045);
+    transition:.3s ease;
+    font-size:.9rem;
+    font-weight:700;
+}
+
+.card-link span:last-child{
+    font-size:1.3rem;
+    transition:.3s ease;
+}
+
+.card-link:hover{
+    background:rgba(74,160,255,.14);
+    border-color:rgba(100,180,255,.25);
+}
+
+.card-link:hover span:last-child{
+    transform:translateX(-5px);
+}
+
+
+/* ===========================
+   DIFFERENT CARD GLOWS
+=========================== */
+
+.teacher{
+    --glow:#4597ff;
+}
+
+.house{
+    --glow:#ff7fa8;
+}
+
+.car{
+    --glow:#6edcff;
+}
+
+.camera{
+    --glow:#b886ff;
+}
+
+.engineering{
+    --glow:#44e0aa;
+}
+
+.architecture{
+    --glow:#ffc266;
+}
+
+
+/* ===========================
+   FOOTER
+=========================== */
+
+footer{
+    border-top:1px solid var(--border);
+    text-align:center;
+    padding:30px 20px;
+    color:#74869c;
+    font-size:.85rem;
+    background:rgba(0,0,0,.1);
+}
+
+footer strong{
+    color:#a9bad0;
+}
+
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:900px){
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:600px){
+
+    .navbar{
+        padding:14px 18px;
+    }
+
+    .brand-text{
+        font-size:1rem;
+    }
+
+    .brand-icon{
+        width:40px;
+        height:40px;
+        border-radius:12px;
+    }
+
+    .nav-badge{
+        display:none;
+    }
+
+    .hero{
+        padding:65px 18px 40px;
+    }
+
+    .hero h1{
+        letter-spacing:-1px;
+    }
+
+    .hero p{
+        font-size:.95rem;
+    }
+
+    .section{
+        padding:25px 16px 60px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .card{
+        min-height:285px;
+        padding:24px;
+        border-radius:20px;
+    }
+
+}
+
+</style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
 
-    <nav class="bg-gradient-to-r from-indigo-700 to-violet-800 text-white shadow-lg sticky top-0 z-50 mb-8">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <i class="fa-solid fa-id-card text-2xl text-amber-400"></i>
-                <h1 class="text-xl font-black">بطاقات مصروفات البنزين</h1>
-            </div>
-            <span class="text-xs bg-white/20 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md font-medium">تحديث فوري ⚡</span>
-        </div>
-    </nav>
+<body>
 
-    <main class="max-w-7xl mx-auto px-4 pb-12 space-y-6">
 
-        <div class="bg-white p-4 rounded-2xl shadow-xs border border-slate-200/60">
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <i class="fa-solid fa-filter absolute right-3 top-3.5 text-slate-400"></i>
-                    <input type="text" id="searchBox" oninput="renderCards()" placeholder="ابحث عن شخص محدد..." 
-                        class="w-full pl-3 pr-9 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div class="action-buttons">
-                    <button onclick="openRequestModal()" class="btn btn-primary">
-                        <i class="fa-solid fa-user-plus"></i> طلب إضافة اسم جديد
-                    </button>
-                    <a href="https://alnoaif2026.github.io/tsjil" target="_blank" class="btn btn-success">
-                        <i class="fa-solid fa-gas-pump"></i> تسجيل تعبئة جديدة
-                    </a>
-                </div>
-            </div>
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            ⚡
         </div>
 
-        <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="col-span-full text-center py-12 text-slate-400 font-medium">
-                <i class="fa-solid fa-circle-notch animate-spin text-indigo-600 text-2xl mb-3 block"></i>
-                جاري تجميع البيانات وتجهيز البطاقات الخاصة...
-            </div>
+        <div class="brand-text">
+            مكتبة الأوامر
         </div>
 
-    </main>
-
-    <!-- Modal: طلب إضافة اسم جديد -->
-    <div class="modal-overlay" id="requestModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="text-xl font-bold text-slate-800">
-                    <i class="fa-solid fa-user-plus text-indigo-500"></i> طلب إضافة اسم جديد
-                </h2>
-                <button class="modal-close" onclick="closeRequestModal()">&times;</button>
-            </div>
-            <form id="requestForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">
-                        <i class="fa-regular fa-user text-indigo-500"></i> الاسم الكامل
-                    </label>
-                    <input type="text" id="reqFullName" required 
-                        class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none"
-                        placeholder="أدخل الاسم الكامل">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">
-                        <i class="fa-solid fa-car text-indigo-500"></i> السيارات
-                        <span class="text-xs font-normal text-slate-400">(يمكنك إضافة أكثر من سيارة)</span>
-                    </label>
-                    <div id="reqCarsContainer" class="space-y-3">
-                        <div class="car-item bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="text-sm font-bold text-slate-600">🚗 السيارة 1</span>
-                                <button type="button" onclick="removeReqCar(this)" class="text-red-400 hover:text-red-600 text-sm mr-auto hidden">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-600 mb-1">نوع السيارة</label>
-                                    <input type="text" class="req-car-type w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" 
-                                        placeholder="مثال: تويوتا كامري">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-600 mb-1">الموديل</label>
-                                    <input type="number" class="req-car-model w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" 
-                                        placeholder="2020" min="1900" max="2026">
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <label class="block text-xs font-medium text-slate-600 mb-1">نوع الوقود</label>
-                                <select class="req-car-fuel w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none bg-white">
-                                    <option value="95">أحمر (95) - 2.33 ريال/لتر</option>
-                                    <option value="91" selected>أخضر (91) - 2.18 ريال/لتر</option>
-                                    <option value="98">أزرق (98) - 4.51 ريال/لتر</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="addReqCar()" 
-                        class="mt-2 w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold py-2 px-4 rounded-xl border-2 border-dashed border-indigo-300 transition-all duration-200">
-                        <i class="fa-solid fa-plus ml-2"></i> إضافة سيارة أخرى
-                    </button>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">
-                        <i class="fa-solid fa-lock text-indigo-500"></i> الرقم السري للبطاقة
-                        <span class="text-xs font-normal text-slate-400">(4-8 أرقام فقط)</span>
-                    </label>
-                    <div class="pin-dots" id="reqPinDots">
-                        <span class="pin-dot" data-index="0"></span>
-                        <span class="pin-dot" data-index="1"></span>
-                        <span class="pin-dot" data-index="2"></span>
-                        <span class="pin-dot" data-index="3"></span>
-                        <span class="pin-dot hidden" data-index="4"></span>
-                        <span class="pin-dot hidden" data-index="5"></span>
-                        <span class="pin-dot hidden" data-index="6"></span>
-                        <span class="pin-dot hidden" data-index="7"></span>
-                    </div>
-                    <input type="password" id="reqPin" maxlength="8" required
-                        class="pin-input w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none bg-white"
-                        placeholder="••••">
-                    <div id="reqPinError" class="text-xs text-red-500 mt-1 hidden">
-                        <i class="fa-solid fa-exclamation-circle"></i>
-                        <span>الرقم السري يجب أن يكون 4-8 أرقام فقط</span>
-                    </div>
-                </div>
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="submitRequest()" 
-                        class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
-                        <i class="fa-solid fa-paper-plane ml-2"></i> إرسال الطلب
-                    </button>
-                    <button type="button" onclick="closeRequestModal()" 
-                        class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 px-6 rounded-xl transition-all duration-200">
-                        <i class="fa-solid fa-times ml-2"></i> إلغاء
-                    </button>
-                </div>
-            </form>
-        </div>
     </div>
 
-    <!-- Modal: عرض البطاقة -->
-    <div class="modal-overlay" id="previewCardModal">
-        <div class="modal-content" style="max-width: 520px;">
-            <div class="modal-header">
-                <h2 class="text-lg font-bold text-slate-800">📇 بطاقة المصروفات</h2>
-                <button class="modal-close" onclick="closePreviewModal()">&times;</button>
-            </div>
-            <div id="previewLoading" class="text-center py-8">
-                <div class="loading-spinner"></div>
-                <p class="text-slate-400 text-sm mt-3">جاري تجهيز البطاقة...</p>
-            </div>
-            <div id="previewContent" class="hidden">
-                <div id="cardPreviewContainer"></div>
-                <div class="flex gap-3 mt-4">
-                    <button id="btnPrintCard" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-print"></i> طباعة البطاقة
-                    </button>
-                    <button onclick="closePreviewModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-times"></i> إغلاق
-                    </button>
-                </div>
-            </div>
-        </div>
+    <div class="nav-badge">
+        AI COMMANDS LIBRARY
     </div>
 
-    <script>
-        // Firebase Config
-        const firebaseConfig = {
-            databaseURL: "https://hsabat-a4353-default-rtdb.firebaseio.com"
-        };
+</nav>
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const bnzimRef = database.ref('bnzim');
-        const tlbatRef = database.ref('tlbat');
 
-        let structuredData = {};
-        let reqCarCounter = 1;
+<!-- =========================
+     HERO
+========================= -->
 
-        // ========== وظائف السيارات في الطلب ==========
-        function addReqCar() {
-            reqCarCounter++;
-            const container = document.getElementById('reqCarsContainer');
-            const div = document.createElement('div');
-            div.className = 'car-item bg-slate-50 p-3 rounded-xl border border-slate-200';
-            div.innerHTML = `
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="text-sm font-bold text-slate-600">🚗 السيارة ${reqCarCounter}</span>
-                    <button type="button" onclick="removeReqCar(this)" class="text-red-400 hover:text-red-600 text-sm mr-auto">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
+<header class="hero">
+
+    <div class="hero-badge">
+        ✦ مكتبة ذكية لتنظيم أوامرك
+    </div>
+
+    <h1>
+        كل أوامرك
+        <span>في مكان واحد</span>
+    </h1>
+
+    <p>
+        مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
+        للمعلمين والمنزل والسيارات والتصوير والهندسة والعمارة.
+        اختر القسم المناسب وابدأ مباشرة.
+    </p>
+
+    <div class="info-bar">
+
+        <div class="info-item">
+            ⚡ وصول سريع للأوامر
+        </div>
+
+        <div class="info-item">
+            •
+        </div>
+
+        <div class="info-item">
+            📋 نسخ واستخدام بسهولة
+        </div>
+
+        <div class="info-item">
+            •
+        </div>
+
+        <div class="info-item">
+            📱 متوافق مع الجوال
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     CONTENT
+========================= -->
+
+<main class="section">
+
+    <div class="section-head">
+
+        <h2>
+            الأقسام الرئيسية
+        </h2>
+
+        <p>
+            اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+
+        <!-- TEACHERS -->
+
+        <article class="card teacher">
+
+            <div>
+
+                <div class="icon-box">
+                    👨‍🏫
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">نوع السيارة</label>
-                        <input type="text" class="req-car-type w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" 
-                            placeholder="مثال: تويوتا كامري">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">الموديل</label>
-                        <input type="number" class="req-car-model w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" 
-                            placeholder="2020" min="1900" max="2026">
-                    </div>
+
+                <h3>
+                    أكواد المعلمين
+                </h3>
+
+                <p>
+                    أوامر ذكية لإعداد الدروس، إنشاء الاختبارات،
+                    شرح المواد، تصميم الأنشطة، إعداد أوراق العمل
+                    وتطوير المحتوى التعليمي.
+                </p>
+
+            </div>
+
+            <a href="https://alnoaif2026.github.io/astath.html" class="card-link">
+
+                <span>
+                    فتح مكتبة المعلمين
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- HOUSE -->
+
+        <article class="card house">
+
+            <div>
+
+                <div class="icon-box">
+                    🏠
                 </div>
-                <div class="mt-2">
-                    <label class="block text-xs font-medium text-slate-600 mb-1">نوع الوقود</label>
-                    <select class="req-car-fuel w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none bg-white">
-                        <option value="95">أحمر (95) - 2.33 ريال/لتر</option>
-                        <option value="91" selected>أخضر (91) - 2.18 ريال/لتر</option>
-                        <option value="98">أزرق (98) - 4.51 ريال/لتر</option>
-                    </select>
+
+                <h3>
+                    أكواد ربات البيوت
+                </h3>
+
+                <p>
+                    أوامر للطبخ والوصفات وتنظيم المنزل والتنظيف
+                    والتسوق وإدارة الميزانية ووضع الجداول المنزلية
+                    وخطط الوجبات.
+                </p>
+
+            </div>
+
+            <a href="housewives.html" class="card-link">
+
+                <span>
+                    فتح مكتبة المنزل
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- CARS -->
+
+        <article class="card car">
+
+            <div>
+
+                <div class="icon-box">
+                    🚘
                 </div>
-            `;
-            container.appendChild(div);
-        }
 
-        function removeReqCar(btn) {
-            const items = document.querySelectorAll('#reqCarsContainer .car-item');
-            if (items.length <= 1) {
-                alert('⚠️ يجب أن يكون هناك سيارة واحدة على الأقل');
-                return;
-            }
-            btn.closest('.car-item').remove();
-            document.querySelectorAll('#reqCarsContainer .car-item').forEach((el, i) => {
-                el.querySelector('.text-sm.font-bold').textContent = `🚗 السيارة ${i + 1}`;
-            });
-        }
+                <h3>
+                    أكواد السيارات
+                </h3>
 
-        function getReqCars() {
-            const cars = [];
-            document.querySelectorAll('#reqCarsContainer .car-item').forEach(el => {
-                const type = el.querySelector('.req-car-type').value.trim();
-                const model = el.querySelector('.req-car-model').value.trim();
-                const fuel = el.querySelector('.req-car-fuel').value;
-                if (type || model) {
-                    cars.push({
-                        type: type || 'غير محدد',
-                        model: model || 'غير محدد',
-                        fuelType: fuel || '91'
-                    });
-                }
-            });
-            return cars;
-        }
+                <p>
+                    أوامر لتحسين صور السيارات، التشخيص،
+                    الصيانة، العرض التفكيكي، الأشعة الافتراضية
+                    والتصوير الاحترافي للمركبات.
+                </p>
 
-        // ========== الاستماع لقاعدة البيانات ==========
-        bnzimRef.on('value', (snapshot) => {
-            structuredData = {};
+            </div>
 
-            if (!snapshot.exists()) {
-                document.getElementById('cardsGrid').innerHTML = `
-                    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 text-slate-400">
-                        <i class="fa-solid fa-folder-open text-3xl mb-2 block text-slate-300"></i> لا توجد بيانات مسجلة حالياً في النظام.
-                    </div>`;
-                return;
-            }
+            <a href="cars.html" class="card-link">
 
-            snapshot.forEach((userSnapshot) => {
-                const userName = userSnapshot.key;
-                const cars = [];
-                const records = [];
+                <span>
+                    فتح مكتبة السيارات
+                </span>
 
-                userSnapshot.forEach((expenseSnapshot) => {
-                    const data = expenseSnapshot.val();
+                <span>
+                    ←
+                </span>
 
-                    if (data.car && data.model) {
-                        const exists = cars.some(c => c.type === data.car && c.model === data.model);
-                        if (!exists) {
-                            cars.push({
-                                type: data.car,
-                                model: data.model,
-                                fuelType: data.fuelType || '91'
-                            });
-                        }
-                    }
-                    
-                    if (data.cars && Array.isArray(data.cars)) {
-                        data.cars.forEach(c => {
-                            const exists = cars.some(car => car.type === c.type && car.model === c.model);
-                            if (!exists) {
-                                cars.push(c);
-                            }
-                        });
-                    }
+            </a>
 
-                    if(data.amount !== undefined) {
-                        records.push({
-                            amount: parseFloat(data.amount) || 0,
-                            liters: parseFloat(data.liters) || 0,
-                            odometer: data.odometer || "غير محدد",
-                            date: data.timestamp || "",
-                            fuelName: data.fuelName || "غير محدد",
-                            car: data.car || "غير محدد",
-                            model: data.model || "غير محدد"
-                        });
-                    }
-                });
+        </article>
 
-                records.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                structuredData[userName] = {
-                    cars: cars.length > 0 ? cars : [{ type: 'غير محدد', model: 'غير محدد', fuelType: '91' }],
-                    records: records
-                };
-            });
+        <!-- CAMERA -->
 
-            renderCards();
-        });
+        <article class="card camera">
 
-        // ========== عرض البطاقات ==========
-        function renderCards() {
-            const cardsGrid = document.getElementById('cardsGrid');
-            const searchQuery = document.getElementById('searchBox').value.trim().toLowerCase();
-            cardsGrid.innerHTML = "";
+            <div>
 
-            let hasData = false;
-
-            for (const userName in structuredData) {
-                if (searchQuery && !userName.toLowerCase().includes(searchQuery)) {
-                    continue;
-                }
-
-                hasData = true;
-                const userData = structuredData[userName];
-                const records = userData.records;
-                const cars = userData.cars;
-                
-                const totalAmount = records.reduce((sum, item) => sum + item.amount, 0);
-                const totalLiters = records.reduce((sum, item) => sum + item.liters, 0);
-
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200";
-
-                let carsHtml = '';
-                const fuelColors = { '95': 'fuel-dot-95', '91': 'fuel-dot-91', '98': 'fuel-dot-98' };
-                
-                if (cars.length > 1) {
-                    carsHtml = `<div class="flex flex-wrap gap-1 mt-1">`;
-                    cars.forEach(c => {
-                        const fuelType = c.fuelType || '91';
-                        carsHtml += `
-                            <span class="car-item-inline">
-                                <span class="fuel-dot ${fuelColors[fuelType] || 'fuel-dot-91'}"></span>
-                                ${c.type} (${c.model})
-                            </span>
-                        `;
-                    });
-                    carsHtml += `</div>`;
-                } else if (cars.length === 1) {
-                    const c = cars[0];
-                    const fuelType = c.fuelType || '91';
-                    carsHtml = `
-                        <span class="text-xs text-slate-300 mt-1">
-                            <span class="fuel-dot ${fuelColors[fuelType] || 'fuel-dot-91'}" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:4px;"></span>
-                            ${c.type} (${c.model})
-                        </span>
-                    `;
-                }
-
-                let cardHtml = `
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-5 text-white">
-                        <div class="flex justify-between items-start">
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-300 text-sm">
-                                        <i class="fa-solid fa-user"></i>
-                                    </div>
-                                    <span class="font-bold tracking-wide text-base">${userName}</span>
-                                </div>
-                                ${carsHtml}
-                            </div>
-                            <div class="text-left">
-                                <div class="text-xs text-slate-400 font-medium">إجمالي المصروف</div>
-                                <span class="text-xl font-black text-emerald-400">${totalAmount.toFixed(2)} <span class="text-xs">ريال</span></span>
-                            </div>
-                        </div>
-                        <div class="flex gap-6 mt-3 pt-3 border-t border-white/10">
-                            <div>
-                                <span class="text-xs text-slate-400 block">اللترات</span>
-                                <span class="text-lg font-bold text-cyan-300">${totalLiters.toFixed(2)}</span>
-                            </div>
-                            <div>
-                                <span class="text-xs text-slate-400 block">عدد التعبئات</span>
-                                <span class="text-lg font-bold text-white">${records.length}</span>
-                            </div>
-                            <div>
-                                <span class="text-xs text-slate-400 block">متوسط اللتر/تعبئة</span>
-                                <span class="text-lg font-bold text-amber-300">${records.length ? (totalLiters / records.length).toFixed(2) : '0'}</span>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button onclick="showCardPreview('${userName}')" 
-                                class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 px-4 py-1.5 rounded-full border border-amber-500/30 transition-all cursor-pointer font-bold">
-                                <i class="fa-solid fa-print"></i> طباعة / حفظ البطاقة
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 flex-1 overflow-y-auto max-h-[300px] space-y-3 bg-slate-50/50">
-                        <p class="text-xxs font-bold text-slate-400 uppercase tracking-wider mb-1"><i class="fa-solid fa-history"></i> سجلات التعبئة (${records.length}):</p>
-                `;
-
-                records.slice(0, 10).forEach(rec => {
-                    const cleanDate = rec.date ? rec.date.replace('T', ' ') : 'غير محدد';
-                    cardHtml += `
-                        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-xxs flex justify-between items-center hover:border-slate-200 transition-colors">
-                            <div class="space-y-1">
-                                <div class="text-xs text-slate-400 font-semibold flex items-center gap-1">
-                                    <i class="fa-regular fa-calendar text-slate-400"></i> ${cleanDate}
-                                </div>
-                                <div class="text-xs text-slate-500 font-medium flex items-center gap-2 flex-wrap">
-                                    ${rec.fuelName !== "غير محدد" ? `<span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">${rec.fuelName}</span>` : ''}
-                                    ${rec.car && rec.car !== "غير محدد" ? `<span class="text-slate-400 text-xs">🚗 ${rec.car}</span>` : ''}
-                                    ${rec.odometer !== "غير محدد" ? `<span><i class="fa-solid fa-gauge-high text-slate-300"></i> ${rec.odometer} كم</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-bold text-slate-700 text-sm">${rec.amount.toFixed(2)}</span> <span class="text-xxs font-bold text-slate-400">ريال</span>
-                                <div class="text-xs text-slate-400">${rec.liters.toFixed(2)} لتر</div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                if (records.length > 10) {
-                    cardHtml += `<p class="text-xs text-slate-400 text-center">... وعرض ${records.length - 10} سجلات أخرى</p>`;
-                }
-
-                cardHtml += `</div>`;
-                card.innerHTML = cardHtml;
-                cardsGrid.appendChild(card);
-            }
-
-            if (!hasData) {
-                cardsGrid.innerHTML = `
-                    <div class="col-span-full text-center py-12 text-slate-400">
-                        <i class="fa-solid fa-magnifying-glass text-2xl mb-2 block text-slate-300"></i> لا يوجد شخص بهذا الاسم في السجلات.
-                    </div>`;
-            }
-        }
-
-        // ========== عرض البطاقة في المودال ==========
-        function showCardPreview(userName) {
-            const userData = structuredData[userName];
-            if (!userData) {
-                alert('لم يتم العثور على بيانات هذا الشخص');
-                return;
-            }
-
-            // إظهار المودال مع تحميل
-            document.getElementById('previewLoading').classList.remove('hidden');
-            document.getElementById('previewContent').classList.add('hidden');
-            document.getElementById('previewCardModal').classList.add('active');
-
-            const records = userData.records;
-            const cars = userData.cars;
-            const totalAmount = records.reduce((sum, item) => sum + item.amount, 0);
-            const totalLiters = records.reduce((sum, item) => sum + item.liters, 0);
-
-            const fuelColors = { '95': '#ef4444', '91': '#22c55e', '98': '#3b82f6' };
-
-            // بناء البطاقة
-            let carsHtml = '';
-            cars.forEach(c => {
-                const fuelType = c.fuelType || '91';
-                carsHtml += `
-                    <span style="display:inline-block; background:#334155; padding:4px 12px; border-radius:20px; font-size:12px; margin:2px; color:white;">
-                        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${fuelColors[fuelType] || '#22c55e'}; margin-left:4px;"></span>
-                        ${c.type} (${c.model})
-                    </span>
-                `;
-            });
-
-            let recordsHtml = '';
-            records.slice(0, 6).forEach(rec => {
-                const cleanDate = rec.date ? rec.date.replace('T', ' ') : 'غير محدد';
-                recordsHtml += `
-                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:13px;">
-                        <div style="text-align: right;">
-                            <div style="color:#4a5568; font-weight:600;">${cleanDate}</div>
-                            <div style="color:#718096; font-size:11px; margin-top:2px;">🚗 ${rec.car || ''} | ${rec.fuelName || ''}</div>
-                        </div>
-                        <div style="text-align:left;">
-                            <div style="font-weight:bold; color:#2d3748;">${rec.amount.toFixed(2)} ريال</div>
-                            <div style="color:#a0aec0; font-size:11px;">${rec.liters.toFixed(2)} لتر</div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const cardHTML = `
-                <div id="cardPreview" style="background:white; border-radius:16px; padding:20px; font-family:system-ui, sans-serif; max-width:450px; margin:0 auto; box-shadow:0 4px 20px rgba(0,0,0,0.1);">
-                    <div style="background:linear-gradient(135deg, #1e293b, #0f172a); border-radius:12px; padding:18px; color:white; margin-bottom:15px;">
-                        <div style="display:flex; justify-content:space-between; align-items:start;">
-                            <div style="text-align: right;">
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-size:20px;">👤</span>
-                                    <span style="font-weight:900; font-size:18px;">${userName}</span>
-                                </div>
-                                <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:4px;">${carsHtml}</div>
-                            </div>
-                            <div style="text-align:left;">
-                                <div style="font-size:10px; color:#94a3b8; font-weight:bold;">إجمالي المصروف</div>
-                                <span style="font-size:22px; font-weight:900; color:#34d399;">${totalAmount.toFixed(2)} <span style="font-size:12px;">ريال</span></span>
-                            </div>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-top:15px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.1);">
-                            <div style="text-align:center;">
-                                <div style="font-size:10px; color:#94a3b8;">اللترات</div>
-                                <div style="font-size:16px; font-weight:bold; color:#67e8f9; margin-top:2px;">${totalLiters.toFixed(2)}</div>
-                            </div>
-                            <div style="text-align:center;">
-                                <div style="font-size:10px; color:#94a3b8;">التعبئات</div>
-                                <div style="font-size:16px; font-weight:bold; color:#ffffff; margin-top:2px;">${records.length}</div>
-                            </div>
-                            <div style="text-align:center;">
-                                <div style="font-size:10px; color:#94a3b8;">متوسط التعبئة</div>
-                                <div style="font-size:16px; font-weight:bold; color:#fcd34d; margin-top:2px;">${records.length ? (totalLiters / records.length).toFixed(2) : '0'} لتر</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size:11px; font-weight:bold; color:#718096; margin-bottom:6px;">📋 آخر العمليات والمسجلات</div>
-                        ${recordsHtml || '<div style="color:#a0aec0; font-size:12px; text-align:center; padding:20px;">لا توجد سجلات تعبئة مسبقة</div>'}
-                    </div>
-                    <div style="text-align:center; margin-top:15px; padding-top:10px; border-top:1px solid #edf2f7; font-size:10px; color:#a0aec0; font-weight:500;">
-                        نظام إدارة مصروفات المركبات الذكي
-                    </div>
+                <div class="icon-box">
+                    📸
                 </div>
-            `;
 
-            // عرض البطاقة
-            document.getElementById('cardPreviewContainer').innerHTML = cardHTML;
-            
-            // إخفاء التحميل وإظهار المحتوى
-            document.getElementById('previewLoading').classList.add('hidden');
-            document.getElementById('previewContent').classList.remove('hidden');
+                <h3>
+                    التصوير والسينما
+                </h3>
 
-            // إعداد زر الطباعة
-            document.getElementById('btnPrintCard').onclick = function() {
-                printCardDirect(userName);
-            };
-        }
+                <p>
+                    أوامر الكاميرات والعدسات والإضاءة السينمائية
+                    وزوايا التصوير والعمق البصري والمؤثرات
+                    والأساليب الفنية الاحترافية.
+                </p>
 
-        // ========== طباعة مباشرة بدون html2canvas ==========
-        function printCardDirect(userName) {
-            const cardElement = document.getElementById('cardPreview');
-            if (!cardElement) {
-                alert('البطاقة غير جاهزة للطباعة');
-                return;
-            }
+            </div>
 
-            // فتح نافذة جديدة للطباعة
-            const printWindow = window.open('', '_blank', 'width=600,height=800');
-            if (!printWindow) {
-                alert('الرجاء السماح للنوافذ المنبثقة');
-                return;
-            }
+            <a href="photography.html" class="card-link">
 
-            // نسخ محتوى البطاقة إلى النافذة الجديدة
-            const cardHTML = cardElement.outerHTML;
-            
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html dir="rtl">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>بطاقة ${userName}</title>
-                    <style>
-                        body { 
-                            display: flex; 
-                            justify-content: center; 
-                            align-items: center; 
-                            min-height: 100vh; 
-                            margin: 0; 
-                            padding: 20px; 
-                            background: #f1f5f9; 
-                            font-family: system-ui, sans-serif;
-                        }
-                        @media print {
-                            body { background: white; padding: 0; }
-                            .no-print { display: none !important; }
-                        }
-                        .print-container {
-                            max-width: 450px;
-                            width: 100%;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="print-container">
-                        ${cardHTML}
-                        <div class="no-print" style="text-align:center; margin-top:20px;">
-                            <button onclick="window.print()" style="padding:10px 30px; background:#f59e0b; color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:16px;">
-                                <i class="fa-solid fa-print"></i> طباعة
-                            </button>
-                            <button onclick="window.close()" style="padding:10px 30px; background:#e2e8f0; color:#475569; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:16px; margin-right:10px;">
-                                إغلاق
-                            </button>
-                        </div>
-                    </div>
-                    <script>
-                        // طباعة تلقائية بعد التحميل (اختياري)
-                        // window.onload = function() { setTimeout(window.print, 1000); };
-                    <\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-        }
+                <span>
+                    فتح مكتبة التصوير
+                </span>
 
-        // ========== وظائف المودال ==========
-        function closePreviewModal() {
-            document.getElementById('previewCardModal').classList.remove('active');
-            document.getElementById('previewLoading').classList.remove('hidden');
-            document.getElementById('previewContent').classList.add('hidden');
-        }
+                <span>
+                    ←
+                </span>
 
-        function openRequestModal() {
-            document.getElementById('requestModal').classList.add('active');
-            document.getElementById('reqFullName').focus();
-            document.getElementById('reqFullName').value = '';
-            document.getElementById('reqPin').value = '';
-            document.getElementById('reqPinError').classList.add('hidden');
-            updateRequestPinDots('');
-            const container = document.getElementById('reqCarsContainer');
-            container.innerHTML = `
-                <div class="car-item bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-sm font-bold text-slate-600">🚗 السيارة 1</span>
-                        <button type="button" onclick="removeReqCar(this)" class="text-red-400 hover:text-red-600 text-sm mr-auto hidden">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">نوع السيارة</label>
-                            <input type="text" class="req-car-type w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" 
-                                placeholder="مثال: تويوتا كامري">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">الموديل</label>
-                            <input type="number" class="req-car-model w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" 
-                                placeholder="2020" min="1900" max="2026">
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <label class="block text-xs font-medium text-slate-600 mb-1">نوع الوقود</label>
-                        <select class="req-car-fuel w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none bg-white">
-                            <option value="95">أحمر (95) - 2.33 ريال/لتر</option>
-                            <option value="91" selected>أخضر (91) - 2.18 ريال/لتر</option>
-                            <option value="98">أزرق (98) - 4.51 ريال/لتر</option>
-                        </select>
-                    </div>
+            </a>
+
+        </article>
+
+
+        <!-- ENGINEERING -->
+
+        <article class="card engineering">
+
+            <div>
+
+                <div class="icon-box">
+                    ⚙️
                 </div>
-            `;
-            reqCarCounter = 1;
-        }
 
-        function closeRequestModal() {
-            document.getElementById('requestModal').classList.remove('active');
-        }
+                <h3>
+                    الهندسة والتقنية
+                </h3>
 
-        function updateRequestPinDots(pin) {
-            const dots = document.querySelectorAll('#reqPinDots .pin-dot');
-            const length = pin.length;
-            dots.forEach((dot, index) => {
-                if (index < length) dot.classList.add('filled');
-                else dot.classList.remove('filled');
-            });
-        }
+                <p>
+                    أوامر المخططات الهندسية، التصاميم التقنية،
+                    العرض التفكيكي، الرسوم التوضيحية،
+                    النماذج والمكونات الداخلية.
+                </p>
 
-        document.getElementById('reqPin').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-            updateRequestPinDots(this.value);
-            const errorEl = document.getElementById('reqPinError');
-            if (this.value.length > 0 && (this.value.length < 4 || this.value.length > 8)) {
-                errorEl.classList.remove('hidden');
-            } else {
-                errorEl.classList.add('hidden');
-            }
-        });
+            </div>
 
-        // ========== إرسال الطلب ==========
-        function submitRequest() {
-            const fullName = document.getElementById('reqFullName').value.trim();
-            const pin = document.getElementById('reqPin').value.trim();
-            const cars = getReqCars();
+            <a href="engineering.html" class="card-link">
 
-            if (!fullName) {
-                alert('الرجاء إدخال الاسم الكامل');
-                return;
-            }
-            if (cars.length === 0) {
-                alert('الرجاء إضافة سيارة واحدة على الأقل');
-                return;
-            }
-            if (!pin || pin.length < 4 || pin.length > 8) {
-                alert('الرجاء التحقق من طول الرقم السري (4-8 أرقام)');
-                return;
-            }
+                <span>
+                    فتح مكتبة الهندسة
+                </span>
 
-            bnzimRef.child(fullName).once('value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    alert(`⚠️ الشخص "${fullName}" مسجل مسبقاً في النظام.`);
-                    return;
-                }
+                <span>
+                    ←
+                </span>
 
-                const requestRef = tlbatRef.push();
-                requestRef.set({
-                    fullName: fullName,
-                    cars: cars,
-                    pin: pin,
-                    status: 'pending',
-                    requestDate: firebase.database.ServerValue.TIMESTAMP,
-                    requestedBy: 'user'
-                }).then(() => {
-                    alert('✅ تم إرسال طلبك بنجاح! سيتم مراجعته من قبل المشرف.');
-                    closeRequestModal();
-                }).catch((error) => {
-                    alert('حدث خطأ أثناء إرسال الطلب: ' + error.message);
-                });
-            });
-        }
+            </a>
 
-        // ========== أحداث عامة ==========
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeRequestModal();
-                closePreviewModal();
-            }
-        });
+        </article>
 
-        document.getElementById('requestModal').addEventListener('click', function(e) {
-            if (e.target === this) closeRequestModal();
-        });
 
-        document.getElementById('previewCardModal').addEventListener('click', function(e) {
-            if (e.target === this) closePreviewModal();
-        });
+        <!-- ARCHITECTURE -->
 
-        console.log('✅ نظام بطاقات المصروفات جاهز');
-    </script>
+        <article class="card architecture">
+
+            <div>
+
+                <div class="icon-box">
+                    🏛️
+                </div>
+
+                <h3>
+                    العمارة والديكور
+                </h3>
+
+                <p>
+                    أوامر التصميم الداخلي والخارجي،
+                    الواجهات، المخططات، توزيع الأثاث،
+                    الإضاءة وتصميم المساحات بأساليب متعددة.
+                </p>
+
+            </div>
+
+            <a href="architecture.html" class="card-link">
+
+                <span>
+                    فتح مكتبة العمارة
+                </span>
+
+                <span>
+                    ←
+                </span>
+
+            </a>
+
+        </article>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    جميع الحقوق محفوظة © 2026
+    <strong>مكتبة الأوامر الذكية</strong>
+
+</footer>
+
+
 </body>
 </html>
