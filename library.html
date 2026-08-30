@@ -1,1 +1,2476 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>مكتبة الأوامر الذكية</title>
+
+  <!-- تحويل العناصر إلى PNG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- الخطوط -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- ملف التنسيق -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    .path-info-box{
+      margin-top:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:8px;
+      font-size:.78rem;
+      color:var(--text-secondary);
+    }
+
+    .path-code{
+      direction:ltr;
+      padding:4px 9px;
+      border-radius:8px;
+      font-family:"Fira Code",monospace;
+      color:var(--primary);
+      background:rgba(0,242,254,.07);
+      border:1px solid rgba(0,242,254,.15);
+    }
+
+    .library-error{
+      grid-column:1/-1;
+      text-align:center;
+      padding:35px 15px;
+      border-radius:15px;
+      color:#f87171;
+      background:rgba(239,68,68,.06);
+      border:1px solid rgba(239,68,68,.15);
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+  <!-- =========================
+       شريط التنقل
+  ========================== -->
+
+  <nav class="site-nav">
+
+    <a
+      href="index.html"
+      class="brand-logo"
+    >
+      ✦ مكتبة الأوامر
+    </a>
+
+    <a
+      href="index.html"
+      class="external-link"
+    >
+      🌐 الرئيسية
+    </a>
+
+  </nav>
+
+
+
+  <!-- =========================
+       العنوان
+  ========================== -->
+
+  <header class="hero">
+
+    <h1 id="libraryTitle">
+      مكتبة الأوامر
+    </h1>
+
+    <p id="libraryDescription">
+      جاري تحميل بيانات المكتبة...
+    </p>
+
+    <div class="path-info-box">
+
+      <span>
+        مسار المكتبة:
+      </span>
+
+      <span
+        class="path-code"
+        id="currentPath"
+      >
+        ...
+      </span>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =========================
+       الإحصائيات
+  ========================== -->
+
+  <div class="stats-container">
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        💻
+      </div>
+
+      <div class="stat-content">
+
+        <span
+          class="stat-number"
+          id="totalCommandsCount"
+        >
+          0
+        </span>
+
+        <span class="stat-label">
+          إجمالي الأكواد
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ⭐
+      </div>
+
+      <div class="stat-content">
+
+        <span
+          class="stat-number"
+          id="favoriteCommandsCount"
+        >
+          0
+        </span>
+
+        <span class="stat-label">
+          الأكواد المفضلة
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =========================
+       البحث والتحكم
+  ========================== -->
+
+  <div class="glass-panel">
+
+    <div class="search-wrapper">
+
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="ابحث باسم الأمر أو الوصف..."
+      >
+
+    </div>
+
+
+    <div class="btn-group">
+
+      <button
+        class="btn btn-outline"
+        onclick="toggleFavFilter()"
+        id="favFilterBtn"
+      >
+        ⭐ المفضلة
+      </button>
+
+
+      <button
+        class="btn btn-outline"
+        onclick="exportTXT()"
+      >
+        💾 تصدير الكل TXT
+      </button>
+
+
+      <button
+        class="btn btn-accent"
+        onclick="promptAddCustomCommand()"
+      >
+        ➕ أمر خاص
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =========================
+       التصنيفات
+  ========================== -->
+
+  <div
+    class="categories-scroll"
+    id="categories"
+  ></div>
+
+
+
+  <!-- =========================
+       مجمع البرومبتات
+  ========================== -->
+
+  <div class="glass-panel">
+
+    <h3 class="builder-title">
+      🧩 مجمع البرومبتات
+    </h3>
+
+
+    <textarea
+      id="promptBuilder"
+      class="builder-textarea"
+      placeholder="الأوامر المختارة ستظهر هنا..."
+    ></textarea>
+
+
+    <div class="btn-group">
+
+      <button
+        class="btn btn-primary"
+        onclick="copyBuilder()"
+      >
+        📋 نسخ الكود
+      </button>
+
+
+      <button
+        class="btn btn-secondary"
+        onclick="shareTXTBuilder()"
+      >
+        📤 مشاركة TXT
+      </button>
+
+
+      <button
+        class="btn btn-accent"
+        onclick="exportBuilderPNG()"
+      >
+        🖼️ مشاركة PNG
+      </button>
+
+
+      <button
+        class="btn btn-danger"
+        onclick="clearBuilder()"
+      >
+        🗑️ مسح
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =========================
+       بطاقات الأكواد
+  ========================== -->
+
+  <main class="commands-main">
+
+    <div
+      class="commands-grid"
+      id="commandsGrid"
+    >
+
+      <div class="loading-spinner">
+
+        ⏳ جاري تحميل الأكواد من قاعدة البيانات...
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+</div>
+
+
+
+<!-- =========================
+     Toast
+========================= -->
+
+<div
+  class="toast"
+  id="toast"
+>
+  تمت العملية بنجاح!
+</div>
+
+
+
+<!-- =========================
+     بطاقة PNG
+========================= -->
+
+<div
+  id="exportCardCanvas"
+  class="export-card-canvas"
+>
+
+  <h3
+    class="export-card-category"
+    id="cardCategoryTag"
+  >
+    مكتبة الأوامر
+  </h3>
+
+  <div
+    id="cardCommandText"
+    class="export-card-command"
+  ></div>
+
+  <p
+    id="cardDescText"
+    class="export-card-description"
+  ></p>
+
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   إعداد Firebase
+===================================================== */
+
+const FIREBASE_BASE_URL =
+  "https://alnoaif-default-rtdb.firebaseio.com";
+
+
+/*
+المسار الخاص بأسماء المكتبات
+*/
+
+const META_PATH =
+  "__paths";
+
+
+/* =====================================================
+   قراءة path من الرابط
+
+   مثال:
+   library.html?path=brmjh
+===================================================== */
+
+const urlParams =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+let currentLibraryPath =
+  urlParams.get("path") || "";
+
+
+currentLibraryPath =
+  String(currentLibraryPath)
+  .trim()
+  .replace(/^\/+|\/+$/g,"");
+
+
+
+/* =====================================================
+   البيانات
+===================================================== */
+
+let fetchedCommands = [];
+
+let currentCategory =
+  "الكل";
+
+let showOnlyFavs =
+  false;
+
+
+let libraryName =
+  "مكتبة الأوامر";
+
+
+let favorites =
+  JSON.parse(
+    localStorage.getItem(
+      "promptFav"
+    ) || "[]"
+  );
+
+
+let customCmds =
+  JSON.parse(
+    localStorage.getItem(
+      "customCmds"
+    ) || "[]"
+  );
+
+
+const builder =
+  document.getElementById(
+    "promptBuilder"
+  );
+
+
+
+/* =====================================================
+   Escape HTML
+===================================================== */
+
+function escapeHTML(value){
+
+  return String(value ?? "")
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;")
+
+    .replace(/'/g,"&#039;");
+
+}
+
+
+
+/* =====================================================
+   إنشاء رابط Firebase
+===================================================== */
+
+function firebaseURL(path){
+
+  const cleanPath =
+    String(path || "")
+    .trim()
+    .replace(/^\/+|\/+$/g,"");
+
+
+  const encoded =
+    cleanPath
+    .split("/")
+    .map(
+      part =>
+        encodeURIComponent(part)
+    )
+    .join("/");
+
+
+  return (
+    FIREBASE_BASE_URL +
+    "/" +
+    encoded +
+    ".json"
+  );
+
+}
+
+
+
+/* =====================================================
+   تحميل معلومات المكتبة
+===================================================== */
+
+async function fetchLibraryMeta(){
+
+  if(!currentLibraryPath){
+    return;
+  }
+
+
+  try{
+
+    /*
+    جلب __paths بالكامل
+
+    لأن مدير المكتبات يحفظ داخله:
+    path
+    nameAr
+    */
+
+    const response =
+      await fetch(
+        firebaseURL(
+          META_PATH
+        )
+      );
+
+
+    if(!response.ok){
+      return;
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if(!data){
+      return;
+    }
+
+
+    /*
+    البحث عن المسار المطلوب
+    */
+
+    const metadata =
+      Object
+      .values(data)
+      .find(
+        item =>
+          item &&
+          typeof item === "object" &&
+          String(
+            item.path || ""
+          )
+          .replace(/^\/+|\/+$/g,"")
+          === currentLibraryPath
+      );
+
+
+    if(!metadata){
+      return;
+    }
+
+
+    /*
+    الاسم العربي
+    */
+
+    if(metadata.nameAr){
+
+      libraryName =
+        metadata.nameAr;
+
+    }
+
+
+    /*
+    عنوان الصفحة
+    */
+
+    document
+    .getElementById(
+      "libraryTitle"
+    )
+    .textContent =
+      libraryName;
+
+
+    /*
+    الوصف
+    */
+
+    document
+    .getElementById(
+      "libraryDescription"
+    )
+    .textContent =
+      metadata.desc ||
+      metadata.description ||
+      `تصفح أوامر ${libraryName} واختر الأوامر التي تحتاجها.`;
+
+
+    /*
+    عنوان المتصفح
+    */
+
+    document.title =
+      libraryName +
+      " | مكتبة الأوامر";
+
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Metadata error:",
+      error
+    );
+
+  }
+
+}
+
+
+
+/* =====================================================
+   جلب أكواد القسم
+===================================================== */
+
+async function fetchCommandsFromFirebase(){
+
+
+  const grid =
+    document.getElementById(
+      "commandsGrid"
+    );
+
+
+  /*
+  إذا لم يوجد path
+  */
+
+  if(!currentLibraryPath){
+
+    grid.innerHTML = `
+
+      <div class="library-error">
+
+        ❌ لم يتم تحديد المكتبة.
+
+        <br><br>
+
+        افتح الصفحة مثلاً بهذا الشكل:
+
+        <br><br>
+
+        <strong>
+          library.html?path=brmjh
+        </strong>
+
+      </div>
+
+    `;
+
+
+    document
+    .getElementById(
+      "libraryTitle"
+    )
+    .textContent =
+      "لم يتم تحديد القسم";
+
+
+    document
+    .getElementById(
+      "libraryDescription"
+    )
+    .textContent =
+      "ارجع إلى الصفحة الرئيسية واختر أحد الأقسام.";
+
+
+    return;
+
+  }
+
+
+
+  /*
+  عرض المسار الحالي
+  */
+
+  document
+  .getElementById(
+    "currentPath"
+  )
+  .textContent =
+    "/" + currentLibraryPath;
+
+
+
+  /*
+  عنوان مؤقت
+  */
+
+  document
+  .getElementById(
+    "libraryTitle"
+  )
+  .textContent =
+    "جاري تحميل المكتبة...";
+
+
+  try{
+
+
+    /*
+    جلب الاسم العربي
+    */
+
+    await fetchLibraryMeta();
+
+
+
+    /*
+    رابط القسم مباشرة
+
+    مثال:
+    /brmjh.json
+    /cars.json
+    /astath.json
+    */
+
+    const response =
+      await fetch(
+        firebaseURL(
+          currentLibraryPath
+        )
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "تعذر جلب بيانات القسم"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    fetchedCommands = [];
+
+
+
+    /*
+    لا توجد بيانات
+    */
+
+    if(!data){
+
+      grid.innerHTML = `
+
+        <div class="empty-results">
+
+          <div class="empty-results-icon">
+            📭
+          </div>
+
+          <div>
+
+            لا توجد أوامر داخل
+            ${escapeHTML(libraryName)}
+
+          </div>
+
+        </div>
+
+      `;
+
+
+      renderCategories();
+
+      updateStats();
+
+      return;
+
+    }
+
+
+
+    /*
+    =====================================
+    Array مباشرة
+    =====================================
+    */
+
+    if(
+      Array.isArray(data)
+    ){
+
+      data.forEach(item=>{
+
+        if(
+          item &&
+          (item.c || item.d)
+        ){
+
+          fetchedCommands.push({
+
+            c:
+              item.c || "",
+
+            d:
+              item.d || "",
+
+            category:
+              item.category ||
+              "عام"
+
+          });
+
+        }
+
+      });
+
+    }
+
+
+
+    /*
+    =====================================
+    Object
+    =====================================
+    */
+
+    else if(
+      typeof data === "object"
+    ){
+
+
+      Object
+      .entries(data)
+      .forEach(
+        ([category,val])=>{
+
+
+          /*
+          تصنيف Array
+          */
+
+          if(
+            Array.isArray(val)
+          ){
+
+            val.forEach(item=>{
+
+              if(
+                item &&
+                (item.c || item.d)
+              ){
+
+                fetchedCommands.push({
+
+                  c:
+                    item.c || "",
+
+                  d:
+                    item.d || "",
+
+                  category:
+                    item.category ||
+                    category ||
+                    "عام"
+
+                });
+
+              }
+
+            });
+
+
+            return;
+
+          }
+
+
+
+          /*
+          Object
+          */
+
+          if(
+            val &&
+            typeof val === "object"
+          ){
+
+
+            /*
+            أمر منفرد
+            */
+
+            if(
+              val.c ||
+              val.d
+            ){
+
+              fetchedCommands.push({
+
+                c:
+                  val.c || "",
+
+                d:
+                  val.d || "",
+
+                category:
+                  val.category ||
+                  category ||
+                  "عام"
+
+              });
+
+
+              return;
+
+            }
+
+
+
+            /*
+            Push IDs أو أرقام
+            */
+
+            Object
+            .values(val)
+            .forEach(item=>{
+
+              if(
+                item &&
+                typeof item === "object" &&
+                (item.c || item.d)
+              ){
+
+                fetchedCommands.push({
+
+                  c:
+                    item.c || "",
+
+                  d:
+                    item.d || "",
+
+                  category:
+                    item.category ||
+                    category ||
+                    "عام"
+
+                });
+
+              }
+
+            });
+
+          }
+
+        }
+
+      );
+
+    }
+
+
+
+    /*
+    العرض
+    */
+
+    renderCategories();
+
+    renderCommands();
+
+    updateStats();
+
+
+  }
+
+  catch(error){
+
+
+    console.error(
+      "Firebase Fetch Error:",
+      error
+    );
+
+
+    grid.innerHTML = `
+
+      <div class="library-error">
+
+        <div style="font-size:2rem;margin-bottom:10px">
+          ❌
+        </div>
+
+        <div>
+
+          تعذر تحميل مكتبة
+
+          <strong>
+            ${escapeHTML(
+              currentLibraryPath
+            )}
+          </strong>
+
+        </div>
+
+      </div>
+
+    `;
+
+
+  }
+
+}
+
+
+
+/* =====================================================
+   جميع العناصر
+===================================================== */
+
+function allItems(){
+
+  return [
+    ...fetchedCommands,
+    ...customCmds
+  ];
+
+}
+
+
+
+/* =====================================================
+   الإحصائيات
+===================================================== */
+
+function updateStats(){
+
+  const items =
+    allItems();
+
+
+  document
+  .getElementById(
+    "totalCommandsCount"
+  )
+  .textContent =
+    items.length;
+
+
+  const validFavorites =
+    favorites.filter(
+      fav =>
+        items.some(
+          item =>
+            item.c === fav
+        )
+    );
+
+
+  document
+  .getElementById(
+    "favoriteCommandsCount"
+  )
+  .textContent =
+    validFavorites.length;
+
+}
+
+
+
+/* =====================================================
+   التصنيفات
+===================================================== */
+
+function renderCategories(){
+
+  const categoriesDiv =
+    document.getElementById(
+      "categories"
+    );
+
+
+  const categoriesSet =
+    new Set(
+
+      fetchedCommands.map(
+        item =>
+          item.category ||
+          "عام"
+      )
+
+    );
+
+
+  const cats = [
+
+    "الكل",
+
+    ...Array.from(
+      categoriesSet
+    )
+
+  ];
+
+
+  if(customCmds.length){
+
+    cats.push(
+      "خاص بي"
+    );
+
+  }
+
+
+  categoriesDiv.innerHTML =
+    cats.map(cat=>`
+
+      <button
+
+        class="cat-pill ${
+          cat === currentCategory &&
+          !showOnlyFavs
+          ? "active"
+          : ""
+        }"
+
+        onclick='selectCategory(
+          ${JSON.stringify(cat)}
+        )'
+
+      >
+
+        ${escapeHTML(cat)}
+
+      </button>
+
+    `)
+    .join("");
+
+}
+
+
+
+/* =====================================================
+   اختيار تصنيف
+===================================================== */
+
+function selectCategory(cat){
+
+  currentCategory =
+    cat;
+
+
+  showOnlyFavs =
+    false;
+
+
+  document
+  .getElementById(
+    "favFilterBtn"
+  )
+  .classList
+  .remove(
+    "active"
+  );
+
+
+  renderCategories();
+
+  renderCommands();
+
+}
+
+
+
+/* =====================================================
+   المفضلة
+===================================================== */
+
+function toggleFavFilter(){
+
+  showOnlyFavs =
+    !showOnlyFavs;
+
+
+  document
+  .getElementById(
+    "favFilterBtn"
+  )
+  .classList
+  .toggle(
+    "active",
+    showOnlyFavs
+  );
+
+
+  renderCategories();
+
+  renderCommands();
+
+}
+
+
+
+/* =====================================================
+   عرض الأوامر
+===================================================== */
+
+function renderCommands(){
+
+
+  const query =
+    document
+    .getElementById(
+      "searchInput"
+    )
+    .value
+    .toLowerCase()
+    .trim();
+
+
+  const grid =
+    document
+    .getElementById(
+      "commandsGrid"
+    );
+
+
+  grid.innerHTML = "";
+
+
+
+  const filtered =
+    allItems()
+    .filter(item=>{
+
+
+      const command =
+        String(
+          item.c || ""
+        )
+        .toLowerCase();
+
+
+      const description =
+        String(
+          item.d || ""
+        )
+        .toLowerCase();
+
+
+      const category =
+        String(
+          item.category || ""
+        )
+        .toLowerCase();
+
+
+      const matchesSearch =
+
+        command.includes(query) ||
+
+        description.includes(query) ||
+
+        category.includes(query);
+
+
+
+      const matchesCategory =
+
+        currentCategory ===
+        "الكل"
+
+        ||
+
+        item.category ===
+        currentCategory;
+
+
+
+      const matchesFavorite =
+
+        !showOnlyFavs
+
+        ||
+
+        favorites.includes(
+          item.c
+        );
+
+
+      return (
+
+        matchesSearch &&
+
+        matchesCategory &&
+
+        matchesFavorite
+
+      );
+
+    });
+
+
+
+  if(
+    filtered.length === 0
+  ){
+
+    grid.innerHTML = `
+
+      <div class="empty-results">
+
+        <div class="empty-results-icon">
+          🔍
+        </div>
+
+        <div>
+          لا توجد نتائج مطابقة
+        </div>
+
+      </div>
+
+    `;
+
+
+    updateStats();
+
+    return;
+
+  }
+
+
+
+  filtered.forEach(item=>{
+
+
+    const isFav =
+      favorites.includes(
+        item.c
+      );
+
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+
+    card.className =
+      "command-card";
+
+
+
+    /*
+    المفضلة
+    */
+
+    const favBadge =
+      document.createElement(
+        "button"
+      );
+
+
+    favBadge.className =
+      `fav-badge ${
+        isFav
+        ? "active"
+        : ""
+      }`;
+
+
+    favBadge.innerHTML =
+      isFav
+      ? "★"
+      : "☆";
+
+
+    favBadge.title =
+      isFav
+      ? "إزالة من المفضلة"
+      : "إضافة للمفضلة";
+
+
+    favBadge.onclick =
+      e=>{
+
+        e.stopPropagation();
+
+        toggleFavorite(
+          item.c
+        );
+
+      };
+
+
+    card.appendChild(
+      favBadge
+    );
+
+
+
+    /*
+    نافذة الكود
+    */
+
+    const terminalWindow =
+      document.createElement(
+        "div"
+      );
+
+
+    terminalWindow.className =
+      "terminal-window";
+
+
+    const terminalHeader =
+      document.createElement(
+        "div"
+      );
+
+
+    terminalHeader.className =
+      "terminal-header";
+
+
+    terminalHeader.innerHTML = `
+
+      <span class="dot dot-red"></span>
+
+      <span class="dot dot-yellow"></span>
+
+      <span class="dot dot-green"></span>
+
+    `;
+
+
+
+    const codeBlock =
+      document.createElement(
+        "div"
+      );
+
+
+    codeBlock.className =
+      "command-code";
+
+
+    codeBlock.textContent =
+      item.c;
+
+
+
+    terminalWindow.appendChild(
+      terminalHeader
+    );
+
+
+    terminalWindow.appendChild(
+      codeBlock
+    );
+
+
+    card.appendChild(
+      terminalWindow
+    );
+
+
+
+    /*
+    الوصف
+    */
+
+    const desc =
+      document.createElement(
+        "p"
+      );
+
+
+    desc.className =
+      "command-desc";
+
+
+    desc.textContent =
+      item.d;
+
+
+    card.appendChild(
+      desc
+    );
+
+
+
+    /*
+    الأزرار
+    */
+
+    const actions =
+      document.createElement(
+        "div"
+      );
+
+
+    actions.className =
+      "card-actions";
+
+
+
+    const copyBtn =
+      document.createElement(
+        "button"
+      );
+
+
+    copyBtn.className =
+      "card-btn copy-command-btn";
+
+
+    copyBtn.innerHTML =
+      "📋 نسخ";
+
+
+    copyBtn.onclick =
+      ()=>copyCommand(
+        item.c
+      );
+
+
+    actions.appendChild(
+      copyBtn
+    );
+
+
+
+    const addBtn =
+      document.createElement(
+        "button"
+      );
+
+
+    addBtn.className =
+      "card-btn";
+
+
+    addBtn.innerHTML =
+      "➕ للمنشئ";
+
+
+    addBtn.onclick =
+      ()=>addBuilder(
+        item.c
+      );
+
+
+    actions.appendChild(
+      addBtn
+    );
+
+
+
+    const pngBtn =
+      document.createElement(
+        "button"
+      );
+
+
+    pngBtn.className =
+      "card-btn";
+
+
+    pngBtn.innerHTML =
+      "🖼️ PNG";
+
+
+    pngBtn.onclick =
+      ()=>shareCardPNG(
+
+        item.c,
+
+        item.d,
+
+        item.category
+
+      );
+
+
+    actions.appendChild(
+      pngBtn
+    );
+
+
+
+    const txtBtn =
+      document.createElement(
+        "button"
+      );
+
+
+    txtBtn.className =
+      "card-btn";
+
+
+    txtBtn.innerHTML =
+      "📄 TXT";
+
+
+    txtBtn.onclick =
+      ()=>shareCardTXT(
+        item.c,
+        item.d
+      );
+
+
+    actions.appendChild(
+      txtBtn
+    );
+
+
+
+    card.appendChild(
+      actions
+    );
+
+
+    grid.appendChild(
+      card
+    );
+
+
+  });
+
+
+  updateStats();
+
+}
+
+
+
+/* =====================================================
+   نسخ
+===================================================== */
+
+async function copyCommand(command){
+
+  try{
+
+    await navigator.clipboard.writeText(
+      command
+    );
+
+
+    showToast(
+      "📋 تم نسخ الأمر بنجاح"
+    );
+
+  }
+
+  catch(error){
+
+    fallbackCopy(
+      command
+    );
+
+  }
+
+}
+
+
+
+function fallbackCopy(text){
+
+  const textarea =
+    document.createElement(
+      "textarea"
+    );
+
+
+  textarea.value =
+    text;
+
+
+  textarea.style.position =
+    "fixed";
+
+
+  textarea.style.opacity =
+    "0";
+
+
+  document.body.appendChild(
+    textarea
+  );
+
+
+  textarea.select();
+
+
+  document.execCommand(
+    "copy"
+  );
+
+
+  textarea.remove();
+
+
+  showToast(
+    "📋 تم النسخ بنجاح"
+  );
+
+}
+
+
+
+/* =====================================================
+   المنشئ
+===================================================== */
+
+function addBuilder(c){
+
+  let lines =
+    builder.value
+    .split("\n")
+    .filter(
+      line =>
+        line.trim()
+    );
+
+
+  if(
+    !lines.includes(c)
+  ){
+
+    lines.push(c);
+
+
+    builder.value =
+      lines.join("\n");
+
+
+    showToast(
+      "✅ تمت إضافة الأمر للمنشئ"
+    );
+
+  }
+
+  else{
+
+    showToast(
+      "ℹ️ الأمر موجود مسبقاً"
+    );
+
+  }
+
+}
+
+
+
+/* =====================================================
+   مفضلة
+===================================================== */
+
+function toggleFavorite(c){
+
+  if(
+    favorites.includes(c)
+  ){
+
+    favorites =
+      favorites.filter(
+        item =>
+          item !== c
+      );
+
+
+    showToast(
+      "☆ تمت الإزالة من المفضلة"
+    );
+
+  }
+
+  else{
+
+    favorites.push(c);
+
+
+    showToast(
+      "⭐ تمت الإضافة للمفضلة"
+    );
+
+  }
+
+
+  localStorage.setItem(
+
+    "promptFav",
+
+    JSON.stringify(
+      favorites
+    )
+
+  );
+
+
+  renderCommands();
+
+}
+
+
+
+/* =====================================================
+   أمر خاص
+===================================================== */
+
+function promptAddCustomCommand(){
+
+
+  let c =
+    prompt(
+      "أدخل كود الأمر\nمثال: /my_command"
+    );
+
+
+  if(!c){
+    return;
+  }
+
+
+  c =
+    c.trim();
+
+
+  if(!c){
+    return;
+  }
+
+
+
+  let d =
+    prompt(
+      "أدخل وصف الأمر:"
+    );
+
+
+  if(!d){
+    return;
+  }
+
+
+  d =
+    d.trim();
+
+
+  if(!d){
+    return;
+  }
+
+
+
+  const exists =
+    allItems()
+    .some(
+      item =>
+        item.c
+        .toLowerCase()
+        ===
+        c.toLowerCase()
+    );
+
+
+  if(exists){
+
+    showToast(
+      "⚠️ هذا الأمر موجود مسبقاً"
+    );
+
+    return;
+
+  }
+
+
+
+  customCmds.push({
+
+    c,
+
+    d,
+
+    category:
+      "خاص بي"
+
+  });
+
+
+
+  localStorage.setItem(
+
+    "customCmds",
+
+    JSON.stringify(
+      customCmds
+    )
+
+  );
+
+
+  renderCategories();
+
+  renderCommands();
+
+
+  showToast(
+    "✅ تمت إضافة الأمر الخاص"
+  );
+
+}
+
+
+
+/* =====================================================
+   TXT
+===================================================== */
+
+async function shareCardTXT(c,d){
+
+  const textData =
+
+    `الأمر: ${c}\n` +
+    `الوصف: ${d}`;
+
+
+  if(navigator.share){
+
+    try{
+
+      await navigator.share({
+
+        title:c,
+
+        text:textData
+
+      });
+
+    }
+
+    catch(error){}
+
+  }
+
+  else{
+
+    copyText(
+      textData
+    );
+
+  }
+
+}
+
+
+
+/* =====================================================
+   PNG
+===================================================== */
+
+async function shareCardPNG(
+  c,
+  d,
+  cat
+){
+
+  document
+  .getElementById(
+    "cardCommandText"
+  )
+  .textContent =
+    c;
+
+
+  document
+  .getElementById(
+    "cardDescText"
+  )
+  .textContent =
+    d;
+
+
+  document
+  .getElementById(
+    "cardCategoryTag"
+  )
+  .textContent =
+    cat ||
+    libraryName;
+
+
+  const canvasElement =
+    document
+    .getElementById(
+      "exportCardCanvas"
+    );
+
+
+  showToast(
+    "🖼️ جاري إعداد الصورة..."
+  );
+
+
+  try{
+
+
+    const cvs =
+      await html2canvas(
+
+        canvasElement,
+
+        {
+
+          backgroundColor:null,
+
+          scale:2,
+
+          useCORS:true
+
+        }
+
+      );
+
+
+    cvs.toBlob(
+
+      async blob=>{
+
+
+        if(!blob){
+
+          showToast(
+            "❌ تعذر إنشاء الصورة"
+          );
+
+          return;
+
+        }
+
+
+        const fileName =
+          c.replace(
+            /[\/\\:*?"<>|]/g,
+            ""
+          )
+          ||
+          "command";
+
+
+        const file =
+          new File(
+
+            [blob],
+
+            `${fileName}.png`,
+
+            {
+              type:"image/png"
+            }
+
+          );
+
+
+        if(
+          navigator.share &&
+          navigator.canShare &&
+          navigator.canShare({
+            files:[file]
+          })
+        ){
+
+          try{
+
+            await navigator.share({
+
+              files:[file],
+
+              title:c,
+
+              text:d
+
+            });
+
+          }
+
+          catch(error){}
+
+        }
+
+        else{
+
+
+          const a =
+            document.createElement(
+              "a"
+            );
+
+
+          a.href =
+            cvs.toDataURL(
+              "image/png"
+            );
+
+
+          a.download =
+            `${fileName}.png`;
+
+
+          document.body.appendChild(
+            a
+          );
+
+
+          a.click();
+
+          a.remove();
+
+
+          showToast(
+            "✅ تم حفظ الصورة"
+          );
+
+        }
+
+
+      },
+
+      "image/png"
+
+    );
+
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+
+    showToast(
+      "❌ تعذر إنشاء الصورة"
+    );
+
+  }
+
+}
+
+
+
+/* =====================================================
+   مشاركة المنشئ
+===================================================== */
+
+async function shareTXTBuilder(){
+
+  const text =
+    builder.value.trim();
+
+
+  if(!text){
+
+    showToast(
+      "⚠️ المنشئ فارغ"
+    );
+
+    return;
+
+  }
+
+
+  if(navigator.share){
+
+    try{
+
+      await navigator.share({
+
+        title:
+          libraryName,
+
+        text
+
+      });
+
+    }
+
+    catch(error){}
+
+  }
+
+  else{
+
+    copyText(text);
+
+  }
+
+}
+
+
+
+function exportBuilderPNG(){
+
+  const text =
+    builder.value.trim();
+
+
+  if(!text){
+
+    showToast(
+      "⚠️ المنشئ فارغ"
+    );
+
+    return;
+
+  }
+
+
+  shareCardPNG(
+
+    "أوامر مجمعة",
+
+    text,
+
+    libraryName
+
+  );
+
+}
+
+
+
+/* =====================================================
+   نسخ المنشئ
+===================================================== */
+
+async function copyBuilder(){
+
+  const text =
+    builder.value.trim();
+
+
+  if(!text){
+
+    showToast(
+      "⚠️ المنشئ فارغ"
+    );
+
+    return;
+
+  }
+
+
+  copyText(text);
+
+}
+
+
+
+async function copyText(text){
+
+  try{
+
+    await navigator
+      .clipboard
+      .writeText(text);
+
+
+    showToast(
+      "📋 تم النسخ بنجاح"
+    );
+
+  }
+
+  catch(error){
+
+    fallbackCopy(text);
+
+  }
+
+}
+
+
+
+/* =====================================================
+   مسح المنشئ
+===================================================== */
+
+function clearBuilder(){
+
+  builder.value = "";
+
+
+  showToast(
+    "🗑️ تم مسح المنشئ"
+  );
+
+}
+
+
+
+/* =====================================================
+   تصدير الكل
+===================================================== */
+
+function exportTXT(){
+
+  const data =
+    allItems()
+    .map(
+
+      item =>
+
+        `${item.c} - ${item.d}`
+
+    )
+    .join("\n");
+
+
+  if(!data){
+
+    showToast(
+      "⚠️ لا توجد أوامر"
+    );
+
+    return;
+
+  }
+
+
+  const blob =
+    new Blob(
+
+      [data],
+
+      {
+        type:
+          "text/plain;charset=utf-8"
+      }
+
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a =
+    document.createElement(
+      "a"
+    );
+
+
+  a.href =
+    url;
+
+
+  a.download =
+    `${currentLibraryPath || "commands"}.txt`;
+
+
+  document.body.appendChild(
+    a
+  );
+
+
+  a.click();
+
+  a.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+
+  showToast(
+    "💾 تم تصدير جميع الأوامر"
+  );
+
+}
+
+
+
+/* =====================================================
+   Toast
+===================================================== */
+
+function showToast(msg){
+
+  const toast =
+    document.getElementById(
+      "toast"
+    );
+
+
+  toast.textContent =
+    msg;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+
+  window.toastTimer =
+    setTimeout(()=>{
+
+      toast.classList.remove(
+        "show"
+      );
+
+    },2000);
+
+}
+
+
+
+/* =====================================================
+   البحث
+===================================================== */
+
+document
+.getElementById(
+  "searchInput"
+)
+.addEventListener(
+  "input",
+  renderCommands
+);
+
+
+
+/* =====================================================
+   تشغيل
+===================================================== */
+
+fetchCommandsFromFirebase();
+
+
+</script>
+
+</body>
+
+</html>
