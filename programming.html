@@ -5,574 +5,602 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>مكتبة الأوامر البصرية</title>
   
+  <!-- مكتبة تحويل العناصر إلى PNG -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- استدعاء ملف التنسيق الموحد الخارجي -->
+  <!-- الخطوط -->
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- ملف التنسيق الخارجي -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="container">
+    <!-- =========================  
+         شريط التنقل  
+    ========================== -->
+    <nav class="site-nav">
+      <a href="#" class="brand-logo">✦ مكتبة الأوامر</a>
+      <a href="index.html" class="external-link">🌐 الرئيسية</a>
+    </nav>
 
-<div class="container">
-  <!-- Navbar -->
-  <nav class="site-nav">
-    <a href="#" class="brand-logo">✦ مكتبة الأوامر</a>
-    <a href="https://alnoaif2026.github.io" target="_blank" class="external-link">🌐 الرئيسية</a>
-  </nav>
+    <!-- =========================  
+         العنوان  
+    ========================== -->
+    <header class="hero">
+      <h1>الأوامر البصرية والبرمجية</h1>
+      <p>تصفح، شارك وأنشئ أوامر البرمجة والذكاء الاصطناعي بسهولة</p>
+    </header>
 
-  <!-- Hero Header -->
-  <header class="hero">
-    <h1>الأوامر البصرية والبرمجية</h1>
-    <p>تصفح، شارك وأنشئ أوامر البرمجة والذكاء الاصطناعي بسهولة</p>
-  </header>
+    <!-- =========================  
+         الإحصائيات  
+    ========================== -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon">💻</div>
+        <div class="stat-content">
+          <span class="stat-number" id="totalCommandsCount">0</span>
+          <span class="stat-label">إجمالي الأكواد</span>
+        </div>
+      </div>
 
-  <!-- Search & Controls -->
-  <div class="glass-panel">
-    <div class="search-wrapper">
-      <input type="text" id="searchInput" class="search-input" placeholder="ابحث باسم الأمر أو الوصف...">
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-content">
+          <span class="stat-number" id="favoriteCommandsCount">0</span>
+          <span class="stat-label">الأكواد المفضلة</span>
+        </div>
+      </div>
     </div>
-    <div class="btn-group">
-      <button class="btn btn-outline" onclick="toggleFavFilter()" id="favFilterBtn">⭐ المفضلة</button>
-      <button class="btn btn-outline" onclick="exportTXT()">💾 تصدير الكل TXT</button>
-      <button class="btn btn-accent" onclick="promptAddCustomCommand()">➕ أمر خاص</button>
+
+    <!-- =========================  
+         البحث والتحكم  
+    ========================== -->
+    <div class="glass-panel">
+      <div class="search-wrapper">
+        <input type="text" id="searchInput" class="search-input" placeholder="ابحث باسم الأمر أو الوصف...">
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="toggleFavFilter()" id="favFilterBtn">⭐ المفضلة</button>
+        <button class="btn btn-outline" onclick="exportTXT()">💾 تصدير الكل TXT</button>
+        <button class="btn btn-accent" onclick="promptAddCustomCommand()">➕ أمر خاص</button>
+      </div>
     </div>
+
+    <!-- =========================  
+         التصنيفات  
+    ========================== -->
+    <div class="categories-scroll" id="categories"></div>
+
+    <!-- =========================  
+         مجمع البرومبتات  
+    ========================== -->
+    <div class="glass-panel">
+      <h3 class="builder-title">🧩 مجمع البرومبتات</h3>
+      <textarea id="promptBuilder" class="builder-textarea" placeholder="الأوامر المختارة ستظهر هنا..."></textarea>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكود</button>
+        <button class="btn btn-secondary" onclick="shareTXTBuilder()">📤 مشاركة TXT</button>
+        <button class="btn btn-accent" onclick="exportBuilderPNG()">🖼️ مشاركة PNG</button>
+        <button class="btn btn-danger" onclick="clearBuilder()">🗑️ مسح</button>
+      </div>
+    </div>
+
+    <!-- =========================  
+         بطاقات الأكواد  
+    ========================== -->
+    <main class="commands-main">
+      <div class="commands-grid" id="commandsGrid">
+        <div class="loading-spinner">⏳ جاري تحميل الأكواد من قاعدة البيانات...</div>
+      </div>
+    </main>
   </div>
 
-  <!-- Categories Scroll Area -->
-  <div class="categories-scroll" id="categories"></div>
+  <!-- =========================  
+       رسالة التنبيه  
+  ========================== -->
+  <div class="toast" id="toast">تمت العملية بنجاح!</div>
 
-  <!-- Prompt Builder Section -->
-  <div class="glass-panel">
-    <h3 style="color: var(--primary-neon); font-size: 1rem; margin-bottom: 8px;">🧩 مجمع البرومبتات</h3>
-    <textarea id="promptBuilder" class="builder-textarea" placeholder="الأوامر المختارة ستظهر هنا..."></textarea>
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="copyBuilder()">📋 نسخ الكود</button>
-      <button class="btn btn-secondary" onclick="shareTXTBuilder()">📤 مشاركة TXT</button>
-      <button class="btn btn-accent" onclick="exportBuilderPNG()">🖼️ مشاركة PNG</button>
-      <button class="btn btn-danger" onclick="clearBuilder()">مسح</button>
-    </div>
+  <!-- =========================  
+       البطاقة المخفية لتصدير PNG  
+  ========================== -->
+  <div id="exportCardCanvas" class="export-card-canvas">
+    <h3 class="export-card-category" id="cardCategoryTag">مكتبة الأوامر البصرية</h3>
+    <div id="cardCommandText" class="export-card-command"></div>
+    <p id="cardDescText" class="export-card-description"></p>
   </div>
 
-  <!-- Cards Main Area -->
-  <main style="margin-top: 16px;">
-    <div class="commands-grid" id="commandsGrid"></div>
-  </main>
-</div>
+  <script>
+    const FIREBASE_URL = "https://alnoaif-default-rtdb.firebaseio.com/brmjh.json";
+    
+    let library = {};
+    let fetchedCommands = [];
+    let currentCategory = "الكل";
+    let showOnlyFavs = false;
 
-<div class="toast" id="toast">تمت العملية بنجاح!</div>
+    let favorites = JSON.parse(localStorage.getItem("promptFav") || "[]");
+    let customCmds = JSON.parse(localStorage.getItem("customCmds") || "[]");
 
-<!-- Hidden Canvas for Image Export -->
-<div id="exportCardCanvas" style="position: absolute; left:-9999px; top:-9999px; width:450px; background:#090d16; color:#fff; padding:24px; border-radius:16px; border:2px solid #00f2fe;">
-  <h3 style="color:#00f2fe; margin-bottom:8px; font-size:1.1rem;" id="cardCategoryTag">مكتبة الأوامر البصرية</h3>
-  <div id="cardCommandText" style="font-family:monospace; font-size:1.3rem; background:rgba(255,255,255,0.1); padding:12px; border-radius:10px; margin-bottom:10px; color:#00f2fe; direction:ltr;"></div>
-  <p id="cardDescText" style="color:#ccc; font-size:0.95rem; line-height:1.6;"></p>
-</div>
+    const builder = document.getElementById("promptBuilder");
 
-<script>
-  const library = {
-    "البرمجة والتطوير":[
-      {c:"/code",d:"إنشاء كود برمجي حسب المطلوب."},
-      {c:"/writecode",d:"كتابة كود كامل لتنفيذ فكرة محددة."},
-      {c:"/generatecode",d:"توليد كود بناءً على وصف المشروع."},
-      {c:"/completecode",d:"إكمال الأجزاء الناقصة من الكود."},
-      {c:"/fullcode",d:"إرسال الكود كاملًا وجاهزًا للاستخدام."},
-      {c:"/continuecode",d:"متابعة كتابة الكود من آخر جزء."},
-      {c:"/explaincode",d:"شرح الكود ووظيفة كل جزء."},
-      {c:"/codewalkthrough",d:"شرح تنفيذ الكود خطوة بخطوة."},
-      {c:"/simplifycode",d:"تبسيط الكود وجعله أسهل للفهم."},
-      {c:"/refactor",d:"إعادة تنظيم الكود بدون تغيير وظيفته."},
-      {c:"/cleancode",d:"تحسين الكود ليصبح أنظف وأكثر تنظيمًا."},
-      {c:"/optimizecode",d:"تحسين أداء الكود."},
-      {c:"/shortencode",d:"اختصار الكود مع الحفاظ على وظيفته."},
-      {c:"/modernizecode",d:"تحديث الكود لاستخدام أساليب وتقنيات أحدث."},
-      {c:"/convertcode",d:"تحويل الكود من لغة برمجة إلى أخرى."},
-      {c:"/pseudocode",d:"تحويل الفكرة إلى كود شبه برمجي."},
-      {c:"/algorithm",d:"إنشاء خوارزمية لحل المشكلة."},
-      {c:"/logic",d:"تصميم المنطق البرمجي للمشروع."},
-      {c:"/debug",d:"البحث عن الأخطاء البرمجية وإصلاحها."},
-      {c:"/fixcode",d:"إصلاح الكود الذي لا يعمل."},
-      {c:"/findbug",d:"البحث عن سبب المشكلة في الكود."},
-      {c:"/fixerror",d:"إصلاح رسالة خطأ محددة."},
-      {c:"/syntaxfix",d:"إصلاح أخطاء الكتابة والصياغة البرمجية."},
-      {c:"/logicfix",d:"إصلاح الأخطاء المنطقية."},
-      {c:"/runtimefix",d:"إصلاح أخطاء وقت التشغيل."},
-      {c:"/consoleerror",d:"تحليل وإصلاح أخطاء Console."},
-      {c:"/servererror",d:"تحليل أخطاء الخادم."},
-      {c:"/databaseerror",d:"تحليل أخطاء قاعدة البيانات."},
-      {c:"/fix404",d:"البحث عن سبب خطأ 404 وإصلاحه."},
-      {c:"/fix500",d:"البحث عن سبب خطأ 500 وإصلاحه."},
-      {c:"/debugstep",d:"تشخيص المشكلة خطوة بخطوة."},
-      {c:"/errorhandling",d:"إضافة معالجة للأخطاء والاستثناءات."},
-      {c:"/validation",d:"إضافة التحقق من صحة البيانات."},
-      {c:"/html",d:"إنشاء صفحة HTML."},
-      {c:"/html5",d:"إنشاء صفحة باستخدام HTML5."},
-      {c:"/webpage",d:"إنشاء صفحة ويب كاملة."},
-      {c:"/landingpage",d:"إنشاء صفحة هبوط."},
-      {c:"/homepage",d:"إنشاء الصفحة الرئيسية."},
-      {c:"/aboutpage",d:"إنشاء صفحة من نحن."},
-      {c:"/contactpage",d:"إنشاء صفحة تواصل."},
-      {c:"/form",d:"إنشاء نموذج إدخال بيانات."},
-      {c:"/loginform",d:"إنشاء نموذج تسجيل دخول."},
-      {c:"/registerform",d:"إنشاء نموذج إنشاء حساب."},
-      {c:"/searchform",d:"إنشاء مربع ونموذج بحث."},
-      {c:"/table",d:"إنشاء جدول HTML."},
-      {c:"/navbar",d:"إنشاء شريط تنقل."},
-      {c:"/sidebar",d:"إنشاء قائمة جانبية."},
-      {c:"/footer",d:"إنشاء تذييل الصفحة."},
-      {c:"/header",d:"إنشاء رأس الصفحة."},
-      {c:"/card",d:"إنشاء بطاقة محتوى."},
-      {c:"/modal",d:"إنشاء نافذة منبثقة."},
-      {c:"/accordion",d:"إنشاء قوائم قابلة للفتح والإغلاق."},
-      {c:"/tabs",d:"إنشاء تبويبات."},
-      {c:"/dropdown",d:"إنشاء قائمة منسدلة."},
-      {c:"/gallery",d:"إنشاء معرض صور."},
-      {c:"/slider",d:"إنشاء سلايدر."},
-      {c:"/carousel",d:"إنشاء معرض صور متحرك."},
-      {c:"/dashboard",d:"إنشاء لوحة تحكم."},
-      {c:"/adminpanel",d:"إنشاء لوحة إدارة."},
-      {c:"/profilepage",d:"إنشاء صفحة ملف شخصي."},
-      {c:"/productpage",d:"إنشاء صفحة منتج."},
-      {c:"/cartpage",d:"إنشاء صفحة سلة مشتريات."},
-      {c:"/checkoutpage",d:"إنشاء صفحة إتمام الطلب."},
-      {c:"/responsivepage",d:"إنشاء صفحة متجاوبة مع الجوال والكمبيوتر."},
-      {c:"/css",d:"إنشاء أو تعديل CSS."},
-      {c:"/style",d:"تصميم عناصر الصفحة."},
-      {c:"/moderncss",d:"تحويل التصميم إلى مظهر حديث."},
-      {c:"/responsive",d:"جعل الصفحة متجاوبة مع جميع الشاشات."},
-      {c:"/mobilefirst",d:"تصميم الصفحة للجوال أولًا."},
-      {c:"/darkmode",d:"إضافة الوضع الداكن."},
-      {c:"/lightmode",d:"إنشاء تصميم فاتح."},
-      {c:"/rtl",d:"دعم اللغة العربية واتجاه RTL."},
-      {c:"/animation",d:"إضافة حركة للعناصر."},
-      {c:"/transition",d:"إضافة انتقالات ناعمة."},
-      {c:"/hover",d:"إضافة تأثير عند تمرير المؤشر."},
-      {c:"/gradient",d:"إنشاء تدرجات لونية."},
-      {c:"/shadow",d:"إضافة ظلال احترافية."},
-      {c:"/glassmorphism",d:"إنشاء تأثير الزجاج الشفاف."},
-      {c:"/neumorphism",d:"استخدام أسلوب التصميم البارز الناعم."},
-      {c:"/grid",d:"تنظيم العناصر باستخدام CSS Grid."},
-      {c:"/flexbox",d:"تنظيم العناصر باستخدام Flexbox."},
-      {c:"/sticky",d:"تثبيت عنصر أثناء التمرير."},
-      {c:"/fixed",d:"تثبيت عنصر على الشاشة."},
-      {c:"/printcss",d:"إنشاء تنسيق خاص بالطباعة."},
-      {c:"/a4",d:"تنسيق الصفحة للطباعة بحجم A4."},
-      {c:"/csscleanup",d:"تنظيف CSS وحذف التكرار."},
-      {c:"/cssvariables",d:"تنظيم الألوان والقيم باستخدام CSS Variables."},
-      {c:"/javascript",d:"إنشاء JavaScript."},
-      {c:"/js",d:"كتابة كود JavaScript."},
-      {c:"/addevent",d:"إضافة حدث لعنصر."},
-      {c:"/onclick",d:"إضافة وظيفة عند الضغط."},
-      {c:"/formvalidation",d:"التحقق من بيانات النموذج."},
-      {c:"/search",d:"إنشاء بحث داخل الصفحة."},
-      {c:"/filter",d:"إنشاء فلترة للبيانات."},
-      {c:"/sort",d:"ترتيب البيانات."},
-      {c:"/pagination",d:"تقسيم النتائج إلى صفحات."},
-      {c:"/copybutton",d:"إنشاء زر نسخ."},
-      {c:"/downloadbutton",d:"إنشاء زر تحميل."},
-      {c:"/save",d:"إنشاء وظيفة حفظ."},
-      {c:"/autosave",d:"إضافة حفظ تلقائي."},
-      {c:"/localstorage",d:"حفظ البيانات داخل المتصفح."},
-      {c:"/sessionstorage",d:"حفظ البيانات مؤقتًا داخل الجلسة."},
-      {c:"/clipboard",d:"نسخ النصوص إلى الحافظة."},
-      {c:"/exportjson",d:"تصدير البيانات بصيغة JSON."},
-      {c:"/importjson",d:"استيراد بيانات JSON."},
-      {c:"/exportcsv",d:"تصدير البيانات CSV."},
-      {c:"/print",d:"إضافة وظيفة طباعة."},
-      {c:"/savepng",d:"حفظ عنصر أو تصميم كصورة PNG."},
-      {c:"/notification",d:"إضافة إشعارات."},
-      {c:"/toast",d:"إنشاء رسالة تنبيه صغيرة."},
-      {c:"/confirm",d:"إنشاء نافذة تأكيد."},
-      {c:"/timer",d:"إنشاء مؤقت."},
-      {c:"/countdown",d:"إنشاء عد تنازلي."},
-      {c:"/random",d:"توليد قيمة عشوائية."},
-      {c:"/generator",d:"إنشاء مولد بيانات أو محتوى."},
-      {c:"/fetch",d:"جلب بيانات من API."},
-      {c:"/async",d:"استخدام البرمجة غير المتزامنة."},
-      {c:"/promise",d:"إنشاء أو التعامل مع Promise."},
-      {c:"/php",d:"إنشاء كود PHP."},
-      {c:"/phpform",d:"معالجة نموذج HTML باستخدام PHP."},
-      {c:"/phpmysql",d:"ربط PHP بقاعدة MySQL."},
-      {c:"/dbconnect",d:"إنشاء اتصال بقاعدة البيانات."},
-      {c:"/insert",d:"إضافة بيانات إلى قاعدة البيانات."},
-      {c:"/select",d:"قراءة البيانات من قاعدة البيانات."},
-      {c:"/update",d:"تحديث البيانات."},
-      {c:"/delete",d:"حذف البيانات."},
-      {c:"/crud",d:"إنشاء إضافة وعرض وتعديل وحذف كامل."},
-      {c:"/login",d:"إنشاء نظام تسجيل دخول."},
-      {c:"/logout",d:"إنشاء تسجيل خروج."},
-      {c:"/register",d:"إنشاء نظام تسجيل مستخدم."},
-      {c:"/session",d:"إدارة جلسات المستخدم."},
-      {c:"/cookie",d:"التعامل مع Cookies."},
-      {c:"/upload",d:"رفع الملفات إلى السيرفر."},
-      {c:"/uploadimage",d:"رفع الصور."},
-      {c:"/deleteimage",d:"حذف صورة من السيرفر."},
-      {c:"/authentication",d:"إنشاء نظام مصادقة."},
-      {c:"/authorization",d:"إدارة صلاحيات المستخدمين."},
-      {c:"/adminlogin",d:"إنشاء تسجيل دخول للإدارة."},
-      {c:"/userroles",d:"إنشاء مستويات وصلاحيات المستخدمين."},
-      {c:"/paginationphp",d:"تقسيم نتائج قاعدة البيانات إلى صفحات."},
-      {c:"/searchphp",d:"إنشاء بحث PHP في قاعدة البيانات."},
-      {c:"/preparedstatements",d:"استخدام الاستعلامات المجهزة لقاعدة البيانات."},
-      {c:"/sql",d:"إنشاء استعلام SQL."},
-      {c:"/createdatabase",d:"إنشاء قاعدة بيانات."},
-      {c:"/createtable",d:"إنشاء جدول."},
-      {c:"/altertable",d:"تعديل بنية جدول."},
-      {c:"/insertdata",d:"إضافة بيانات."},
-      {c:"/selectdata",d:"استرجاع بيانات."},
-      {c:"/updatedata",d:"تحديث سجل."},
-      {c:"/deletedata",d:"حذف سجل."},
-      {c:"/join",d:"ربط عدة جداول."},
-      {c:"/where",d:"إنشاء شروط للاستعلام."},
-      {c:"/orderby",d:"ترتيب النتائج."},
-      {c:"/groupby",d:"تجميع النتائج."},
-      {c:"/database",d:"تصميم قاعدة بيانات."},
-      {c:"/databaseschema",d:"إنشاء مخطط قاعدة البيانات."},
-      {c:"/relationship",d:"إنشاء العلاقات بين الجداول."},
-      {c:"/primarykey",d:"إعداد المفتاح الأساسي."},
-      {c:"/foreignkey",d:"إنشاء مفتاح أجنبي."},
-      {c:"/index",d:"إنشاء فهرس لتحسين الاستعلام."},
-      {c:"/migration",d:"إنشاء أو تعديل بنية قاعدة البيانات."},
-      {c:"/backupdatabase",d:"إنشاء آلية نسخ احتياطي."},
-      {c:"/seeddata",d:"إنشاء بيانات تجريبية."},
-      {c:"/firebase",d:"إنشاء وربط Firebase."},
-      {c:"/firebaseconfig",d:"إعداد Firebase للمشروع."},
-      {c:"/realtimedatabase",d:"استخدام Firebase Realtime Database."},
-      {c:"/firestore",d:"استخدام Cloud Firestore."},
-      {c:"/firebaseauth",d:"إضافة Firebase Authentication."},
-      {c:"/firebaseupload",d:"رفع البيانات أو الملفات."},
-      {c:"/firebaseread",d:"قراءة البيانات."},
-      {c:"/firebasewrite",d:"كتابة البيانات."},
-      {c:"/firebaseupdate",d:"تحديث البيانات."},
-      {c:"/firebasedelete",d:"حذف البيانات."},
-      {c:"/firebasequery",d:"البحث والاستعلام عن البيانات."},
-      {c:"/firebaselistener",d:"الاستماع للتغييرات بشكل مباشر."},
-      {c:"/firebaserules",d:"إنشاء قواعد أمان Firebase."},
-      {c:"/firebasecrud",d:"إنشاء CRUD كامل باستخدام Firebase."},
-      {c:"/firebasepagination",d:"تقسيم نتائج Firebase."},
-      {c:"/firebaseimage",d:"ربط الصور مع Firebase Storage."},
-      {c:"/api",d:"إنشاء أو التعامل مع API."},
-      {c:"/restapi",d:"إنشاء REST API."},
-      {c:"/endpoint",d:"إنشاء Endpoint."},
-      {c:"/getrequest",d:"إنشاء طلب GET."},
-      {c:"/postrequest",d:"إنشاء طلب POST."},
-      {c:"/putrequest",d:"إنشاء طلب PUT."},
-      {c:"/patchrequest",d:"إنشاء طلب PATCH."},
-      {c:"/deleterequest",d:"إنشاء طلب DELETE."},
-      {c:"/fetchapi",d:"جلب بيانات API باستخدام JavaScript."},
-      {c:"/apiconnect",d:"ربط الموقع بخدمة API."},
-      {c:"/jsonapi",d:"التعامل مع API يعيد JSON."},
-      {c:"/apiresponse",d:"تنظيم استجابة API."},
-      {c:"/apierror",d:"معالجة أخطاء API."},
-      {c:"/apitest",d:"اختبار API."},
-      {c:"/apikey",d:"شرح طريقة استخدام مفتاح API بأمان."},
-      {c:"/ratelimit",d:"إضافة حدود لعدد طلبات API."},
-      {c:"/react",d:"إنشاء كود React."},
-      {c:"/component",d:"إنشاء Component."},
-      {c:"/reactpage",d:"إنشاء صفحة React."},
-      {c:"/reactform",d:"إنشاء نموذج React."},
-      {c:"/reactstate",d:"إدارة State."},
-      {c:"/reacthook",d:"إنشاء أو استخدام Hook."},
-      {c:"/useeffect",d:"استخدام useEffect."},
-      {c:"/usestate",d:"استخدام useState."},
-      {c:"/context",d:"إنشاء Context."},
-      {c:"/reactrouter",d:"إضافة التنقل بين الصفحات."},
-      {c:"/nextjs",d:"إنشاء مشروع أو صفحة Next.js."},
-      {c:"/typescript",d:"إنشاء TypeScript."},
-      {c:"/tailwind",d:"تصميم باستخدام Tailwind CSS."},
-      {c:"/bootstrap",d:"تصميم باستخدام Bootstrap."},
-      {c:"/python",d:"إنشاء برنامج Python."},
-      {c:"/pythonscript",d:"إنشاء سكربت Python."},
-      {c:"/pythonfunction",d:"إنشاء Function."},
-      {c:"/pythonclass",d:"إنشاء Class."},
-      {c:"/pythonfile",d:"قراءة وكتابة الملفات."},
-      {c:"/pythonjson",d:"التعامل مع JSON."},
-      {c:"/pythoncsv",d:"التعامل مع CSV."},
-      {c:"/pythonexcel",d:"التعامل مع ملفات Excel."},
-      {c:"/pythonautomation",d:"إنشاء أتمتة باستخدام Python."},
-      {c:"/pythonapi",d:"التعامل مع API باستخدام Python."},
-      {c:"/pythonweb",d:"إنشاء تطبيق ويب Python."},
-      {c:"/flask",d:"إنشاء تطبيق Flask."},
-      {c:"/django",d:"إنشاء تطبيق Django."},
-      {c:"/fastapi",d:"إنشاء API باستخدام FastAPI."},
-      {c:"/pandas",d:"تحليل ومعالجة البيانات."},
-      {c:"/matplotlib",d:"إنشاء رسوم بيانية."},
-      {c:"/mobileapp",d:"تصميم فكرة تطبيق جوال."},
-      {c:"/android",d:"إنشاء كود Android."},
-      {c:"/kotlin",d:"إنشاء كود Kotlin."},
-      {c:"/java",d:"إنشاء كود Java."},
-      {c:"/flutter",d:"إنشاء تطبيق Flutter."},
-      {c:"/dart",d:"كتابة كود Dart."},
-      {c:"/reactnative",d:"إنشاء تطبيق React Native."},
-      {c:"/mobileui",d:"إنشاء واجهة تطبيق جوال."},
-      {c:"/bottomnav",d:"إنشاء شريط تنقل سفلي."},
-      {c:"/splashscreen",d:"إنشاء شاشة بداية."},
-      {c:"/appsettings",d:"إنشاء صفحة إعدادات."},
-      {c:"/pushnotification",d:"إضافة إشعارات للتطبيق."},
-      {c:"/securecode",d:"مراجعة الكود لتحسين الأمان."},
-      {c:"/securityreview",d:"فحص تصميم التطبيق بحثًا عن مشكلات أمنية."},
-      {c:"/sanitize",d:"تنظيف المدخلات قبل معالجتها."},
-      {c:"/validateinput",d:"التحقق من صحة المدخلات."},
-      {c:"/passwordhash",d:"تخزين كلمات المرور باستخدام التجزئة الآمنة."},
-      {c:"/csrfprotection",d:"إضافة حماية من CSRF."},
-      {c:"/xssprotection",d:"تقليل مخاطر XSS."},
-      {c:"/sqlinjection",d:"مراجعة الاستعلامات لمنع SQL Injection."},
-      {c:"/permissions",d:"تنظيم الصلاحيات."},
-      {c:"/accesscontrol",d:"إنشاء التحكم في الوصول."},
-      {c:"/secureupload",d:"جعل رفع الملفات أكثر أمانًا."},
-      {c:"/env",d:"نقل كلمات المرور والمفاتيح إلى متغيرات البيئة."},
-      {c:"/secrets",d:"تنظيم الأسرار ومفاتيح الخدمات بطريقة آمنة."},
-      {c:"/test",d:"إنشاء اختبارات للكود."},
-      {c:"/unittest",d:"إنشاء Unit Tests."},
-      {c:"/integrationtest",d:"إنشاء اختبارات تكامل."},
-      {c:"/uitest",d:"اختبار واجهة المستخدم."},
-      {c:"/testcases",d:"إنشاء حالات اختبار."},
-      {c:"/edgecases",d:"البحث عن الحالات الاستثنائية."},
-      {c:"/codereview",d:"مراجعة الكود واقتراح تحسينات."},
-      {c:"/performance",d:"تحليل الأداء."},
-      {c:"/optimize",d:"تحسين سرعة وأداء البرنامج."},
-      {c:"/accessibility",d:"تحسين إمكانية الوصول."},
-      {c:"/seo",d:"تحسين الصفحة لمحركات البحث."},
-      {c:"/lighthouse",d:"اقتراح تحسينات الأداء وإمكانية الوصول وSEO."},
-      {c:"/git",d:"شرح أو إنشاء أوامر Git."},
-      {c:"/gitinit",d:"تهيئة مستودع Git."},
-      {c:"/gitignore",d:"إنشاء ملف .gitignore."},
-      {c:"/commit",d:"اقتراح رسالة Commit."},
-      {c:"/branch",d:"إنشاء وتنظيم الفروع."},
-      {c:"/merge",d:"شرح دمج الفروع."},
-      {c:"/github",d:"تجهيز المشروع لـ GitHub."},
-      {c:"/readme",d:"إنشاء README للمشروع."},
-      {c:"/changelog",d:"إنشاء سجل تغييرات."},
-      {c:"/release",d:"تجهيز إصدار جديد."},
-      {c:"/deploy",d:"تجهيز المشروع للنشر."},
-      {c:"/githubpages",d:"تجهيز موقع للنشر على GitHub Pages."},
-      {c:"/website",d:"إنشاء موقع كامل."},
-      {c:"/webapp",d:"إنشاء تطبيق ويب."},
-      {c:"/store",d:"إنشاء متجر إلكتروني."},
-      {c:"/portfolio",d:"إنشاء موقع أعمال شخصية."},
-      {c:"/blog",d:"إنشاء مدونة."},
-      {c:"/schoolwebsite",d:"إنشاء موقع مدرسة."},
-      {c:"/restaurantwebsite",d:"إنشاء موقع مطعم."},
-      {c:"/companywebsite",d:"إنشاء موقع شركة."},
-      {c:"/booking",d:"إنشاء نظام حجوزات."},
-      {c:"/inventory",d:"إنشاء نظام مخزون."},
-      {c:"/products",d:"إنشاء نظام منتجات."},
-      {c:"/orders",d:"إنشاء نظام طلبات."},
-      {c:"/customers",d:"إنشاء نظام عملاء."},
-      {c:"/invoice",d:"إنشاء نظام فواتير."},
-      {c:"/pos",d:"تصميم نظام نقاط بيع."},
-      {c:"/cms",d:"إنشاء نظام إدارة محتوى."},
-      {c:"/adminsystem",d:"إنشاء نظام إدارة متكامل."},
-      {c:"/buildproject",d:"إنشاء هيكل مشروع كامل من البداية."},
-      {c:"/frontend",d:"إنشاء الواجهة الأمامية."},
-      {c:"/backend",d:"إنشاء الجزء الخلفي والخادم."},
-      {c:"/fullstack",d:"إنشاء Frontend + Backend + Database."},
-      {c:"/htmlcssjs",d:"إنشاء المشروع باستخدام HTML وCSS وJavaScript."},
-      {c:"/phpmysqlproject",d:"إنشاء مشروع PHP + MySQL."},
-      {c:"/firebaseproject",d:"إنشاء مشروع متكامل باستخدام Firebase."},
-      {c:"/responsiveproject",d:"إنشاء مشروع متجاوب للجوال والكمبيوتر."},
-      {c:"/debugandfix",d:"فحص الكود ثم إصلاح جميع المشاكل المكتشفة."},
-      {c:"/reviewandimprove",d:"مراجعة الكود وتحسينه."},
-      {c:"/refactorandoptimize",d:"تنظيم الكود وتحسين أدائه."},
-      {c:"/secureandoptimize",d:"تحسين الأمان والأداء."},
-      {c:"/explainandfix",d:"شرح المشكلة ثم إصلاحها."},
-      {c:"/fullcodewithcomments",d:"إرسال الكود كاملًا مع تعليقات توضيحية."},
-      {c:"/productionready",d:"تجهيز الكود للاستخدام الفعلي مع مراعاة الأمان والأخطاء."},
-      {c:"/projectstructure",d:"اقتراح هيكل المجلدات والملفات للمشروع."},
-      {c:"/requirements",d:"تحديد متطلبات المشروع قبل البرمجة."},
-      {c:"/databaseandapi",d:"تصميم قاعدة البيانات وAPI المناسب لها."}
-    ]
-  };
+    /* =========================  
+       جلب البيانات الشامل من Firebase  
+    ========================= */
+    async function fetchCommandsFromFirebase() {
+      try {
+        const response = await fetch(FIREBASE_URL);
+        if (!response.ok) throw new Error("تعذر جلب البيانات");
+        
+        const data = await response.json();
+        fetchedCommands = [];
 
-  let currentCategory = "الكل";
-  let showOnlyFavs = false;
-  let favorites = JSON.parse(localStorage.getItem("promptFav") || "[]");
-  let customCmds = JSON.parse(localStorage.getItem("customCmds") || "[]");
-  const builder = document.getElementById("promptBuilder");
+        if (data) {
+          if (Array.isArray(data)) {
+            data.forEach(item => {
+              if (item && (item.c || item.d)) {
+                fetchedCommands.push({
+                  c: item.c || "",
+                  d: item.d || "",
+                  category: item.category || "عام"
+                });
+              }
+            });
+          } else if (typeof data === "object") {
+            Object.entries(data).forEach(([key, val]) => {
+              if (Array.isArray(val)) {
+                val.forEach(item => {
+                  if (item && (item.c || item.d)) {
+                    fetchedCommands.push({
+                      c: item.c || "",
+                      d: item.d || "",
+                      category: item.category || key || "عام"
+                    });
+                  }
+                });
+              } else if (val && typeof val === "object") {
+                if (val.c || val.d) {
+                  fetchedCommands.push({
+                    c: val.c || "",
+                    d: val.d || "",
+                    category: val.category || "عام"
+                  });
+                } else {
+                  Object.values(val).forEach(item => {
+                    if (item && (item.c || item.d)) {
+                      fetchedCommands.push({
+                        c: item.c || "",
+                        d: item.d || "",
+                        category: item.category || key || "عام"
+                      });
+                    }
+                  });
+                }
+              }
+            });
+          }
+        }
 
-  function allItems() {
-    let arr = [];
-    Object.entries(library).forEach(([cat, items]) => {
-      items.forEach(item => arr.push({...item, category: cat}));
-    });
-    return [...arr, ...customCmds];
-  }
-
-  function renderCategories() {
-    const categoriesDiv = document.getElementById("categories");
-    const cats = ["الكل", ...Object.keys(library)];
-    if(customCmds.length) cats.push("خاص بي");
-
-    categoriesDiv.innerHTML = cats.map(cat => `
-      <button class="cat-pill ${cat === currentCategory && !showOnlyFavs ? 'active' : ''}" 
-              onclick="selectCategory('${cat}')">${cat}</button>
-    `).join('');
-  }
-
-  function selectCategory(cat) {
-    currentCategory = cat;
-    showOnlyFavs = false;
-    document.getElementById("favFilterBtn").style.borderColor = "var(--border)";
-    renderCategories();
-    renderCommands();
-  }
-
-  function toggleFavFilter() {
-    showOnlyFavs = !showOnlyFavs;
-    document.getElementById("favFilterBtn").style.borderColor = showOnlyFavs ? "var(--primary-neon)" : "var(--border)";
-    renderCategories();
-    renderCommands();
-  }
-
-  function renderCommands() {
-    const query = document.getElementById("searchInput").value.toLowerCase();
-    const grid = document.getElementById("commandsGrid");
-    grid.innerHTML = "";
-
-    let filtered = allItems().filter(item => {
-      const matchesSearch = item.c.toLowerCase().includes(query) || item.d.toLowerCase().includes(query);
-      const matchesCat = currentCategory === "الكل" || item.category === currentCategory;
-      const matchesFav = !showOnlyFavs || favorites.includes(item.c);
-      return matchesSearch && matchesCat && matchesFav;
-    });
-
-    if(filtered.length === 0) {
-      grid.innerHTML = `<div style="text-align:center; color:var(--text-secondary); padding:30px;">لا توجد نتائج مطابقة</div>`;
-      return;
+        renderCategories();
+        renderCommands();
+        updateStats();
+      } catch (error) {
+        console.error("Firebase Fetch Error:", error);
+        document.getElementById("commandsGrid").innerHTML = `
+          <div class="empty-results">
+            <div class="empty-results-icon">❌</div>
+            <div>حدث خطأ أثناء تحميل البيانات من الخادم</div>
+          </div>
+        `;
+      }
     }
 
-    filtered.forEach(item => {
-      const isFav = favorites.includes(item.c);
-      const card = document.createElement("div");
-      card.className = "command-card";
-      card.innerHTML = `
-        <div>
-          <div class="command-code">${item.c}</div>
-          <p class="command-desc">${item.d}</p>
-        </div>
-        <div class="card-actions">
-          <button class="card-btn" onclick="addBuilder('${item.c}')">➕ أضف للمنشئ</button>
-          <button class="card-btn" onclick="toggleFavorite('${item.c}')">${isFav ? '★ المفضلة' : '☆ مفضلة'}</button>
-          <button class="card-btn" onclick="shareCardPNG('${item.c}', '${item.d}', '${item.category}')">🖼️ مشاركة PNG</button>
-          <button class="card-btn" onclick="shareCardTXT('${item.c}', '${item.d}')">📄 مشاركة TXT</button>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-  }
-
-  function addBuilder(c) {
-    let lines = builder.value.split('\n').filter(x => x.trim());
-    if(!lines.includes(c)) {
-      lines.push(c);
-      builder.value = lines.join('\n');
-      showToast("تمت الإضافة لشبكة المنشئ");
+    /* =========================  
+       جلب جميع الأكواد  
+    ========================= */
+    function allItems() {
+      return [...fetchedCommands, ...customCmds];
     }
-  }
 
-  function toggleFavorite(c) {
-    favorites = favorites.includes(c) ? favorites.filter(x => x !== c) : [...favorites, c];
-    localStorage.setItem("promptFav", JSON.stringify(favorites));
-    renderCommands();
-  }
+    /* =========================  
+       تحديث الإحصائيات  
+    ========================= */
+    function updateStats() {
+      const items = allItems();
+      document.getElementById("totalCommandsCount").textContent = items.length;
+      const validFavorites = favorites.filter(fav => items.some(item => item.c === fav));
+      document.getElementById("favoriteCommandsCount").textContent = validFavorites.length;
+    }
 
-  function promptAddCustomCommand() {
-    const c = prompt("أدخل كود الأمر (مثال: /my_command):");
-    const d = prompt("أدخل وصف الأمر:");
-    if(c && d) {
-      customCmds.push({c, d, category: "خاص بي"});
+    /* =========================  
+       عرض التصنيفات  
+    ========================= */
+    function renderCategories() {
+      const categoriesDiv = document.getElementById("categories");
+      
+      const categoriesSet = new Set(fetchedCommands.map(item => item.category || "عام"));
+      const cats = ["الكل", ...Array.from(categoriesSet)];
+      
+      if (customCmds.length) cats.push("خاص بي");
+
+      categoriesDiv.innerHTML = cats.map(cat => `
+        <button class="cat-pill ${cat === currentCategory && !showOnlyFavs ? "active" : ""}" onclick='selectCategory(${JSON.stringify(cat)})'>
+          ${cat}
+        </button>
+      `).join("");
+    }
+
+    /* =========================  
+       اختيار تصنيف  
+    ========================= */
+    function selectCategory(cat) {
+      currentCategory = cat;
+      showOnlyFavs = false;
+      document.getElementById("favFilterBtn").classList.remove("active");
+      renderCategories();
+      renderCommands();
+    }
+
+    /* =========================  
+       إظهار المفضلة فقط  
+    ========================= */
+    function toggleFavFilter() {
+      showOnlyFavs = !showOnlyFavs;
+      document.getElementById("favFilterBtn").classList.toggle("active", showOnlyFavs);
+      renderCategories();
+      renderCommands();
+    }
+
+    /* =========================  
+       عرض الأكواد (البطاقات)
+    ========================= */
+    function renderCommands() {
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
+      const grid = document.getElementById("commandsGrid");
+      grid.innerHTML = "";
+
+      const filtered = allItems().filter(item => {
+        const command = String(item.c || "").toLowerCase();
+        const description = String(item.d || "").toLowerCase();
+
+        const matchesSearch = command.includes(query) || description.includes(query);
+        const matchesCategory = currentCategory === "الكل" || item.category === currentCategory;
+        const matchesFavorite = !showOnlyFavs || favorites.includes(item.c);
+
+        return matchesSearch && matchesCategory && matchesFavorite;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-results">
+            <div class="empty-results-icon">🔍</div>
+            <div>لا توجد نتائج مطابقة</div>
+          </div>
+        `;
+        updateStats();
+        return;
+      }
+
+      filtered.forEach(item => {
+        const isFav = favorites.includes(item.c);
+
+        const card = document.createElement("div");
+        card.className = "command-card";
+
+        const favBadge = document.createElement("button");
+        favBadge.className = `fav-badge ${isFav ? 'active' : ''}`;
+        favBadge.innerHTML = isFav ? '★' : '☆';
+        favBadge.title = isFav ? "إزالة من المفضلة" : "إضافة للمفضلة";
+        favBadge.onclick = (e) => {
+          e.stopPropagation();
+          toggleFavorite(item.c);
+        };
+        card.appendChild(favBadge);
+
+        const terminalWindow = document.createElement("div");
+        terminalWindow.className = "terminal-window";
+
+        const terminalHeader = document.createElement("div");
+        terminalHeader.className = "terminal-header";
+        terminalHeader.innerHTML = `
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        `;
+
+        const codeBlock = document.createElement("div");
+        codeBlock.className = "command-code";
+        codeBlock.textContent = item.c;
+
+        terminalWindow.appendChild(terminalHeader);
+        terminalWindow.appendChild(codeBlock);
+        card.appendChild(terminalWindow);
+
+        const desc = document.createElement("p");
+        desc.className = "command-desc";
+        desc.textContent = item.d;
+        card.appendChild(desc);
+
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "card-btn copy-command-btn";
+        copyBtn.innerHTML = "📋 نسخ";
+        copyBtn.onclick = () => copyCommand(item.c);
+        actions.appendChild(copyBtn);
+
+        const addBtn = document.createElement("button");
+        addBtn.className = "card-btn";
+        addBtn.innerHTML = "➕ للمنشئ";
+        addBtn.onclick = () => addBuilder(item.c);
+        actions.appendChild(addBtn);
+
+        const pngBtn = document.createElement("button");
+        pngBtn.className = "card-btn";
+        pngBtn.innerHTML = "🖼️ PNG";
+        pngBtn.onclick = () => shareCardPNG(item.c, item.d, item.category);
+        actions.appendChild(pngBtn);
+
+        const txtBtn = document.createElement("button");
+        txtBtn.className = "card-btn";
+        txtBtn.innerHTML = "📄 TXT";
+        txtBtn.onclick = () => shareCardTXT(item.c, item.d);
+        actions.appendChild(txtBtn);
+
+        card.appendChild(actions);
+        grid.appendChild(card);
+      });
+
+      updateStats();
+    }
+
+    /* =========================  
+       نسخ أمر واحد  
+    ========================= */
+    async function copyCommand(command) {
+      try {
+        await navigator.clipboard.writeText(command);
+        showToast("📋 تم نسخ الأمر بنجاح");
+      } catch (error) {
+        fallbackCopy(command);
+      }
+    }
+
+    /* =========================  
+       نسخ احتياطي  
+    ========================= */
+    function fallbackCopy(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.className = "temporary-copy-textarea";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+      showToast("📋 تم النسخ بنجاح");
+    }
+
+    /* =========================  
+       إضافة للمنشئ  
+    ========================= */
+    function addBuilder(c) {
+      let lines = builder.value.split("\n").filter(line => line.trim());
+      if (!lines.includes(c)) {
+        lines.push(c);
+        builder.value = lines.join("\n");
+        showToast("✅ تمت إضافة الأمر للمنشئ");
+      } else {
+        showToast("ℹ️ الأمر موجود مسبقاً");
+      }
+    }
+
+    /* =========================  
+       إضافة / إزالة المفضلة  
+    ========================= */
+    function toggleFavorite(c) {
+      if (favorites.includes(c)) {
+        favorites = favorites.filter(item => item !== c);
+        showToast("☆ تمت الإزالة من المفضلة");
+      } else {
+        favorites.push(c);
+        showToast("⭐ تمت الإضافة للمفضلة");
+      }
+      localStorage.setItem("promptFav", JSON.stringify(favorites));
+      renderCommands();
+    }
+
+    /* =========================  
+       إضافة أمر خاص  
+    ========================= */
+    function promptAddCustomCommand() {
+      let c = prompt("أدخل كود الأمر\nمثال: /my_command");
+      if (!c) return;
+      c = c.trim();
+      if (!c) return;
+
+      let d = prompt("أدخل وصف الأمر:");
+      if (!d) return;
+      d = d.trim();
+      if (!d) return;
+
+      const exists = allItems().some(item => item.c.toLowerCase() === c.toLowerCase());
+
+      if (exists) {
+        showToast("⚠️ هذا الأمر موجود مسبقاً");
+        return;
+      }
+
+      customCmds.push({ c: c, d: d, category: "خاص بي" });
       localStorage.setItem("customCmds", JSON.stringify(customCmds));
       renderCategories();
       renderCommands();
-      showToast("تمت إضافة الأمر الخاص بك!");
+      showToast("✅ تمت إضافة الأمر الخاص");
     }
-  }
 
-  async function shareCardTXT(c, d) {
-    const textData = `الأمر: ${c}\nالوصف: ${d}`;
-    if (navigator.share) {
+    /* =========================  
+       مشاركة TXT للأمر  
+    ========================= */
+    async function shareCardTXT(c, d) {
+      const textData = `الأمر: ${c}\nالوصف: ${d}`;
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: c, text: textData });
+        } catch (error) {}
+      } else {
+        copyText(textData);
+      }
+    }
+
+    /* =========================  
+       مشاركة PNG  
+    ========================= */
+    async function shareCardPNG(c, d, cat) {
+      document.getElementById("cardCommandText").textContent = c;
+      document.getElementById("cardDescText").textContent = d;
+      document.getElementById("cardCategoryTag").textContent = cat || "أمر بصري";
+
+      const canvasElement = document.getElementById("exportCardCanvas");
+      showToast("🖼️ جاري إعداد الصورة...");
+
       try {
-        await navigator.share({ title: c, text: textData });
-      } catch (e) {}
-    } else {
-      navigator.clipboard.writeText(textData);
-      showToast("تم نسخ بيانات الأمر نصياً!");
+        const cvs = await html2canvas(canvasElement, {
+          backgroundColor: null,
+          scale: 2,
+          useCORS: true
+        });
+
+        cvs.toBlob(async blob => {
+          if (!blob) {
+            showToast("❌ تعذر إنشاء الصورة");
+            return;
+          }
+
+          const fileName = c.replace(/[\/\\:*?"<>|]/g, "") || "command";
+          const file = new File([blob], `${fileName}.png`, { type: "image/png" });
+
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({ files: [file], title: c, text: d });
+            } catch (error) {}
+          } else {
+            const a = document.createElement("a");
+            a.href = cvs.toDataURL("image/png");
+            a.download = `${fileName}.png`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            showToast("✅ تم حفظ الصورة");
+          }
+        }, "image/png");
+      } catch (error) {
+        console.error(error);
+        showToast("❌ تعذر إنشاء الصورة");
+      }
     }
-  }
 
-  async function shareCardPNG(c, d, cat) {
-    document.getElementById("cardCommandText").textContent = c;
-    document.getElementById("cardDescText").textContent = d;
-    document.getElementById("cardCategoryTag").textContent = cat || "أمر بصري";
-    
-    const canvas = document.getElementById("exportCardCanvas");
-    showToast("جاري إعداد الصورة...");
+    /* =========================  
+       مشاركة المنشئ TXT  
+    ========================= */
+    async function shareTXTBuilder() {
+      const text = builder.value.trim();
+      if (!text) {
+        showToast("⚠️ المنشئ فارغ");
+        return;
+      }
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "أوامر مجمعة", text: text });
+        } catch (error) {}
+      } else {
+        copyText(text);
+      }
+    }
 
-    html2canvas(canvas, { backgroundColor: null, scale: 2 }).then(cvs => {
-      cvs.toBlob(async (blob) => {
-        const file = new File([blob], `${c.replace('/', '')}.png`, { type: 'image/png' });
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({ files: [file], title: c, text: d });
-          } catch(e) {}
-        } else {
-          const a = document.createElement('a'); 
-          a.href = cvs.toDataURL("image/png"); 
-          a.download = `${c.replace('/', '')}.png`; 
-          a.click();
-          showToast("تم تحفيز تنزيل الصورة!");
-        }
-      });
-    });
-  }
+    /* =========================  
+       تصدير المنشئ PNG  
+    ========================= */
+    function exportBuilderPNG() {
+      const text = builder.value.trim();
+      if (!text) {
+        showToast("⚠️ المنشئ فارغ");
+        return;
+      }
+      shareCardPNG("أوامر مجمعة", text, "منشئ البرومبتات");
+    }
 
-  async function shareTXTBuilder() {
-    const text = builder.value.trim();
-    if(!text) return showToast("المنشئ فارغ!");
-    if (navigator.share) {
+    /* =========================  
+       نسخ المنشئ  
+    ========================= */
+    async function copyBuilder() {
+      const text = builder.value.trim();
+      if (!text) {
+        showToast("⚠️ المنشئ فارغ");
+        return;
+      }
+      copyText(text);
+    }
+
+    /* =========================  
+       دالة نسخ عامة  
+    ========================= */
+    async function copyText(text) {
       try {
-        await navigator.share({ title: 'أوامر مجمعة', text: text });
-      } catch(e) {}
-    } else {
-      navigator.clipboard.writeText(text);
-      showToast("تم النسخ للحافظة!");
+        await navigator.clipboard.writeText(text);
+        showToast("📋 تم النسخ بنجاح");
+      } catch (error) {
+        fallbackCopy(text);
+      }
     }
-  }
 
-  function exportBuilderPNG() {
-    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
-    shareCardPNG("أوامر مجمعة", builder.value.trim(), "منشئ البرومبتات");
-  }
+    /* =========================  
+       مسح المنشئ  
+    ========================= */
+    function clearBuilder() {
+      builder.value = "";
+      showToast("🗑️ تم مسح المنشئ");
+    }
 
-  function copyBuilder() { 
-    if(!builder.value.trim()) return showToast("المنشئ فارغ!");
-    navigator.clipboard.writeText(builder.value); 
-    showToast("تم نسخ الكود!"); 
-  }
-  
-  function clearBuilder() { builder.value = ""; }
+    /* =========================  
+       تصدير جميع الأكواد TXT  
+    ========================= */
+    function exportTXT() {
+      const data = allItems().map(item => `${item.c} - ${item.d}`).join("\n");
+      const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "commands.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast("💾 تم تصدير جميع الأوامر");
+    }
 
-  function exportTXT() {
-    const data = allItems().map(i => i.c + " - " + i.d).join("\n");
-    const blob = new Blob([data], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "commands.txt";
-    a.click();
-    showToast("تم تصدير كل الأوامر نصياً!");
-  }
+    /* =========================  
+       Toast  
+    ========================= */
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2000);
+    }
 
-  function showToast(msg) {
-    const t = document.getElementById("toast");
-    t.textContent = msg; 
-    t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 2000);
-  }
+    /* =========================  
+       البحث المباشر  
+    ========================= */
+    document.getElementById("searchInput").addEventListener("input", renderCommands);
 
-  document.getElementById("searchInput").addEventListener("input", renderCommands);
-  
-  renderCategories(); 
-  renderCommands();
-</script>
+    /* =========================  
+       تشغيل الصفحة وتتبع البيانات  
+    ========================= */
+    fetchCommandsFromFirebase();
+  </script>
 </body>
 </html>
- 
