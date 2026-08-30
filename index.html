@@ -15,7 +15,6 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* تنسيقات خاصة بالصفحة الرئيسية والبطاقات */
     .brand-wrapper {
       display: flex;
       align-items: center;
@@ -85,6 +84,7 @@
       position: relative;
       min-height: 220px;
       overflow: hidden;
+    }
 
     .library-card::before {
       content: "";
@@ -210,7 +210,7 @@
 
         <!-- شبكة الأقسام الديناميكية -->
         <div class="commands-grid" id="categories-grid">
-          <div class="loading-spinner">جاري تحميل الأقسام من قاعدة البيانات...</div>
+          <div class="loading-spinner">جاري تحميل الأقسام...</div>
         </div>
       </div>
     </main>
@@ -222,113 +222,91 @@
     جميع الحقوق محفوظة © 2026 <strong>مكتبة الأوامر الذكية | علي المالكي</strong>
   </footer>
 
-  <!-- Firebase SDK -->
+  <!-- Realtime Database Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // إعدادات Firebase الخاصة بك
+    // ضع إعدادات مشروعك ورابط قاعدة البيانات (databaseURL)
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://alnoaif-default-rtdb.firebaseio.com",
       projectId: "YOUR_PROJECT_ID",
       storageBucket: "YOUR_PROJECT.appspot.com",
       messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
 
-    // تهيئة الفايربيس
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const db = getDatabase(app);
 
-    // خرائط الأيقونات والأوصاف لكل قسم حسب المسار (path)
-    const categoryDetails = {
-      brmjh: { icon: "💻", desc: "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، إصلاح الأخطاء وقواعد البيانات والبرمجة.", file: "programming.html" },
-      talim: { icon: "👨‍🏫", desc: "أوامر ذكية لإعداد الدروس، إنشاء الاختبارات، شرح المواد، تصميم الأنشطة وتطوير المحتوى.", file: "astath.html" },
-      biot: { icon: "🏠", desc: "أوامر للطبخ والوصفات وتنظيم المنزل والتنظيف وإدارة الميزانية وجداول الوجبات.", file: "biot.html" },
-      cars: { icon: "🚘", desc: "أوامر لتحسين صور السيارات، التشخيص والصيانة والتصوير الاحترافي للمركبات.", file: "cars.html" },
-      photography: { icon: "📸", desc: "أوامر الكاميرات والعدسات والإضاءة السينمائية وزوايا التصوير والعمق البصري.", file: "photography.html" },
-      engineering: { icon: "⚙️", desc: "أوامر المخططات الهندسية، التصاميم التقنية، الرسوم التوضيحية والمكونات الداخلية.", file: "engineering.html" },
-      architecture: { icon: "🏛️", desc: "أوامر التصميم الداخلي والخارجي، الواجهات، وتوزيع الأثاث والإضاءة.", file: "architecture.html" }
+    // الأيقونات والتفاصيل الاختيارية للأقسام المعروفة
+    const predefinedMeta = {
+      brmjh: { icon: "💻", desc: "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، وإصلاح الأخطاء.", page: "programming.html" },
+      talim: { icon: "👨‍🏫", desc: "أوامر ذكية لإعداد الدروس، إنشاء الاختبارات، وشرح المواد.", page: "astath.html" },
+      biot: { icon: "🏠", desc: "أوامر للطبخ والوصفات وتنظيم المنزل والتنظيف وخطط الوجبات.", page: "biot.html" },
+      cars: { icon: "🚘", desc: "أوامر لتحسين صور السيارات، التشخيص والصيانة والتصوير الاحترافي.", page: "cars.html" },
+      photography: { icon: "📸", desc: "أوامر الكاميرات والعدسات والإضاءة السينمائية وزوايا التصوير.", page: "photography.html" },
+      engineering: { icon: "⚙️", desc: "أوامر المخططات الهندسية، التصاميم التقنية، والعرض التفكيكي.", page: "engineering.html" },
+      architecture: { icon: "🏛️", desc: "أوامر التصميم الداخلي والخارجي وتوزيع الأثاث والإضاءة.", page: "architecture.html" }
     };
 
-    async function loadCategories() {
+    // الاستماع المباشر للتغييرات في قاعدة البيانات
+    const pathsRef = ref(db, "/");
+
+    onValue(pathsRef, (snapshot) => {
       const grid = document.getElementById("categories-grid");
       const countEl = document.getElementById("categories-count");
+      grid.innerHTML = "";
 
-      try {
-        // قراءة مجموعة الأقسام من المسار في Firestore
-        const querySnapshot = await getDocs(collection(db, "categories"));
-        grid.innerHTML = "";
+      if (!snapshot.exists()) {
+        grid.innerHTML = `<div class="empty-results">لا توجد أقسام متاحة حالياً.</div>`;
+        countEl.innerText = "0";
+        return;
+      }
+
+      const data = snapshot.val();
+      const keys = Object.keys(data);
+      let total = 0;
+
+      keys.forEach((key) => {
+        const item = data[key];
         
-        if (querySnapshot.empty) {
-          // في حال كانت المجموعة فارغة أو عند الاستدعاء المباشر، يتم العرض من البيانات الممررة
-          renderDefaultCategories(grid, countEl);
-          return;
-        }
-
-        let total = 0;
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const pathKey = data.path || doc.id;
-          const details = categoryDetails[pathKey] || { icon: "📁", desc: "قسم الأوامر المخصصة والتعليمات الذكية.", file: `${pathKey}.html` };
+        // التأكد من أن المفتاح يمثل قسماً وتحوي البيانات الاسم
+        if (item && typeof item === "object" && item.nameAr) {
+          const pathKey = item.path || key;
+          
+          // إن كان للقسم بيانات مسبقة استخدمها، وإلا أنشئ بيانات افتراضية ديناميكية فوراً
+          const meta = predefinedMeta[pathKey] || {
+            icon: item.icon || "📁",
+            desc: item.desc || `مجموعة أوامر وأكواد خاصة بقسم ${item.nameAr}.`,
+            page: `${pathKey}.html`
+          };
 
           const card = document.createElement("article");
           card.className = `command-card library-card ${pathKey}`;
           card.innerHTML = `
             <div>
-              <div class="icon-box">${details.icon}</div>
-              <h3>${data.nameAr || "قسم غير معنون"}</h3>
-              <p class="command-desc">${details.desc}</p>
+              <div class="icon-box">${meta.icon}</div>
+              <h3>${item.nameAr}</h3>
+              <p class="command-desc">${meta.desc}</p>
             </div>
-            <a href="${details.file}" class="library-link">
-              <span>فتح مكتبة ${data.nameAr}</span>
+            <a href="${meta.page}" class="library-link">
+              <span>فتح مكتبة ${item.nameAr}</span>
               <span>←</span>
             </a>
           `;
           grid.appendChild(card);
           total++;
-        });
-
-        countEl.innerText = total;
-
-      } catch (error) {
-        console.warn("جاري استخدام العرض الافتراضي للأقسام:", error);
-        renderDefaultCategories(grid, countEl);
-      }
-    }
-
-    // دالة احتياطية لعرض بيانات Firebase المرفقة مباشر في حال التعذر
-    function renderDefaultCategories(container, countEl) {
-      const firebaseData = [
-        { nameAr: "البرمجة وتطوير المواقع", path: "brmjh" },
-        { nameAr: "للمعلمين والتعليم", path: "talim" }
-      ];
-
-      container.innerHTML = "";
-      firebaseData.forEach(item => {
-        const details = categoryDetails[item.path] || { icon: "📁", desc: "قسم الأوامر المخصصة والتعليمات الذكية.", file: `${item.path}.html` };
-        const card = document.createElement("article");
-        card.className = `command-card library-card ${item.path}`;
-        card.innerHTML = `
-          <div>
-            <div class="icon-box">${details.icon}</div>
-            <h3>${item.nameAr}</h3>
-            <p class="command-desc">${details.desc}</p>
-          </div>
-          <a href="${details.file}" class="library-link">
-            <span>فتح مكتبة ${item.nameAr}</span>
-            <span>←</span>
-          </a>
-        `;
-        container.appendChild(card);
+        }
       });
-      countEl.innerText = firebaseData.length;
-    }
 
-    window.addEventListener("DOMContentLoaded", loadCategories);
+      countEl.innerText = total;
+    }, (error) => {
+      console.error("خطأ في جلب البيانات:", error);
+    });
   </script>
 </body>
 
 </html>
- 
