@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>مكتبة الأوامر الذكية</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- NAVBAR -->
+  <nav class="site-nav">
+
+    <a href="index.html" class="brand-wrapper">
+
+      <img
+        src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
+        class="brand-image"
+        alt="الشعار"
+      >
+
+      <span class="brand-name">
+        مكتبة الأوامر
+      </span>
+
+    </a>
+
+    <a
+      href="https://alnoaif2026.github.io/"
+      class="external-link"
+    >
+      🌐 الرئيسية
+    </a>
+
+  </nav>
+
+
+  <!-- HERO -->
+  <header class="hero">
+
+    <div class="hero-badge">
+      ✦ مكتبة الأوامر الذكية
+    </div>
+
+    <h1>
+      كل أوامرك
+      <span>في مكان واحد</span>
+    </h1>
+
+    <p>
+      مكتبة ديناميكية تضم الأوامر والأكواد الذكية لمختلف المجالات.
+      اختر القسم المناسب وابدأ مباشرة.
+    </p>
+
+  </header>
+
+
+  <!-- STATS -->
+  <div class="stats-container">
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        📚
+      </div>
+
+      <div class="stat-content">
+
+        <span
+          class="stat-number"
+          id="categoriesCount"
+        >
+          0
+        </span>
+
+        <span class="stat-label">
+          الأقسام المتاحة
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ⚡
+      </div>
+
+      <div class="stat-content">
+
+        <span
+          class="stat-number"
+          id="firebaseStatus"
+        >
+          اتصال...
+        </span>
+
+        <span class="stat-label">
+          حالة المكتبة
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- الأقسام -->
+  <main>
+
+    <div class="glass-panel">
+
+      <div class="section-head">
+
+        <h2>
+          الأقسام الرئيسية
+        </h2>
+
+        <p>
+          اختر المكتبة التي تريد تصفح أوامرها.
+        </p>
+
+      </div>
+
+
+      <div
+        class="commands-grid"
+        id="categoriesGrid"
+      >
+
+        <div class="loading-spinner">
+          ⏳ جاري تحميل الأقسام...
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<footer class="site-footer">
+  جميع الحقوق محفوظة © 2026
+  <strong>مكتبة الأوامر الذكية</strong>
+</footer>
+
+
+<script>
+
+const FIREBASE_BASE =
+  "https://alnoaif-default-rtdb.firebaseio.com";
+
+const META_PATH =
+  "__paths";
+
+
+/* ===============================
+   HTML Escape
+================================ */
+
+function escapeHTML(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* ===============================
+   تنظيف المسار
+================================ */
+
+function cleanPath(path) {
+
+  return String(path || "")
+    .trim()
+    .replace(/^\/+|\/+$/g, "");
+
+}
+
+
+/* ===============================
+   أيقونات افتراضية
+================================ */
+
+const defaultIcons = {
+
+  brmjh: "💻",
+  programming: "💻",
+
+  astath: "👨‍🏫",
+  talim: "📚",
+
+  cars: "🚘",
+
+  biot: "🏠",
+
+  photography: "📸",
+
+  engineering: "⚙️",
+
+  mechanical: "🔩",
+
+  architecture: "🏛️",
+
+  agriculture: "🌱",
+
+  driving: "🚗",
+
+  marriage: "💍",
+
+  finance: "💰",
+
+  phones: "📱"
+
+};
+
+
+/* ===============================
+   تحميل الأقسام
+================================ */
+
+async function loadCategories() {
+
+  const grid =
+    document.getElementById("categoriesGrid");
+
+  const count =
+    document.getElementById("categoriesCount");
+
+  const status =
+    document.getElementById("firebaseStatus");
+
+
+  try {
+
+    const response =
+      await fetch(
+        `${FIREBASE_BASE}/${META_PATH}.json`
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    grid.innerHTML = "";
+
+
+    if (!data) {
+
+      grid.innerHTML = `
+
+        <div class="empty-results">
+
+          📭 لا توجد أقسام حالياً.
+
+        </div>
+
+      `;
+
+      count.textContent = "0";
+      status.textContent = "متصل";
+
+      return;
+
+    }
+
+
+    const libraries =
+      Object.entries(data)
+
+      .map(([key, item]) => {
+
+        if (
+          !item ||
+          typeof item !== "object"
+        ) {
+          return null;
+        }
+
+
+        const path =
+          cleanPath(
+            item.path || key
+          );
+
+
+        const nameAr =
+          String(
+            item.nameAr || ""
+          ).trim();
+
+
+        if (
+          !path ||
+          !nameAr
+        ) {
+          return null;
+        }
+
+
+        return {
+
+          path,
+
+          nameAr,
+
+          icon:
+            item.icon ||
+            defaultIcons[path] ||
+            "📁",
+
+          desc:
+            item.desc ||
+            item.description ||
+            `مجموعة أوامر وأكواد خاصة بقسم ${nameAr}.`
+
+        };
+
+      })
+
+      .filter(Boolean);
+
+
+    libraries.sort(
+      (a, b) =>
+        a.nameAr.localeCompare(
+          b.nameAr,
+          "ar"
+        )
+    );
+
+
+    libraries.forEach(item => {
+
+      const card =
+        document.createElement("article");
+
+
+      card.className =
+        "command-card library-card";
+
+
+      const url =
+        `library.html?path=${encodeURIComponent(item.path)}`;
+
+
+      card.innerHTML = `
+
+        <div>
+
+          <div class="icon-box">
+            ${escapeHTML(item.icon)}
+          </div>
+
+          <h3>
+            ${escapeHTML(item.nameAr)}
+          </h3>
+
+          <div class="path-badge">
+            /${escapeHTML(item.path)}
+          </div>
+
+          <p class="command-desc">
+            ${escapeHTML(item.desc)}
+          </p>
+
+        </div>
+
+
+        <a
+          href="${url}"
+          class="library-link"
+        >
+
+          <span>
+            فتح مكتبة
+            ${escapeHTML(item.nameAr)}
+          </span>
+
+          <span>
+            ←
+          </span>
+
+        </a>
+
+      `;
+
+
+      grid.appendChild(card);
+
+    });
+
+
+    count.textContent =
+      libraries.length;
+
+
+    status.textContent =
+      "متصل";
+
+
+    if (!libraries.length) {
+
+      grid.innerHTML = `
+
+        <div class="empty-results">
+
+          لا توجد مسارات تحتوي على اسم عربي.
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    count.textContent = "0";
+
+    status.textContent = "خطأ";
+
+    grid.innerHTML = `
+
+      <div class="firebase-error">
+
+        ❌ تعذر تحميل الأقسام من Firebase.
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+loadCategories();
+
+</script>
+
+</body>
+</html> 
