@@ -1,6 +1,7 @@
 :root {
   --primary: #00f2fe;
   --primary-dark: #4facfe;
+  --primary-neon: #00f2fe;
   --secondary: #7f00ff;
   --accent: #ff007f;
   --bg-main: #090d16;
@@ -143,6 +144,13 @@ body {
   margin-bottom: 16px;
 }
 
+.builder-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
 /* Search */
 .search-wrapper {
   position: relative;
@@ -222,6 +230,12 @@ body {
   border: 1px solid var(--border);
 }
 
+.btn-outline.active {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 .btn-danger {
   background: rgba(239, 68, 68, 0.2);
   color: #fca5a5;
@@ -273,8 +287,11 @@ body {
   }
 }
 
-/* Command Card */
+/* =========================================
+   تنسيقات بطاقات الأوامر المعدلة
+========================================= */
 .command-card {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -284,32 +301,101 @@ body {
   justify-content: space-between;
   gap: 12px;
   transition: var(--transition);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.command-code {
-  direction: ltr;
-  font-family: monospace;
-  font-size: 1rem;
-  font-weight: bold;
-  color: var(--primary);
-  background: rgba(0, 242, 254, 0.08);
-  padding: 8px 12px;
+.command-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* أيقونة المفضلة في زاوية البطاقة */
+.fav-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: #a6adc8;
+  transition: var(--transition);
+  z-index: 5;
+}
+
+.fav-badge:hover {
+  transform: scale(1.1);
+  background: rgba(249, 226, 175, 0.15);
+  color: #f9e2af;
+}
+
+.fav-badge.active {
+  color: #f9e2af;
+  background: rgba(249, 226, 175, 0.2);
+  border-color: #f9e2af;
+  box-shadow: 0 0 10px rgba(249, 226, 175, 0.3);
+}
+
+/* نافذة الكود البرمجي (الترمينال) */
+.terminal-window {
+  background: #11111b;
   border-radius: 8px;
+  border: 1px solid #181825;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.terminal-header {
+  background: #181825;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dot-red { background: #f38ba8; }
+.dot-yellow { background: #f9e2af; }
+.dot-green { background: #a6e3a1; }
+
+.command-code {
+  padding: 12px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  color: var(--primary);
+  background: transparent;
   word-break: break-all;
-  display: inline-block;
+  white-space: pre-wrap;
+  direction: ltr;
+  text-align: left;
+  border-radius: 0;
+  display: block;
 }
 
 .command-desc {
   color: var(--text-secondary);
   font-size: 0.88rem;
   line-height: 1.5;
+  margin: 0;
+  padding: 0 2px;
 }
 
-/* Card Actions */
+/* أزرار الإجراءات للبطاقة */
 .card-actions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 6px;
+  margin-top: auto;
 }
 
 .card-btn {
@@ -325,6 +411,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 4px;
+  transition: var(--transition);
 }
 
 .card-btn:active {
@@ -341,7 +428,7 @@ body {
   color: var(--primary);
   padding: 12px;
   direction: ltr;
-  font-family: monospace;
+  font-family: 'Fira Code', monospace;
   font-size: 0.9rem;
   outline: none;
   margin-bottom: 10px;
@@ -370,7 +457,8 @@ body {
 .toast.show {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
-} 
+}
+
 /* =========================================
    إحصائيات مكتبة الأوامر
 ========================================= */
@@ -382,107 +470,65 @@ body {
   margin: 16px 0;
 }
 
-
-/* بطاقة الإحصائية */
-
 .stat-card {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border: 1px solid var(--border);
   border-radius: 16px;
-
   padding: 16px;
-
   display: flex;
   align-items: center;
   gap: 14px;
-
   min-width: 0;
-
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-
-  transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    background 0.25s ease;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
-
-
-/* تأثير البطاقة */
 
 .stat-card:hover {
   transform: translateY(-2px);
-  border-color: var(--primary-neon, #00f2fe);
+  border-color: var(--primary-neon);
   background: rgba(255, 255, 255, 0.07);
 }
-
-
-/* أيقونة الإحصائية */
 
 .stat-icon {
   width: 48px;
   height: 48px;
-
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 14px;
-
   font-size: 24px;
-
   background: rgba(0, 242, 254, 0.1);
-
   border: 1px solid rgba(0, 242, 254, 0.12);
 }
-
-
-/* محتوى الإحصائية */
 
 .stat-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 4px;
-
   min-width: 0;
 }
 
-
-/* الرقم */
-
 .stat-number {
   display: block;
-
   font-family: "Cairo", "Tajawal", sans-serif;
-
   font-size: 1.6rem;
   font-weight: 800;
-
   line-height: 1.2;
-
-  color: var(--primary-neon, #00f2fe);
+  color: var(--primary-neon);
 }
-
-
-/* عنوان الإحصائية */
 
 .stat-label {
   display: block;
-
   font-size: 0.85rem;
   font-weight: 500;
-
-  color: var(--text-secondary, #aaa);
-
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-
 
 /* =========================================
    زر نسخ الأمر داخل البطاقة
@@ -490,111 +536,135 @@ body {
 
 .copy-command-btn {
   background: rgba(0, 242, 254, 0.08) !important;
-
   border-color: rgba(0, 242, 254, 0.25) !important;
-
-  color: var(--primary-neon, #00f2fe);
+  color: var(--primary-neon);
 }
-
-
-/* عند المرور */
 
 .copy-command-btn:hover {
   background: rgba(0, 242, 254, 0.16) !important;
-
-  border-color: var(--primary-neon, #00f2fe) !important;
-
+  border-color: var(--primary-neon) !important;
   transform: translateY(-1px);
 }
-
-
-/* عند الضغط */
 
 .copy-command-btn:active {
   transform: scale(0.97);
 }
 
+/* مؤشر التحميل والنتائج الفارغة */
+.loading-spinner, .empty-results {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  grid-column: 1 / -1;
+}
 
+.empty-results-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.temporary-copy-textarea {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+
+/* كارت التصدير PNG المخفي */
+.export-card-canvas {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 600px;
+  background: #090d16;
+  border: 2px solid #00f2fe;
+  border-radius: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.export-card-category {
+  color: #00f2fe;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  text-align: right;
+}
+
+.export-card-command {
+  background: #11111b;
+  color: #a6e3a1;
+  font-family: 'Fira Code', monospace;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  direction: ltr;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-bottom: 12px;
+}
+
+.export-card-description {
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: right;
+}
 
 /* =========================================
-   الشاشات الصغيرة
+   الشاشات الصغيرة والجوال
 ========================================= */
 
 @media (max-width: 600px) {
-
   .stats-container {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-
     gap: 8px;
-
     margin: 12px 0;
   }
 
-
   .stat-card {
     padding: 11px;
-
     gap: 9px;
-
     border-radius: 14px;
   }
-
 
   .stat-icon {
     width: 40px;
     height: 40px;
-
     border-radius: 11px;
-
     font-size: 20px;
   }
-
 
   .stat-number {
     font-size: 1.25rem;
   }
 
-
   .stat-label {
     font-size: 0.72rem;
   }
-
 }
 
-
-
-/* =========================================
-   الجوال الصغير جداً
-========================================= */
-
 @media (max-width: 380px) {
-
   .stats-container {
     gap: 6px;
   }
-
 
   .stat-card {
     padding: 9px;
     gap: 7px;
   }
 
-
   .stat-icon {
     width: 36px;
     height: 36px;
-
     font-size: 18px;
   }
-
 
   .stat-number {
     font-size: 1.1rem;
   }
 
-
   .stat-label {
     font-size: 0.67rem;
   }
-
 }
+ 
