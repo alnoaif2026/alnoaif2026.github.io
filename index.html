@@ -2,1129 +2,333 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>مكتبة الأوامر الذكية</title>
-
-<!-- خط Tajawal المتوافق مع style.css -->
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
-
-<link
-href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap"
-rel="stylesheet">
-
-<!-- ملف التنسيقات الرئيسي -->
-<link rel="stylesheet" href="style.css">
-
-<style>
-
-/* =========================
-   تنسيقات الصفحة الرئيسية فقط
-========================= */
-
-.brand-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-}
-
-.brand-image {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    object-fit: cover;
-
-    border: 1px solid var(--glass-border);
-
-    background: rgba(255,255,255,.08);
-}
-
-.brand-name {
-    font-size: 1rem;
-    font-weight: 800;
-
-    background:
-        linear-gradient(
-            45deg,
-            var(--primary),
-            #ffffff,
-            var(--secondary)
-        );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
-}
-
-
-/* Hero badge */
-
-.hero-badge {
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 7px 15px;
-
-    margin-bottom: 12px;
-
-    border-radius: 50px;
-
-    font-size: .78rem;
-    font-weight: 700;
-
-    color: var(--primary);
-
-    background: rgba(0,242,254,.08);
-
-    border:
-        1px solid
-        rgba(0,242,254,.20);
-}
-
-
-/* Hero title accent */
-
-.hero h1 span {
-
-    display: inline-block;
-
-    color: var(--primary);
-
-    -webkit-text-fill-color: var(--primary);
-}
-
-
-/* Info bar */
-
-.info-bar {
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-wrap: wrap;
-
-    gap: 8px;
-
-    margin-top: 18px;
-
-    color: var(--text-secondary);
-
-    font-size: .78rem;
-}
-
-
-.info-item {
-
-    white-space: nowrap;
-
-}
-
-
-/* عنوان الأقسام */
-
-.section-head {
-
-    text-align: center;
-
-    margin-bottom: 18px;
-
-}
-
-
-.section-head h2 {
-
-    font-size: 1.35rem;
-
-    margin-bottom: 5px;
-
-}
-
-
-.section-head p {
-
-    color: var(--text-secondary);
-
-    font-size: .88rem;
-
-}
-
-
-/* بطاقات الأقسام */
-
-.library-card {
-
-    position: relative;
-
-    min-height: 255px;
-
-    overflow: hidden;
-
-}
-
-
-.library-card::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    right: 0;
-
-    width: 100%;
-
-    height: 3px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            var(--primary),
-            var(--secondary),
-            transparent
-        );
-
-}
-
-
-.library-card:hover {
-
-    transform: translateY(-3px);
-
-    border-color:
-        rgba(0,242,254,.35);
-
-    box-shadow:
-        0 10px 30px
-        rgba(0,0,0,.25);
-
-}
-
-
-/* الأيقونة */
-
-.icon-box {
-
-    width: 55px;
-    height: 55px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 1.7rem;
-
-    margin-bottom: 12px;
-
-    border-radius: 15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0,242,254,.14),
-            rgba(127,0,255,.15)
-        );
-
-    border:
-        1px solid
-        rgba(255,255,255,.10);
-
-}
-
-
-/* عنوان البطاقة */
-
-.library-card h3 {
-
-    font-size: 1.05rem;
-
-    margin-bottom: 8px;
-
-    color: #ffffff;
-
-}
-
-
-/* وصف البطاقة */
-
-.library-card .command-desc {
-
-    margin-bottom: 16px;
-
-}
-
-
-/* زر فتح المكتبة */
-
-.library-link {
-
-    width: 100%;
-
-    text-decoration: none;
-
-    padding: 10px 14px;
-
-    border-radius: 10px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 10px;
-
-    font-size: .84rem;
-
-    font-weight: 700;
-
-    color: #000;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--primary),
-            var(--primary-dark)
-        );
-
-    transition: var(--transition);
-
-}
-
-
-.library-link:hover {
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 5px 20px
-        rgba(0,242,254,.20);
-
-}
-
-
-.library-link:active {
-
-    transform: scale(.98);
-
-}
-
-
-/* ألوان أقسام مختلفة */
-
-.teacher .icon-box {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(59,130,246,.25),
-            rgba(0,242,254,.12)
-        );
-
-}
-
-
-.programming .icon-box {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(127,0,255,.28),
-            rgba(0,242,254,.12)
-        );
-
-}
-
-
-.house .icon-box {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(34,197,94,.25),
-            rgba(0,242,254,.10)
-        );
-
-}
-
-
-.car .icon-box {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(239,68,68,.25),
-            rgba(255,0,127,.10)
-        );
-
-}
-
-
-.camera .icon-box {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255,0,127,.25),
-            rgba(127,0,255,.15)
-        );
-
-}
-
-
-.engineering .icon-box {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(245,158,11,.25),
-            rgba(255,255,255,.07)
-        );
-
-}
-
-
-.architecture .icon-box {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(168,85,247,.25),
-            rgba(0,242,254,.12)
-        );
-
-}
-
-
-/* Footer */
-
-.site-footer {
-
-    width: calc(100% - 24px);
-
-    max-width: 1000px;
-
-    margin: 35px auto 0;
-
-    padding: 20px 12px;
-
-    text-align: center;
-
-    color: var(--text-secondary);
-
-    font-size: .8rem;
-
-    border-top:
-        1px solid
-        var(--border);
-
-}
-
-
-.site-footer strong {
-
-    color: var(--primary);
-
-}
-
-
-/* جوال */
-
-@media (max-width: 600px) {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مكتبة الأوامر الذكية</title>
+
+  <!-- خط Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- ملف التنسيقات الرئيسي -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* تنسيقات خاصة بالصفحة الرئيسية والبطاقات */
+    .brand-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-image {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.08);
+    }
 
     .brand-name {
-
-        font-size: .82rem;
-
+      font-size: 1rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, var(--primary), #ffffff, var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    .external-link {
-
-        font-size: .7rem;
-
-        padding: 6px 10px;
-
-    }
-
-    .hero h1 {
-
-        font-size: 1.65rem;
-
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 15px;
+      margin-bottom: 12px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.20);
     }
 
     .info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+    }
 
-        gap: 6px 10px;
+    .section-head {
+      text-align: center;
+      margin-bottom: 18px;
+    }
 
+    .section-head h2 {
+      font-size: 1.35rem;
+      margin-bottom: 5px;
+    }
+
+    .section-head p {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
     }
 
     .library-card {
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
 
-        min-height: auto;
-
+    .library-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
     }
 
-}
+    .icon-box {
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.14), rgba(127, 0, 255, 0.15));
+      border: 1px solid rgba(255, 255, 255, 0.10);
+    }
 
-</style>
+    .library-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
 
+    .library-link {
+      width: 100%;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #000;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      transition: var(--transition);
+      margin-top: auto;
+    }
+
+    .library-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 20px rgba(0, 242, 254, 0.20);
+    }
+
+    .site-footer {
+      width: calc(100% - 24px);
+      max-width: 1000px;
+      margin: 35px auto 0;
+      padding: 20px 12px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .site-footer strong {
+      color: var(--primary);
+    }
+  </style>
 </head>
-
 
 <body>
 
-
-<div class="container">
-
-
-<!-- =========================
-     NAVBAR
-========================= -->
-
-<nav class="site-nav">
-
-
-<a href="index.html"
-class="brand-wrapper">
-
-
-<img
-
-src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
-
-alt="شعار مكتبة الأوامر"
-
-class="brand-image">
-
-
-<div class="brand-name">
-
-مكتبة الأوامر
-
-</div>
-
-
-</a>
-
-
-<a
-href="https://alnoaif2026.github.io"
-class="external-link">
-
-🌐 الرئيسية
-
-</a>
-
-
-</nav>
-
-
-
-<!-- =========================
-     HERO
-========================= -->
-
-<header class="hero">
-
-
-<div class="hero-badge">
-
-✦ مكتبة ذكية لتنظيم أوامرك
-
-</div>
-
-
-<h1>
-
-كل أوامرك
-
-<span>
-
-في مكان واحد
-
-</span>
-
-</h1>
-
-
-<p>
-
-مكتبة منظمة تضم مجموعة من الأوامر
-والأكواد الذكية للمعلمين والمنزل
-والسيارات والتصوير والهندسة والعمارة.
-
-اختر القسم المناسب وابدأ مباشرة.
-
-</p>
-
-
-<div class="info-bar">
-
-
-<div class="info-item">
-
-⚡ وصول سريع للأوامر
-
-</div>
-
-
-<div class="info-item">
-
-•
-
-</div>
-
-
-<div class="info-item">
-
-📋 نسخ واستخدام بسهولة
-
-</div>
-
-
-<div class="info-item">
-
-•
-
-</div>
-
-
-<div class="info-item">
-
-📱 متوافق مع الجوال
-
-</div>
-
-
-</div>
-
-
-</header>
-
-
-
-<!-- =========================
-     CONTENT
-========================= -->
-
-<main>
-
-
-<div class="glass-panel">
-
-
-<div class="section-head">
-
-
-<h2>
-
-الأقسام الرئيسية
-
-</h2>
-
-
-<p>
-
-اختر أحد الأقسام للوصول
-إلى مجموعة الأوامر الخاصة به.
-
-</p>
-
-
-</div>
-
-
-
-<div class="commands-grid">
-
-
-
-<!-- =========================
-     TEACHERS
-========================= -->
-
-
-<article
-class="command-card library-card teacher">
-
-
-<div>
-
-
-<div class="icon-box">
-
-👨‍🏫
-
-</div>
-
-
-<h3>
-
-أكواد المعلمين
-
-</h3>
-
-
-<p class="command-desc">
-
-أوامر ذكية لإعداد الدروس،
-إنشاء الاختبارات، شرح المواد،
-تصميم الأنشطة، إعداد أوراق العمل
-وتطوير المحتوى التعليمي.
-
-</p>
-
-
-</div>
-
-
-<a
-href="https://alnoaif2026.github.io/astath.html"
-class="library-link">
-
-<span>
-
-فتح مكتبة المعلمين
-
-</span>
-
-<span>
-
-←
-
-</span>
-
-</a>
-
-
-</article>
-
-
-
-<!-- =========================
-     PROGRAMMING
-========================= -->
-
-
-<article
-class="command-card library-card programming">
-
-
-<div>
-
-
-<div class="icon-box">
-
-💻
-
-</div>
-
-
-<h3>
-
-البرمجة وتطوير المواقع
-
-</h3>
-
-
-<p class="command-desc">
-
-أوامر كتابة الأكواد،
-إنشاء المواقع والتطبيقات،
-إصلاح الأخطاء وقواعد البيانات
-وPHP وJavaScript وFirebase
-وPython وواجهات API والمزيد.
-
-</p>
-
-
-</div>
-
-
-<a
-href="programming.html"
-class="library-link">
-
-<span>
-
-فتح مكتبة البرمجة
-
-</span>
-
-<span>
-
-←
-
-</span>
-
-</a>
-
-
-</article>
-
-
-
-<!-- =========================
-     HOUSE
-========================= -->
-
-
-<article
-class="command-card library-card house">
-
-
-<div>
-
-
-<div class="icon-box">
-
-🏠
-
-</div>
-
-
-<h3>
-
-أكواد المنزل
-
-</h3>
-
-
-<p class="command-desc">
-
-أوامر للطبخ والوصفات
-وتنظيم المنزل والتنظيف
-والتسوق وإدارة الميزانية
-ووضع الجداول المنزلية
-وخطط الوجبات.
-
-</p>
-
-
-</div>
-
-
-<a
-href="biot.html"
-class="library-link">
-
-<span>
-
-فتح مكتبة المنزل
-
-</span>
-
-<span>
-
-←
-
-</span>
-
-</a>
-
-
-</article>
-
-
-
-<!-- =========================
-     CARS
-========================= -->
-
-
-<article
-class="command-card library-card car">
-
-
-<div>
-
-
-<div class="icon-box">
-
-🚘
-
-</div>
-
-
-<h3>
-
-أكواد السيارات
-
-</h3>
-
-
-<p class="command-desc">
-
-أوامر لتحسين صور السيارات،
-التشخيص والصيانة،
-العرض التفكيكي،
-الأشعة الافتراضية
-والتصوير الاحترافي للمركبات.
-
-</p>
-
-
-</div>
-
-
-<a
-href="cars.html"
-class="library-link">
-
-<span>
-
-فتح مكتبة السيارات
-
-</span>
-
-<span>
-
-←
-
-</span>
-
-</a>
-
-
-</article>
-
-
-
-<!-- =========================
-     CAMERA
-========================= -->
-
-
-<article
-class="command-card library-card camera">
-
-
-<div>
-
-
-<div class="icon-box">
-
-📸
-
-</div>
-
-
-<h3>
-
-التصوير والسينما
-
-</h3>
-
-
-<p class="command-desc">
-
-أوامر الكاميرات والعدسات
-والإضاءة السينمائية
-وزوايا التصوير والعمق البصري
-والمؤثرات والأساليب
-الفنية الاحترافية.
-
-</p>
-
-
-</div>
-
-
-<a
-href="photography.html"
-class="library-link">
-
-<span>
-
-فتح مكتبة التصوير
-
-</span>
-
-<span>
-
-←
-
-</span>
-
-</a>
-
-
-</article>
-
-
-
-<!-- =========================
-     ENGINEERING
-========================= -->
-
-
-<article
-class="command-card library-card engineering">
-
-
-<div>
-
-
-<div class="icon-box">
-
-⚙️
-
-</div>
-
-
-<h3>
-
-الهندسة والتقنية
-
-</h3>
-
-
-<p class="command-desc">
-
-أوامر المخططات الهندسية،
-التصاميم التقنية،
-العرض التفكيكي،
-الرسوم التوضيحية،
-النماذج والمكونات الداخلية.
-
-</p>
-
-
-</div>
-
-
-<a
-href="engineering.html"
-class="library-link">
-
-<span>
-
-فتح مكتبة الهندسة
-
-</span>
-
-<span>
-
-←
-
-</span>
-
-</a>
-
-
-</article>
-
-
-
-<!-- =========================
-     ARCHITECTURE
-========================= -->
-
-
-<article
-class="command-card library-card architecture">
-
-
-<div>
-
-
-<div class="icon-box">
-
-🏛️
-
-</div>
-
-
-<h3>
-
-العمارة والديكور
-
-</h3>
-
-
-<p class="command-desc">
-
-أوامر التصميم الداخلي والخارجي،
-الواجهات والمخططات،
-توزيع الأثاث والإضاءة
-وتصميم المساحات
-بأساليب متعددة.
-
-</p>
-
-
-</div>
-
-
-<a
-href="architecture.html"
-class="library-link">
-
-<span>
-
-فتح مكتبة العمارة
-
-</span>
-
-<span>
-
-←
-
-</span>
-
-</a>
-
-
-</article>
-
-
-
-</div>
-
-</div>
-
-
-</main>
-
-
-</div>
-
-
-
-<!-- =========================
-     FOOTER
-========================= -->
-
-
-<footer class="site-footer">
-
-جميع الحقوق محفوظة © 2026
-
-<strong>
-
-مكتبة الأوامر الذكية | علي المالكي
-
-</strong>
-
-</footer>
-
-
+  <div class="container">
+
+    <!-- NAVBAR -->
+    <nav class="site-nav">
+      <a href="index.html" class="brand-wrapper">
+        <img src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true" alt="شعار مكتبة الأوامر" class="brand-image">
+        <div class="brand-name">مكتبة الأوامر</div>
+      </a>
+      <a href="https://alnoaif2026.github.io" class="external-link">🌐 الرئيسية</a>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-badge">✦ مكتبة ذكية لتنظيم أوامرك</div>
+      <h1>كل أوامرك <span>في مكان واحد</span></h1>
+      <p>مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية لمختلف المجالات. اختر القسم المناسب وابدأ مباشرة.</p>
+
+      <div class="info-bar">
+        <div class="info-item">⚡ وصول سريع للأوامر</div>
+        <div class="info-item">•</div>
+        <div class="info-item">📋 نسخ واستخدام بسهولة</div>
+        <div class="info-item">•</div>
+        <div class="info-item">📱 متوافق مع الجوال</div>
+      </div>
+    </header>
+
+    <!-- STATS -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-content">
+          <span class="stat-number" id="categories-count">0</span>
+          <span class="stat-label">الأقسام المتاحة</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-content">
+          <span class="stat-number" id="status-text">متصل</span>
+          <span class="stat-label">حالة المكتبة</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <div class="glass-panel">
+        <div class="section-head">
+          <h2>الأقسام الرئيسية</h2>
+          <p>اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.</p>
+        </div>
+
+        <!-- شبكة الأقسام الديناميكية -->
+        <div class="commands-grid" id="categories-grid">
+          <div class="loading-spinner">جاري تحميل الأقسام من قاعدة البيانات...</div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    جميع الحقوق محفوظة © 2026 <strong>مكتبة الأوامر الذكية | علي المالكي</strong>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // إعدادات Firebase الخاصة بك
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // تهيئة الفايربيس
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // خرائط الأيقونات والأوصاف لكل قسم حسب المسار (path)
+    const categoryDetails = {
+      brmjh: { icon: "💻", desc: "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، إصلاح الأخطاء وقواعد البيانات والبرمجة.", file: "programming.html" },
+      talim: { icon: "👨‍🏫", desc: "أوامر ذكية لإعداد الدروس، إنشاء الاختبارات، شرح المواد، تصميم الأنشطة وتطوير المحتوى.", file: "astath.html" },
+      biot: { icon: "🏠", desc: "أوامر للطبخ والوصفات وتنظيم المنزل والتنظيف وإدارة الميزانية وجداول الوجبات.", file: "biot.html" },
+      cars: { icon: "🚘", desc: "أوامر لتحسين صور السيارات، التشخيص والصيانة والتصوير الاحترافي للمركبات.", file: "cars.html" },
+      photography: { icon: "📸", desc: "أوامر الكاميرات والعدسات والإضاءة السينمائية وزوايا التصوير والعمق البصري.", file: "photography.html" },
+      engineering: { icon: "⚙️", desc: "أوامر المخططات الهندسية، التصاميم التقنية، الرسوم التوضيحية والمكونات الداخلية.", file: "engineering.html" },
+      architecture: { icon: "🏛️", desc: "أوامر التصميم الداخلي والخارجي، الواجهات، وتوزيع الأثاث والإضاءة.", file: "architecture.html" }
+    };
+
+    async function loadCategories() {
+      const grid = document.getElementById("categories-grid");
+      const countEl = document.getElementById("categories-count");
+
+      try {
+        // قراءة مجموعة الأقسام من المسار في Firestore
+        const querySnapshot = await getDocs(collection(db, "categories"));
+        grid.innerHTML = "";
+        
+        if (querySnapshot.empty) {
+          // في حال كانت المجموعة فارغة أو عند الاستدعاء المباشر، يتم العرض من البيانات الممررة
+          renderDefaultCategories(grid, countEl);
+          return;
+        }
+
+        let total = 0;
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const pathKey = data.path || doc.id;
+          const details = categoryDetails[pathKey] || { icon: "📁", desc: "قسم الأوامر المخصصة والتعليمات الذكية.", file: `${pathKey}.html` };
+
+          const card = document.createElement("article");
+          card.className = `command-card library-card ${pathKey}`;
+          card.innerHTML = `
+            <div>
+              <div class="icon-box">${details.icon}</div>
+              <h3>${data.nameAr || "قسم غير معنون"}</h3>
+              <p class="command-desc">${details.desc}</p>
+            </div>
+            <a href="${details.file}" class="library-link">
+              <span>فتح مكتبة ${data.nameAr}</span>
+              <span>←</span>
+            </a>
+          `;
+          grid.appendChild(card);
+          total++;
+        });
+
+        countEl.innerText = total;
+
+      } catch (error) {
+        console.warn("جاري استخدام العرض الافتراضي للأقسام:", error);
+        renderDefaultCategories(grid, countEl);
+      }
+    }
+
+    // دالة احتياطية لعرض بيانات Firebase المرفقة مباشر في حال التعذر
+    function renderDefaultCategories(container, countEl) {
+      const firebaseData = [
+        { nameAr: "البرمجة وتطوير المواقع", path: "brmjh" },
+        { nameAr: "للمعلمين والتعليم", path: "talim" }
+      ];
+
+      container.innerHTML = "";
+      firebaseData.forEach(item => {
+        const details = categoryDetails[item.path] || { icon: "📁", desc: "قسم الأوامر المخصصة والتعليمات الذكية.", file: `${item.path}.html` };
+        const card = document.createElement("article");
+        card.className = `command-card library-card ${item.path}`;
+        card.innerHTML = `
+          <div>
+            <div class="icon-box">${details.icon}</div>
+            <h3>${item.nameAr}</h3>
+            <p class="command-desc">${details.desc}</p>
+          </div>
+          <a href="${details.file}" class="library-link">
+            <span>فتح مكتبة ${item.nameAr}</span>
+            <span>←</span>
+          </a>
+        `;
+        container.appendChild(card);
+      });
+      countEl.innerText = firebaseData.length;
+    }
+
+    window.addEventListener("DOMContentLoaded", loadCategories);
+  </script>
 </body>
 
-</html> 
+</html>
+ 
