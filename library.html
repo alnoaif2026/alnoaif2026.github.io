@@ -12,19 +12,87 @@
 
   <title>مكتبة الأوامر</title>
 
-
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
   ></script>
-
 
   <link
     href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
 
-
   <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    /* ===============================
+       عدد الأوامر داخل التصنيف
+    ================================ */
+
+    .cat-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .cat-count {
+      min-width: 24px;
+      height: 24px;
+      padding: 0 7px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50px;
+
+      background: rgba(255,255,255,.10);
+
+      font-family: "Fira Code", monospace;
+      font-size: 11px;
+      font-weight: 600;
+
+      line-height: 1;
+    }
+
+    .cat-pill.active .cat-count {
+      background: rgba(255,255,255,.20);
+    }
+
+
+    /* ===============================
+       حقوق البرمجة
+    ================================ */
+
+    .site-footer {
+      margin-top: 40px;
+      margin-bottom: 20px;
+      padding: 22px 15px;
+
+      text-align: center;
+
+      border-top: 1px solid rgba(255,255,255,.08);
+
+      color: rgba(255,255,255,.65);
+
+      font-family: "Tajawal", sans-serif;
+
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .site-footer strong {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .site-footer .developer-name {
+      color: #7cb7ff;
+      font-weight: 800;
+    }
+
+  </style>
 
 </head>
 
@@ -35,7 +103,10 @@
 <div class="container">
 
 
-  <!-- NAV -->
+  <!-- ===============================
+       NAV
+  ================================ -->
+
   <nav class="site-nav">
 
     <a
@@ -56,7 +127,10 @@
 
 
 
-  <!-- HERO -->
+  <!-- ===============================
+       HERO
+  ================================ -->
+
   <header class="hero">
 
     <div class="hero-badge">
@@ -71,26 +145,14 @@
       جاري جلب البيانات من Firebase...
     </p>
 
-    <div class="path-info">
-
-      <span>
-        المسار
-      </span>
-
-      <span
-        class="path-badge"
-        id="currentPath"
-      >
-        /...
-      </span>
-
-    </div>
-
   </header>
 
 
 
-  <!-- STATS -->
+  <!-- ===============================
+       STATS
+  ================================ -->
+
   <div class="stats-container">
 
 
@@ -147,7 +209,10 @@
 
 
 
-  <!-- SEARCH -->
+  <!-- ===============================
+       SEARCH
+  ================================ -->
+
   <div class="glass-panel">
 
 
@@ -199,7 +264,10 @@
 
 
 
-  <!-- CATEGORIES -->
+  <!-- ===============================
+       CATEGORIES
+  ================================ -->
+
   <div
     class="categories-scroll"
     id="categories"
@@ -207,7 +275,10 @@
 
 
 
-  <!-- BUILDER -->
+  <!-- ===============================
+       BUILDER
+  ================================ -->
+
   <div class="glass-panel">
 
     <h3 class="builder-title">
@@ -264,7 +335,10 @@
 
 
 
-  <!-- COMMANDS -->
+  <!-- ===============================
+       COMMANDS
+  ================================ -->
+
   <main class="commands-main">
 
     <div
@@ -281,11 +355,34 @@
   </main>
 
 
+
+  <!-- ===============================
+       FOOTER
+  ================================ -->
+
+  <footer class="site-footer">
+
+    تمت برمجة هذا الموقع بواسطة
+
+    <strong class="developer-name">
+      علي المالكي
+    </strong>
+
+    <strong>
+      (أبو نايف)
+    </strong>
+
+  </footer>
+
+
 </div>
 
 
 
-<!-- TOAST -->
+<!-- ===============================
+     TOAST
+================================ -->
+
 <div
   class="toast"
   id="toast"
@@ -293,7 +390,10 @@
 
 
 
-<!-- بطاقة PNG -->
+<!-- ===============================
+     بطاقة PNG
+================================ -->
+
 <div
   class="export-card-canvas"
   id="exportCardCanvas"
@@ -341,6 +441,7 @@ const META_PATH =
   "__paths";
 
 
+
 /* ===============================
    قراءة path
 ================================ */
@@ -372,8 +473,9 @@ let showOnlyFavs =
   false;
 
 
+
 /* ===============================
-   المفضلة منفصلة لكل الموقع
+   المفضلة
 ================================ */
 
 let favorites =
@@ -384,8 +486,9 @@ let favorites =
   );
 
 
+
 /* ===============================
-   الأوامر الخاصة لكل مكتبة
+   الأوامر الخاصة
 ================================ */
 
 function customStorageKey() {
@@ -410,6 +513,7 @@ const builder =
   document.getElementById(
     "promptBuilder"
   );
+
 
 
 /* ===============================
@@ -439,6 +543,7 @@ function firebaseURL(path) {
 }
 
 
+
 /* ===============================
    Escape
 ================================ */
@@ -453,6 +558,7 @@ function escapeHTML(value) {
     .replace(/'/g, "&#039;");
 
 }
+
 
 
 /* ===============================
@@ -546,6 +652,7 @@ async function fetchLibraryMeta() {
 }
 
 
+
 /* ===============================
    Parsing Firebase
 ================================ */
@@ -606,6 +713,7 @@ function parseFirebaseCommands(data) {
 
 
     /* Array */
+
     if (Array.isArray(value)) {
 
       value.forEach(item => {
@@ -642,6 +750,7 @@ function parseFirebaseCommands(data) {
 
 
     /* Object */
+
     if (
       value &&
       typeof value === "object"
@@ -712,6 +821,7 @@ function parseFirebaseCommands(data) {
 }
 
 
+
 /* ===============================
    تحميل المكتبة
 ================================ */
@@ -750,12 +860,6 @@ async function loadLibrary() {
     return;
 
   }
-
-
-  document.getElementById(
-    "currentPath"
-  ).textContent =
-    "/" + currentLibraryPath;
 
 
   await fetchLibraryMeta();
@@ -816,6 +920,7 @@ async function loadLibrary() {
 }
 
 
+
 /* ===============================
    All items
 ================================ */
@@ -828,6 +933,7 @@ function allItems() {
   ];
 
 }
+
 
 
 /* ===============================
@@ -859,6 +965,37 @@ function updateStats() {
     favCount;
 
 }
+
+
+
+/* ===============================
+   حساب عدد أوامر كل تصنيف
+================================ */
+
+function getCategoryCount(category) {
+
+  const items =
+    allItems();
+
+
+  if (category === "الكل") {
+
+    return items.length;
+
+  }
+
+
+  return items.filter(item => {
+
+    return (
+      (item.category || "عام") ===
+      category
+    );
+
+  }).length;
+
+}
+
 
 
 /* ===============================
@@ -925,8 +1062,42 @@ function renderCategories() {
     }
 
 
-    button.textContent =
+    /* اسم التصنيف */
+
+    const nameSpan =
+      document.createElement(
+        "span"
+      );
+
+
+    nameSpan.textContent =
       cat;
+
+
+    /* العدد */
+
+    const countSpan =
+      document.createElement(
+        "span"
+      );
+
+
+    countSpan.className =
+      "cat-count";
+
+
+    countSpan.textContent =
+      getCategoryCount(cat);
+
+
+    button.appendChild(
+      nameSpan
+    );
+
+
+    button.appendChild(
+      countSpan
+    );
 
 
     button.addEventListener(
@@ -943,6 +1114,7 @@ function renderCategories() {
   });
 
 }
+
 
 
 /* ===============================
@@ -973,6 +1145,7 @@ function selectCategory(cat) {
 }
 
 
+
 /* ===============================
    Favorite filter
 ================================ */
@@ -996,6 +1169,7 @@ function toggleFavFilter() {
   renderCommands();
 
 }
+
 
 
 /* ===============================
@@ -1174,6 +1348,7 @@ function renderCommands() {
 }
 
 
+
 /* ===============================
    Favorite
 ================================ */
@@ -1225,6 +1400,7 @@ function toggleFavorite(command) {
 }
 
 
+
 /* ===============================
    Copy
 ================================ */
@@ -1234,6 +1410,7 @@ async function copyCommand(command) {
   await copyText(command);
 
 }
+
 
 
 /* ===============================
@@ -1300,6 +1477,7 @@ async function copyText(text) {
 }
 
 
+
 /* ===============================
    Builder
 ================================ */
@@ -1341,6 +1519,7 @@ function addBuilder(command) {
   );
 
 }
+
 
 
 /* ===============================
@@ -1438,6 +1617,7 @@ function promptAddCustomCommand() {
 }
 
 
+
 /* ===============================
    TXT card
 ================================ */
@@ -1478,6 +1658,7 @@ async function shareCardTXT(
   copyText(text);
 
 }
+
 
 
 /* ===============================
@@ -1637,6 +1818,7 @@ async function shareCardPNG(
 }
 
 
+
 /* ===============================
    Builder copy
 ================================ */
@@ -1661,6 +1843,7 @@ function copyBuilder() {
   copyText(text);
 
 }
+
 
 
 /* ===============================
@@ -1711,6 +1894,7 @@ async function shareTXTBuilder() {
 }
 
 
+
 /* ===============================
    Builder PNG
 ================================ */
@@ -1745,6 +1929,7 @@ function exportBuilderPNG() {
 }
 
 
+
 /* ===============================
    Clear Builder
 ================================ */
@@ -1758,6 +1943,7 @@ function clearBuilder() {
   );
 
 }
+
 
 
 /* ===============================
@@ -1842,6 +2028,7 @@ function exportTXT() {
 }
 
 
+
 /* ===============================
    Toast
 ================================ */
@@ -1883,6 +2070,7 @@ function showToast(message) {
 }
 
 
+
 /* ===============================
    Search
 ================================ */
@@ -1896,11 +2084,13 @@ document.getElementById(
 );
 
 
+
 /* ===============================
    Start
 ================================ */
 
 loadLibrary();
+
 
 </script>
 
