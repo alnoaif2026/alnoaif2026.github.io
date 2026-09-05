@@ -2,225 +2,608 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>مكتبة الأوامر الذكية</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <!-- خط Tajawal -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>مكتبة الأوامر والأكواد</title>
+
+
+  <!-- =========================
+       خط Tajawal
+  ========================== -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
   <link
     href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet"
   >
 
-  <!-- ملف التنسيقات الرئيسي -->
-  <link rel="stylesheet" href="style.css">
+
+  <!-- =========================
+       ملف التنسيق الرئيسي
+  ========================== -->
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 
   <style>
 
+    /* ==========================================
+       إعدادات إضافية للصفحة الرئيسية
+    ========================================== */
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+      font-family: "Tajawal", sans-serif;
+    }
+
+
+    /* ==========================================
+       الشعار
+    ========================================== */
+
     .brand-wrapper {
+
       display: flex;
       align-items: center;
       gap: 10px;
+
       text-decoration: none;
+
     }
+
 
     .brand-image {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+
+      width: 44px;
+      height: 44px;
+
+      border-radius: 13px;
+
       object-fit: cover;
+
       border: 1px solid var(--glass-border);
-      background: rgba(255, 255, 255, 0.08);
+
+      background:
+        rgba(255, 255, 255, 0.08);
+
     }
+
 
     .brand-name {
+
       font-size: 1rem;
       font-weight: 800;
-      background: linear-gradient(
-        45deg,
-        var(--primary),
-        #ffffff,
-        var(--secondary)
-      );
+
+      background:
+        linear-gradient(
+          45deg,
+          var(--primary),
+          #ffffff,
+          var(--secondary)
+        );
+
       -webkit-background-clip: text;
       background-clip: text;
+
       color: transparent;
+
     }
+
+
+
+    /* ==========================================
+       Hero
+    ========================================== */
 
     .hero-badge {
+
       display: inline-flex;
+
       align-items: center;
       justify-content: center;
+
       padding: 7px 15px;
+
       margin-bottom: 12px;
+
       border-radius: 50px;
+
       font-size: 0.78rem;
       font-weight: 700;
+
       color: var(--primary);
-      background: rgba(0, 242, 254, 0.08);
-      border: 1px solid rgba(0, 242, 254, 0.20);
+
+      background:
+        rgba(0, 242, 254, 0.08);
+
+      border:
+        1px solid rgba(0, 242, 254, 0.20);
+
     }
+
 
     .info-bar {
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       flex-wrap: wrap;
+
       gap: 8px;
+
       margin-top: 18px;
+
       color: var(--text-secondary);
+
       font-size: 0.78rem;
+
     }
+
+
+
+    /* ==========================================
+       عنوان الأقسام
+    ========================================== */
 
     .section-head {
+
       text-align: center;
-      margin-bottom: 18px;
+
+      margin-bottom: 25px;
+
     }
+
 
     .section-head h2 {
-      font-size: 1.35rem;
-      margin-bottom: 5px;
+
+      font-size: 1.45rem;
+
+      margin-bottom: 7px;
+
+      color: #ffffff;
+
     }
+
 
     .section-head p {
+
       color: var(--text-secondary);
+
       font-size: 0.88rem;
+
+      line-height: 1.8;
+
     }
 
-    .library-card {
+
+
+    /* ==========================================
+       شبكة الأقسام
+    ========================================== */
+
+    .main-options-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(240px, 1fr)
+        );
+
+      gap: 18px;
+
+    }
+
+
+
+    /* ==========================================
+       بطاقة القسم
+    ========================================== */
+
+    .main-option-card {
+
       position: relative;
-      min-height: 220px;
+
       overflow: hidden;
+
+      min-height: 275px;
+
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+
+      padding: 22px;
+
+      border-radius: 20px;
+
+      background:
+        rgba(255, 255, 255, 0.045);
+
+      border:
+        1px solid rgba(255, 255, 255, 0.09);
+
+      backdrop-filter:
+        blur(14px);
+
+      -webkit-backdrop-filter:
+        blur(14px);
+
+      transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+
     }
 
-    .library-card::before {
+
+    .main-option-card::before {
+
       content: "";
+
       position: absolute;
+
       top: 0;
       right: 0;
+
       width: 100%;
       height: 3px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--primary),
-        var(--secondary),
-        transparent
-      );
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--primary),
+          var(--secondary),
+          transparent
+        );
+
     }
 
-    .icon-box {
-      width: 55px;
-      height: 55px;
+
+    .main-option-card::after {
+
+      content: "";
+
+      position: absolute;
+
+      width: 160px;
+      height: 160px;
+
+      top: -80px;
+      left: -80px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(0, 242, 254, 0.12),
+          transparent 70%
+        );
+
+      pointer-events: none;
+
+    }
+
+
+    .main-option-card:hover {
+
+      transform:
+        translateY(-5px);
+
+      border-color:
+        rgba(0, 242, 254, 0.25);
+
+      box-shadow:
+        0 14px 40px
+        rgba(0, 0, 0, 0.20);
+
+    }
+
+
+
+    /* ==========================================
+       الأيقونة
+    ========================================== */
+
+    .option-icon {
+
+      width: 65px;
+      height: 65px;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
-      font-size: 1.7rem;
-      margin-bottom: 12px;
-      border-radius: 15px;
-      background: linear-gradient(
-        135deg,
-        rgba(0, 242, 254, 0.14),
-        rgba(127, 0, 255, 0.15)
-      );
-      border: 1px solid rgba(255, 255, 255, 0.10);
+
+      border-radius: 18px;
+
+      margin-bottom: 17px;
+
+      font-size: 2rem;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0, 242, 254, 0.13),
+          rgba(127, 0, 255, 0.16)
+        );
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.10);
+
     }
 
-    .library-card h3 {
-      font-size: 1.05rem;
-      margin-bottom: 8px;
+
+
+    /* ==========================================
+       النصوص
+    ========================================== */
+
+    .option-title {
+
       color: #ffffff;
+
+      font-size: 1.05rem;
+
+      font-weight: 800;
+
+      line-height: 1.7;
+
+      margin-bottom: 9px;
+
     }
 
-    .command-desc {
+
+    .option-desc {
+
       color: var(--text-secondary);
-      font-size: 0.85rem;
-      line-height: 1.8;
-      margin-bottom: 15px;
+
+      font-size: 0.84rem;
+
+      line-height: 1.85;
+
+      margin-bottom: 18px;
+
     }
 
-    .path-badge {
-      display: inline-block;
+
+
+    /* ==========================================
+       شارة اللغة
+    ========================================== */
+
+    .language-badge {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      width: fit-content;
+
+      padding: 5px 10px;
+
+      margin-bottom: 17px;
+
+      border-radius: 8px;
+
       direction: ltr;
-      margin-bottom: 15px;
-      padding: 4px 9px;
-      border-radius: 7px;
-      font-family: monospace;
-      font-size: 0.7rem;
+
+      font-size: 0.70rem;
+
+      font-family:
+        monospace;
+
       color: var(--primary);
-      background: rgba(0, 242, 254, 0.06);
-      border: 1px solid rgba(0, 242, 254, 0.12);
+
+      background:
+        rgba(0, 242, 254, 0.06);
+
+      border:
+        1px solid
+        rgba(0, 242, 254, 0.12);
+
     }
 
-    .library-link {
+
+
+    /* ==========================================
+       زر الفتح
+    ========================================== */
+
+    .option-button {
+
       width: 100%;
-      text-decoration: none;
-      padding: 10px 14px;
-      border-radius: 10px;
+
       display: flex;
+
       align-items: center;
       justify-content: space-between;
+
       gap: 10px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #000;
-      background: linear-gradient(
-        135deg,
-        var(--primary),
-        var(--primary-dark)
-      );
-      transition: var(--transition);
+
+      padding: 12px 15px;
+
       margin-top: auto;
+
+      border-radius: 11px;
+
+      text-decoration: none;
+
+      color: #000000;
+
+      font-size: 0.85rem;
+
+      font-weight: 800;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
     }
 
-    .library-link:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 5px 20px rgba(0, 242, 254, 0.20);
+
+    .option-button:hover {
+
+      transform:
+        translateY(-2px);
+
+      box-shadow:
+        0 8px 25px
+        rgba(0, 242, 254, 0.22);
+
     }
 
-    .loading-spinner,
-    .empty-results,
-    .firebase-error {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 35px 15px;
-      border-radius: 14px;
-      color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+
+
+    /* ==========================================
+       الإحصائيات
+    ========================================== */
+
+    .stats-container {
+
+      margin-bottom: 25px;
+
     }
 
-    .firebase-error {
-      color: #f87171;
-    }
+
+
+    /* ==========================================
+       Footer
+    ========================================== */
 
     .site-footer {
-      width: calc(100% - 24px);
-      max-width: 1000px;
-      margin: 35px auto 0;
-      padding: 20px 12px;
+
+      width:
+        calc(100% - 24px);
+
+      max-width:
+        1000px;
+
+      margin:
+        35px auto 0;
+
+      padding:
+        20px 12px;
+
       text-align: center;
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-      border-top: 1px solid var(--border);
+
+      color:
+        var(--text-secondary);
+
+      font-size:
+        0.8rem;
+
+      border-top:
+        1px solid var(--border);
+
     }
 
+
     .site-footer strong {
-      color: var(--primary);
+
+      color:
+        var(--primary);
+
+    }
+
+
+
+    /* ==========================================
+       الجوال
+    ========================================== */
+
+    @media
+    (max-width: 600px) {
+
+      .main-options-grid {
+
+        grid-template-columns:
+          1fr;
+
+        gap:
+          14px;
+
+      }
+
+
+      .main-option-card {
+
+        min-height:
+          245px;
+
+        padding:
+          18px;
+
+      }
+
+
+      .option-icon {
+
+        width:
+          58px;
+
+        height:
+          58px;
+
+        font-size:
+          1.8rem;
+
+      }
+
+
+      .option-title {
+
+        font-size:
+          1rem;
+
+      }
+
     }
 
   </style>
+
 </head>
+
 
 <body>
 
+
   <div class="container">
+
 
     <!-- =========================
          NAVBAR
@@ -228,7 +611,12 @@
 
     <nav class="site-nav">
 
-      <a href="index.html" class="brand-wrapper">
+
+      <a
+        href="index.html"
+        class="brand-wrapper"
+      >
+
 
         <img
           src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
@@ -236,20 +624,30 @@
           class="brand-image"
         >
 
+
         <div class="brand-name">
+
           مكتبة الأوامر
+
         </div>
 
+
       </a>
+
+
 
       <a
         href="https://alnoaif2026.github.io"
         class="external-link"
       >
+
         🌐 الرئيسية
+
       </a>
 
+
     </nav>
+
 
 
     <!-- =========================
@@ -258,45 +656,92 @@
 
     <header class="hero">
 
+
       <div class="hero-badge">
-        ✦ مكتبة ذكية لتنظيم أوامرك
+
+        ✦ مكتبة الأوامر والأكواد الذكية
+
       </div>
 
+
       <h1>
-        كل أوامرك
-        <span>في مكان واحد</span>
+
+        اختر مكتبتك
+
+        <span>
+          وابدأ مباشرة
+        </span>
+
       </h1>
 
+
       <p>
-        مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
-        لمختلف المجالات. اختر القسم المناسب وابدأ مباشرة.
+
+        مجموعة متكاملة من أوامر الذكاء الاصطناعي
+        والأكواد البرمجية لتطوير التطبيقات
+        وإنشاء صفحات ومواقع الويب.
+
       </p>
+
+
 
       <div class="info-bar">
 
-        <div class="info-item">
-          ⚡ وصول سريع للأوامر
-        </div>
 
         <div class="info-item">
+
+          🤖 ذكاء اصطناعي
+
+        </div>
+
+
+        <div class="info-item">
+
           •
+
         </div>
 
-        <div class="info-item">
-          📋 نسخ واستخدام بسهولة
-        </div>
 
         <div class="info-item">
+
+          ☕ Java
+
+        </div>
+
+
+        <div class="info-item">
+
           •
+
         </div>
 
+
         <div class="info-item">
-          📱 متوافق مع الجوال
+
+          🌐 HTML
+
         </div>
+
+
+        <div class="info-item">
+
+          •
+
+        </div>
+
+
+        <div class="info-item">
+
+          📱 تطوير تطبيقات
+
+        </div>
+
 
       </div>
 
+
     </header>
+
 
 
     <!-- =========================
@@ -305,93 +750,387 @@
 
     <div class="stats-container">
 
+
       <div class="stat-card">
 
+
         <div class="stat-icon">
+
           📚
+
         </div>
+
 
         <div class="stat-content">
 
+
           <span
             class="stat-number"
-            id="categories-count"
           >
-            0
+
+            4
+
           </span>
 
-          <span class="stat-label">
-            الأقسام المتاحة
+
+          <span
+            class="stat-label"
+          >
+
+            مكتبات رئيسية
+
           </span>
+
 
         </div>
 
+
       </div>
+
 
 
       <div class="stat-card">
 
+
         <div class="stat-icon">
+
           ⚡
+
         </div>
+
 
         <div class="stat-content">
 
+
           <span
             class="stat-number"
-            id="status-text"
           >
-            جاري الاتصال
+
+            متاح
+
           </span>
 
-          <span class="stat-label">
+
+          <span
+            class="stat-label"
+          >
+
             حالة المكتبة
+
           </span>
+
 
         </div>
 
+
       </div>
+
 
     </div>
 
 
+
     <!-- =========================
-         MAIN CONTENT
+         الأقسام الرئيسية
     ========================== -->
 
     <main>
 
+
       <div class="glass-panel">
+
 
         <div class="section-head">
 
+
           <h2>
+
             الأقسام الرئيسية
+
           </h2>
 
+
           <p>
-            اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.
+
+            اختر المجال الذي تريد الدخول إليه
+            للوصول إلى الأوامر والأكواد الخاصة به.
+
           </p>
 
-        </div>
-
-
-        <div
-          class="commands-grid"
-          id="categories-grid"
-        >
-
-          <div class="loading-spinner">
-            ⏳ جاري تحميل الأقسام...
-          </div>
 
         </div>
+
+
+
+        <div class="main-options-grid">
+
+
+
+          <!-- ==================================
+               الذكاء الاصطناعي
+          =================================== -->
+
+          <article class="main-option-card">
+
+
+            <div class="option-icon">
+
+              🤖
+
+            </div>
+
+
+            <h3 class="option-title">
+
+              أوامر تطبيقات الذكاء الاصطناعي
+
+            </h3>
+
+
+            <div class="language-badge">
+
+              AI PROMPTS
+
+            </div>
+
+
+            <p class="option-desc">
+
+              مكتبة متكاملة تضم أوامر الذكاء الاصطناعي
+              للتصوير والتعليم والبرمجة والسيارات
+              والهندسة والحياة اليومية ومختلف المجالات.
+
+            </p>
+
+
+            <a
+              href="home.html"
+              class="option-button"
+            >
+
+              <span>
+
+                فتح مكتبة الأوامر
+
+              </span>
+
+
+              <span>
+
+                ←
+
+              </span>
+
+
+            </a>
+
+
+          </article>
+
+
+
+          <!-- ==================================
+               Sketchware
+          =================================== -->
+
+          <article class="main-option-card">
+
+
+            <div class="option-icon">
+
+              📱
+
+            </div>
+
+
+            <h3 class="option-title">
+
+              أكواد برمجية Java لتطبيق Sketchware
+
+            </h3>
+
+
+            <div class="language-badge">
+
+              JAVA • SKETCHWARE
+
+            </div>
+
+
+            <p class="option-desc">
+
+              مجموعة أكواد Java جاهزة للاستخدام
+              داخل Sketchware وSketchware Pro
+              لتطوير تطبيقات أندرويد وإضافة الخصائص
+              والوظائف المتقدمة.
+
+            </p>
+
+
+            <a
+              href="sketchware.html"
+              class="option-button"
+            >
+
+              <span>
+
+                فتح أكواد Sketchware
+
+              </span>
+
+
+              <span>
+
+                ←
+
+              </span>
+
+
+            </a>
+
+
+          </article>
+
+
+
+          <!-- ==================================
+               Android Studio
+          =================================== -->
+
+          <article class="main-option-card">
+
+
+            <div class="option-icon">
+
+              🤖
+
+            </div>
+
+
+            <h3 class="option-title">
+
+              أكواد برمجية Java لتطبيق Android Studio
+
+            </h3>
+
+
+            <div class="language-badge">
+
+              JAVA • ANDROID STUDIO
+
+            </div>
+
+
+            <p class="option-desc">
+
+              أكواد Java لتطوير تطبيقات أندرويد
+              باستخدام Android Studio تشمل الواجهات
+              وقواعد البيانات والشبكات والإشعارات
+              ومكونات التطبيقات.
+
+            </p>
+
+
+            <a
+              href="android-studio.html"
+              class="option-button"
+            >
+
+              <span>
+
+                فتح أكواد Android Studio
+
+              </span>
+
+
+              <span>
+
+                ←
+
+              </span>
+
+
+            </a>
+
+
+          </article>
+
+
+
+          <!-- ==================================
+               HTML
+          =================================== -->
+
+          <article class="main-option-card">
+
+
+            <div class="option-icon">
+
+              🌐
+
+            </div>
+
+
+            <h3 class="option-title">
+
+              أكواد برمجية HTML لبناء صفحات الويب
+
+            </h3>
+
+
+            <div class="language-badge">
+
+              HTML • CSS • JAVASCRIPT
+
+            </div>
+
+
+            <p class="option-desc">
+
+              مكتبة أكواد لإنشاء وتصميم صفحات الويب
+              باستخدام HTML وCSS وJavaScript
+              تشمل النماذج والواجهات والقوائم
+              والبطاقات والتصاميم الحديثة.
+
+            </p>
+
+
+            <a
+              href="html-codes.html"
+              class="option-button"
+            >
+
+              <span>
+
+                فتح أكواد HTML
+
+              </span>
+
+
+              <span>
+
+                ←
+
+              </span>
+
+
+            </a>
+
+
+          </article>
+
+
+        </div>
+
 
       </div>
 
+
     </main>
 
+
   </div>
+
 
 
   <!-- =========================
@@ -400,477 +1139,20 @@
 
   <footer class="site-footer">
 
+
     جميع الحقوق محفوظة © 2026
 
+
     <strong>
-      مكتبة الأوامر الذكية | علي المالكي
+
+      مكتبة الأوامر والأكواد | علي المالكي
+
     </strong>
+
 
   </footer>
 
 
-  <!-- =========================
-       SCRIPT
-  ========================== -->
-
-  <script>
-
-    /* ==========================================
-       Firebase
-    ========================================== */
-
-    const FIREBASE_URL =
-      "https://alnoaif-default-rtdb.firebaseio.com";
-
-    const META_PATH =
-      "__paths";
-
-
-    /* ==========================================
-       بيانات افتراضية لبعض الأقسام
-    ========================================== */
-
-    const predefinedMeta = {
-
-      brmjh: {
-        icon: "💻",
-        desc: "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، وإصلاح الأخطاء."
-      },
-
-      astath: {
-        icon: "👨‍🏫",
-        desc: "أوامر المعلمين والطلاب وتحضير الدروس وإنشاء الاختبارات."
-      },
-
-      talim: {
-        icon: "👨‍🏫",
-        desc: "أوامر التعليم وإعداد الدروس والاختبارات وشرح المواد."
-      },
-
-      biot: {
-        icon: "🏠",
-        desc: "أوامر الطبخ والوصفات وتنظيم المنزل والتنظيف وخطط الوجبات."
-      },
-
-      cars: {
-        icon: "🚘",
-        desc: "أوامر السيارات والتشخيص والصيانة والتصوير الاحترافي."
-      },
-
-      photography: {
-        icon: "📸",
-        desc: "أوامر التصوير والكاميرات والعدسات والإضاءة السينمائية."
-      },
-
-      engineering: {
-        icon: "⚙️",
-        desc: "أوامر المخططات الهندسية والتصاميم التقنية والعرض التفكيكي."
-      },
-
-      mechanical: {
-        icon: "🔩",
-        desc: "أوامر الهندسة الميكانيكية وتصميم الآلات وتحليل الحركة."
-      },
-
-      architecture: {
-        icon: "🏛️",
-        desc: "أوامر التصميم الداخلي والخارجي وتوزيع الأثاث والإضاءة."
-      }
-
-    };
-
-
-    /* ==========================================
-       تنظيف النص
-    ========================================== */
-
-    function escapeHTML(value) {
-
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    /* ==========================================
-       تنظيف المسار
-    ========================================== */
-
-    function cleanPath(path) {
-
-      return String(path || "")
-        .trim()
-        .replace(/^\/+|\/+$/g, "");
-
-    }
-
-
-    /* ==========================================
-       رابط صفحة القسم
-
-       كل الأقسام تفتح library.html
-    ========================================== */
-
-    function createPageURL(path) {
-
-      return (
-        "library.html?path=" +
-        encodeURIComponent(path)
-      );
-
-    }
-
-
-    /* ==========================================
-       تحميل الأقسام
-    ========================================== */
-
-    async function loadCategories() {
-
-      const grid =
-        document.getElementById(
-          "categories-grid"
-        );
-
-      const countEl =
-        document.getElementById(
-          "categories-count"
-        );
-
-      const statusEl =
-        document.getElementById(
-          "status-text"
-        );
-
-
-      grid.innerHTML = `
-        <div class="loading-spinner">
-          ⏳ جاري تحميل الأقسام...
-        </div>
-      `;
-
-      statusEl.textContent =
-        "جاري الاتصال";
-
-
-      try {
-
-        /* ======================================
-           قراءة بيانات أسماء المسارات
-        ====================================== */
-
-        const response =
-          await fetch(
-            `${FIREBASE_URL}/${META_PATH}.json`
-          );
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            "HTTP " + response.status
-          );
-
-        }
-
-
-        const data =
-          await response.json();
-
-
-        grid.innerHTML = "";
-
-
-        /* ======================================
-           لا توجد بيانات
-        ====================================== */
-
-        if (!data) {
-
-          grid.innerHTML = `
-            <div class="empty-results">
-              لا توجد أقسام مسجلة حالياً.
-            </div>
-          `;
-
-          countEl.textContent =
-            "0";
-
-          statusEl.textContent =
-            "متصل";
-
-          return;
-
-        }
-
-
-        /* ======================================
-           تحويل البيانات إلى قائمة
-        ====================================== */
-
-        const sections =
-          Object
-          .entries(data)
-          .map(([firebaseKey, item]) => {
-
-            if (
-              !item ||
-              typeof item !== "object"
-            ) {
-
-              return null;
-
-            }
-
-
-            const path =
-              cleanPath(
-                item.path ||
-                firebaseKey
-              );
-
-
-            const nameAr =
-              String(
-                item.nameAr || ""
-              )
-              .trim();
-
-
-            if (
-              !path ||
-              !nameAr
-            ) {
-
-              return null;
-
-            }
-
-
-            return {
-
-              firebaseKey,
-
-              path,
-
-              nameAr,
-
-              icon:
-                item.icon || "",
-
-              desc:
-                item.desc ||
-                item.description ||
-                ""
-
-            };
-
-          })
-
-          .filter(Boolean);
-
-
-        /* ======================================
-           ترتيب عربي
-        ====================================== */
-
-        sections.sort(
-
-          (a, b) =>
-
-            a.nameAr.localeCompare(
-              b.nameAr,
-              "ar"
-            )
-
-        );
-
-
-        /* ======================================
-           إذا لم توجد أقسام صالحة
-        ====================================== */
-
-        if (
-          sections.length === 0
-        ) {
-
-          grid.innerHTML = `
-            <div class="empty-results">
-              لا توجد أقسام تحتوي على اسم عربي.
-            </div>
-          `;
-
-          countEl.textContent =
-            "0";
-
-          statusEl.textContent =
-            "متصل";
-
-          return;
-
-        }
-
-
-        /* ======================================
-           إنشاء البطاقات
-        ====================================== */
-
-        sections.forEach(item => {
-
-          const path =
-            item.path;
-
-          const nameAr =
-            item.nameAr;
-
-
-          const predefined =
-            predefinedMeta[path] || {};
-
-
-          const icon =
-            item.icon ||
-            predefined.icon ||
-            "📁";
-
-
-          const description =
-            item.desc ||
-            predefined.desc ||
-            `مجموعة من الأوامر والأكواد الذكية الخاصة بقسم ${nameAr}.`;
-
-
-          const page =
-            createPageURL(path);
-
-
-          const card =
-            document.createElement(
-              "article"
-            );
-
-
-          card.className =
-            "command-card library-card";
-
-
-          card.innerHTML = `
-
-            <div>
-
-              <div class="icon-box">
-                ${escapeHTML(icon)}
-              </div>
-
-              <h3>
-                ${escapeHTML(nameAr)}
-              </h3>
-
-              <div class="path-badge">
-                /${escapeHTML(path)}
-              </div>
-
-              <p class="command-desc">
-                ${escapeHTML(description)}
-              </p>
-
-            </div>
-
-
-            <a
-              href="${page}"
-              class="library-link"
-            >
-
-              <span>
-                فتح مكتبة
-                ${escapeHTML(nameAr)}
-              </span>
-
-              <span>
-                ←
-              </span>
-
-            </a>
-
-          `;
-
-
-          grid.appendChild(
-            card
-          );
-
-        });
-
-
-        /* ======================================
-           العداد
-        ====================================== */
-
-        countEl.textContent =
-          sections.length;
-
-
-        statusEl.textContent =
-          "متصل";
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Firebase Error:",
-          error
-        );
-
-
-        countEl.textContent =
-          "0";
-
-
-        statusEl.textContent =
-          "خطأ";
-
-
-        grid.innerHTML = `
-
-          <div class="firebase-error">
-
-            ❌ تعذر تحميل الأقسام من Firebase.
-
-            <br><br>
-
-            تأكد من صلاحيات قاعدة البيانات
-            ومن وجود المسار
-
-            <strong>
-              __paths
-            </strong>
-
-          </div>
-
-        `;
-
-      }
-
-    }
-
-
-    /* ==========================================
-       تشغيل
-    ========================================== */
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      loadCategories
-    );
-
-  </script>
-
 </body>
-</html>
- 
+
+</html> 
