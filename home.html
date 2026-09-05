@@ -1,1 +1,876 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>مكتبة الأوامر الذكية</title>
+
+  <!-- خط Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- ملف التنسيقات الرئيسي -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    .brand-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-image {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 800;
+      background: linear-gradient(
+        45deg,
+        var(--primary),
+        #ffffff,
+        var(--secondary)
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 15px;
+      margin-bottom: 12px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.20);
+    }
+
+    .info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+      font-size: 1.35rem;
+      margin-bottom: 5px;
+    }
+
+    .section-head p {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+
+    .library-card {
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .library-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--primary),
+        var(--secondary),
+        transparent
+      );
+    }
+
+    .icon-box {
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+      border-radius: 15px;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 242, 254, 0.14),
+        rgba(127, 0, 255, 0.15)
+      );
+      border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .library-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .command-desc {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .path-badge {
+      display: inline-block;
+      direction: ltr;
+      margin-bottom: 15px;
+      padding: 4px 9px;
+      border-radius: 7px;
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: var(--primary);
+      background: rgba(0, 242, 254, 0.06);
+      border: 1px solid rgba(0, 242, 254, 0.12);
+    }
+
+    .library-link {
+      width: 100%;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #000;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary-dark)
+      );
+      transition: var(--transition);
+      margin-top: auto;
+    }
+
+    .library-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 20px rgba(0, 242, 254, 0.20);
+    }
+
+    .loading-spinner,
+    .empty-results,
+    .firebase-error {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 35px 15px;
+      border-radius: 14px;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .firebase-error {
+      color: #f87171;
+    }
+
+    .site-footer {
+      width: calc(100% - 24px);
+      max-width: 1000px;
+      margin: 35px auto 0;
+      padding: 20px 12px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .site-footer strong {
+      color: var(--primary);
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="site-nav">
+
+      <a href="index.html" class="brand-wrapper">
+
+        <img
+          src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
+          alt="شعار مكتبة الأوامر"
+          class="brand-image"
+        >
+
+        <div class="brand-name">
+          مكتبة الأوامر
+        </div>
+
+      </a>
+
+      <a
+        href="https://alnoaif2026.github.io"
+        class="external-link"
+      >
+        🌐 الرئيسية
+      </a>
+
+    </nav>
+
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <header class="hero">
+
+      <div class="hero-badge">
+        ✦ مكتبة ذكية لتنظيم أوامرك
+      </div>
+
+      <h1>
+        كل أوامرك
+        <span>في مكان واحد</span>
+      </h1>
+
+      <p>
+        مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
+        لمختلف المجالات. اختر القسم المناسب وابدأ مباشرة.
+      </p>
+
+      <div class="info-bar">
+
+        <div class="info-item">
+          ⚡ وصول سريع للأوامر
+        </div>
+
+        <div class="info-item">
+          •
+        </div>
+
+        <div class="info-item">
+          📋 نسخ واستخدام بسهولة
+        </div>
+
+        <div class="info-item">
+          •
+        </div>
+
+        <div class="info-item">
+          📱 متوافق مع الجوال
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =========================
+         STATS
+    ========================== -->
+
+    <div class="stats-container">
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          📚
+        </div>
+
+        <div class="stat-content">
+
+          <span
+            class="stat-number"
+            id="categories-count"
+          >
+            0
+          </span>
+
+          <span class="stat-label">
+            الأقسام المتاحة
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          ⚡
+        </div>
+
+        <div class="stat-content">
+
+          <span
+            class="stat-number"
+            id="status-text"
+          >
+            جاري الاتصال
+          </span>
+
+          <span class="stat-label">
+            حالة المكتبة
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main>
+
+      <div class="glass-panel">
+
+        <div class="section-head">
+
+          <h2>
+            الأقسام الرئيسية
+          </h2>
+
+          <p>
+            اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.
+          </p>
+
+        </div>
+
+
+        <div
+          class="commands-grid"
+          id="categories-grid"
+        >
+
+          <div class="loading-spinner">
+            ⏳ جاري تحميل الأقسام...
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer class="site-footer">
+
+    جميع الحقوق محفوظة © 2026
+
+    <strong>
+      مكتبة الأوامر الذكية | علي المالكي
+    </strong>
+
+  </footer>
+
+
+  <!-- =========================
+       SCRIPT
+  ========================== -->
+
+  <script>
+
+    /* ==========================================
+       Firebase
+    ========================================== */
+
+    const FIREBASE_URL =
+      "https://alnoaif-default-rtdb.firebaseio.com";
+
+    const META_PATH =
+      "__paths";
+
+
+    /* ==========================================
+       بيانات افتراضية لبعض الأقسام
+    ========================================== */
+
+    const predefinedMeta = {
+
+      brmjh: {
+        icon: "💻",
+        desc: "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، وإصلاح الأخطاء."
+      },
+
+      astath: {
+        icon: "👨‍🏫",
+        desc: "أوامر المعلمين والطلاب وتحضير الدروس وإنشاء الاختبارات."
+      },
+
+      talim: {
+        icon: "👨‍🏫",
+        desc: "أوامر التعليم وإعداد الدروس والاختبارات وشرح المواد."
+      },
+
+      biot: {
+        icon: "🏠",
+        desc: "أوامر الطبخ والوصفات وتنظيم المنزل والتنظيف وخطط الوجبات."
+      },
+
+      cars: {
+        icon: "🚘",
+        desc: "أوامر السيارات والتشخيص والصيانة والتصوير الاحترافي."
+      },
+
+      photography: {
+        icon: "📸",
+        desc: "أوامر التصوير والكاميرات والعدسات والإضاءة السينمائية."
+      },
+
+      engineering: {
+        icon: "⚙️",
+        desc: "أوامر المخططات الهندسية والتصاميم التقنية والعرض التفكيكي."
+      },
+
+      mechanical: {
+        icon: "🔩",
+        desc: "أوامر الهندسة الميكانيكية وتصميم الآلات وتحليل الحركة."
+      },
+
+      architecture: {
+        icon: "🏛️",
+        desc: "أوامر التصميم الداخلي والخارجي وتوزيع الأثاث والإضاءة."
+      }
+
+    };
+
+
+    /* ==========================================
+       تنظيف النص
+    ========================================== */
+
+    function escapeHTML(value) {
+
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* ==========================================
+       تنظيف المسار
+    ========================================== */
+
+    function cleanPath(path) {
+
+      return String(path || "")
+        .trim()
+        .replace(/^\/+|\/+$/g, "");
+
+    }
+
+
+    /* ==========================================
+       رابط صفحة القسم
+
+       كل الأقسام تفتح library.html
+    ========================================== */
+
+    function createPageURL(path) {
+
+      return (
+        "library.html?path=" +
+        encodeURIComponent(path)
+      );
+
+    }
+
+
+    /* ==========================================
+       تحميل الأقسام
+    ========================================== */
+
+    async function loadCategories() {
+
+      const grid =
+        document.getElementById(
+          "categories-grid"
+        );
+
+      const countEl =
+        document.getElementById(
+          "categories-count"
+        );
+
+      const statusEl =
+        document.getElementById(
+          "status-text"
+        );
+
+
+      grid.innerHTML = `
+        <div class="loading-spinner">
+          ⏳ جاري تحميل الأقسام...
+        </div>
+      `;
+
+      statusEl.textContent =
+        "جاري الاتصال";
+
+
+      try {
+
+        /* ======================================
+           قراءة بيانات أسماء المسارات
+        ====================================== */
+
+        const response =
+          await fetch(
+            `${FIREBASE_URL}/${META_PATH}.json`
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            "HTTP " + response.status
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        grid.innerHTML = "";
+
+
+        /* ======================================
+           لا توجد بيانات
+        ====================================== */
+
+        if (!data) {
+
+          grid.innerHTML = `
+            <div class="empty-results">
+              لا توجد أقسام مسجلة حالياً.
+            </div>
+          `;
+
+          countEl.textContent =
+            "0";
+
+          statusEl.textContent =
+            "متصل";
+
+          return;
+
+        }
+
+
+        /* ======================================
+           تحويل البيانات إلى قائمة
+        ====================================== */
+
+        const sections =
+          Object
+          .entries(data)
+          .map(([firebaseKey, item]) => {
+
+            if (
+              !item ||
+              typeof item !== "object"
+            ) {
+
+              return null;
+
+            }
+
+
+            const path =
+              cleanPath(
+                item.path ||
+                firebaseKey
+              );
+
+
+            const nameAr =
+              String(
+                item.nameAr || ""
+              )
+              .trim();
+
+
+            if (
+              !path ||
+              !nameAr
+            ) {
+
+              return null;
+
+            }
+
+
+            return {
+
+              firebaseKey,
+
+              path,
+
+              nameAr,
+
+              icon:
+                item.icon || "",
+
+              desc:
+                item.desc ||
+                item.description ||
+                ""
+
+            };
+
+          })
+
+          .filter(Boolean);
+
+
+        /* ======================================
+           ترتيب عربي
+        ====================================== */
+
+        sections.sort(
+
+          (a, b) =>
+
+            a.nameAr.localeCompare(
+              b.nameAr,
+              "ar"
+            )
+
+        );
+
+
+        /* ======================================
+           إذا لم توجد أقسام صالحة
+        ====================================== */
+
+        if (
+          sections.length === 0
+        ) {
+
+          grid.innerHTML = `
+            <div class="empty-results">
+              لا توجد أقسام تحتوي على اسم عربي.
+            </div>
+          `;
+
+          countEl.textContent =
+            "0";
+
+          statusEl.textContent =
+            "متصل";
+
+          return;
+
+        }
+
+
+        /* ======================================
+           إنشاء البطاقات
+        ====================================== */
+
+        sections.forEach(item => {
+
+          const path =
+            item.path;
+
+          const nameAr =
+            item.nameAr;
+
+
+          const predefined =
+            predefinedMeta[path] || {};
+
+
+          const icon =
+            item.icon ||
+            predefined.icon ||
+            "📁";
+
+
+          const description =
+            item.desc ||
+            predefined.desc ||
+            `مجموعة من الأوامر والأكواد الذكية الخاصة بقسم ${nameAr}.`;
+
+
+          const page =
+            createPageURL(path);
+
+
+          const card =
+            document.createElement(
+              "article"
+            );
+
+
+          card.className =
+            "command-card library-card";
+
+
+          card.innerHTML = `
+
+            <div>
+
+              <div class="icon-box">
+                ${escapeHTML(icon)}
+              </div>
+
+              <h3>
+                ${escapeHTML(nameAr)}
+              </h3>
+
+              <div class="path-badge">
+                /${escapeHTML(path)}
+              </div>
+
+              <p class="command-desc">
+                ${escapeHTML(description)}
+              </p>
+
+            </div>
+
+
+            <a
+              href="${page}"
+              class="library-link"
+            >
+
+              <span>
+                فتح مكتبة
+                ${escapeHTML(nameAr)}
+              </span>
+
+              <span>
+                ←
+              </span>
+
+            </a>
+
+          `;
+
+
+          grid.appendChild(
+            card
+          );
+
+        });
+
+
+        /* ======================================
+           العداد
+        ====================================== */
+
+        countEl.textContent =
+          sections.length;
+
+
+        statusEl.textContent =
+          "متصل";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Firebase Error:",
+          error
+        );
+
+
+        countEl.textContent =
+          "0";
+
+
+        statusEl.textContent =
+          "خطأ";
+
+
+        grid.innerHTML = `
+
+          <div class="firebase-error">
+
+            ❌ تعذر تحميل الأقسام من Firebase.
+
+            <br><br>
+
+            تأكد من صلاحيات قاعدة البيانات
+            ومن وجود المسار
+
+            <strong>
+              __paths
+            </strong>
+
+          </div>
+
+        `;
+
+      }
+
+    }
+
+
+    /* ==========================================
+       تشغيل
+    ========================================== */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      loadCategories
+    );
+
+  </script>
+
+</body>
+</html>
+ 
