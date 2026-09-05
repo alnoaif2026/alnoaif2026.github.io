@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-  <title>مكتبة الأوامر</title>
+  <title>مكتبة الأوامر والأكواد</title>
 
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
@@ -26,7 +26,7 @@
   <style>
 
     /* ===============================
-       عدد الأوامر داخل التصنيف
+       عدد العناصر داخل التصنيف
     ================================ */
 
     .cat-pill {
@@ -62,6 +62,298 @@
 
 
     /* ===============================
+       بطاقة الكود
+    ================================ */
+
+    .code-card {
+      position: relative;
+
+      display: flex;
+      flex-direction: column;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(20,36,59,.96),
+          rgba(10,22,39,.96)
+        );
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      border-radius: 18px;
+
+      padding: 17px;
+
+      min-height: 220px;
+
+      overflow: hidden;
+
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+    }
+
+    .code-card:hover {
+      transform: translateY(-3px);
+
+      border-color:
+        rgba(51,135,255,.45);
+
+      box-shadow:
+        0 16px 35px
+        rgba(0,0,0,.16);
+    }
+
+
+    /* ===============================
+       رأس بطاقة الكود
+    ================================ */
+
+    .code-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+
+      margin-bottom: 13px;
+    }
+
+    .code-card-title {
+      flex: 1;
+
+      color: #ffffff;
+
+      font-family: "Tajawal", sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+
+      line-height: 1.7;
+    }
+
+    .code-favorite-btn {
+      width: 38px;
+      height: 38px;
+
+      flex: 0 0 38px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 11px;
+
+      background: rgba(255,255,255,.05);
+
+      color: #ffffff;
+
+      font-size: 18px;
+
+      cursor: pointer;
+
+      transition: .2s;
+    }
+
+    .code-favorite-btn:hover {
+      background: rgba(255,255,255,.10);
+    }
+
+    .code-favorite-btn.active {
+      background: rgba(245,158,11,.14);
+      border-color: rgba(245,158,11,.35);
+    }
+
+
+    /* ===============================
+       صندوق الكود
+    ================================ */
+
+    .code-area {
+      position: relative;
+
+      margin-bottom: 13px;
+    }
+
+    .code-content {
+      width: 100%;
+
+      min-height: 95px;
+      max-height: 330px;
+
+      margin: 0;
+
+      padding:
+        46px 14px
+        15px;
+
+      overflow: auto;
+
+      white-space: pre-wrap;
+      word-break: break-word;
+
+      direction: ltr;
+      text-align: left;
+
+      background: #050d18;
+
+      border:
+        1px solid
+        rgba(124,183,255,.15);
+
+      border-radius: 13px;
+
+      color: #8dd5ff;
+
+      font-family:
+        "Fira Code",
+        Consolas,
+        monospace;
+
+      font-size: 12px;
+      font-weight: 500;
+
+      line-height: 1.8;
+
+      tab-size: 4;
+
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .code-copy-btn {
+      position: absolute;
+
+      top: 8px;
+      left: 8px;
+
+      z-index: 3;
+
+      min-width: 70px;
+
+      padding: 6px 10px;
+
+      border: 0;
+      border-radius: 8px;
+
+      background: #2563eb;
+
+      color: #ffffff;
+
+      font-family: "Tajawal", sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition: .2s;
+    }
+
+    .code-copy-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .code-copy-btn.copied {
+      background: #16a34a;
+    }
+
+
+    /* ===============================
+       وصف الكود
+    ================================ */
+
+    .code-description {
+      color: rgba(255,255,255,.72);
+
+      font-family: "Tajawal", sans-serif;
+
+      font-size: 13px;
+
+      line-height: 1.9;
+
+      margin-bottom: 14px;
+    }
+
+
+    /* ===============================
+       أسفل البطاقة
+    ================================ */
+
+    .code-actions {
+      margin-top: auto;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      padding-top: 12px;
+
+      border-top:
+        1px solid
+        rgba(255,255,255,.07);
+    }
+
+    .code-action-btn {
+      flex: 1;
+
+      min-width: 90px;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      border-radius: 9px;
+
+      background: rgba(255,255,255,.05);
+
+      color: rgba(255,255,255,.85);
+
+      padding: 8px 10px;
+
+      font-family: "Tajawal", sans-serif;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition: .2s;
+    }
+
+    .code-action-btn:hover {
+      background: rgba(255,255,255,.10);
+    }
+
+
+    /* ===============================
+       شارة نوع المكتبة
+    ================================ */
+
+    .library-type-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 12px;
+
+      padding: 6px 11px;
+
+      border-radius: 50px;
+
+      background:
+        rgba(51,135,255,.10);
+
+      border:
+        1px solid
+        rgba(51,135,255,.20);
+
+      color: #9bc8ff;
+
+      font-size: 11px;
+
+      font-weight: 700;
+    }
+
+
+    /* ===============================
        حقوق البرمجة
     ================================ */
 
@@ -92,6 +384,37 @@
       font-weight: 800;
     }
 
+
+    /* ===============================
+       الجوال
+    ================================ */
+
+    @media (max-width: 600px) {
+
+      .code-card {
+        padding: 14px;
+      }
+
+      .code-card-title {
+        font-size: 15px;
+      }
+
+      .code-content {
+        font-size: 11px;
+        max-height: 280px;
+      }
+
+      .code-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .code-action-btn {
+        min-width: 0;
+      }
+
+    }
+
   </style>
 
 </head>
@@ -112,6 +435,7 @@
     <a
       href="index.html"
       class="brand-logo"
+      id="brandLogo"
     >
       ✦ مكتبة الأوامر
     </a>
@@ -119,6 +443,7 @@
     <a
       href="index.html"
       class="external-link"
+      id="backLink"
     >
       ← الأقسام
     </a>
@@ -133,7 +458,10 @@
 
   <header class="hero">
 
-    <div class="hero-badge">
+    <div
+      class="hero-badge"
+      id="heroBadge"
+    >
       ✦ مكتبة ذكية
     </div>
 
@@ -144,6 +472,13 @@
     <p id="libraryDescription">
       جاري جلب البيانات من Firebase...
     </p>
+
+    <div
+      class="library-type-badge"
+      id="libraryTypeBadge"
+    >
+      جاري تحديد نوع المكتبة...
+    </div>
 
   </header>
 
@@ -158,7 +493,10 @@
 
     <div class="stat-card">
 
-      <div class="stat-icon">
+      <div
+        class="stat-icon"
+        id="totalStatIcon"
+      >
         💻
       </div>
 
@@ -171,7 +509,10 @@
           0
         </span>
 
-        <span class="stat-label">
+        <span
+          class="stat-label"
+          id="totalStatLabel"
+        >
           إجمالي الأوامر
         </span>
 
@@ -251,7 +592,8 @@
 
       <button
         class="btn btn-accent"
-        onclick="promptAddCustomCommand()"
+        id="customAddButton"
+        onclick="promptAddCustomItem()"
       >
         ➕ أمر خاص
       </button>
@@ -279,9 +621,15 @@
        BUILDER
   ================================ -->
 
-  <div class="glass-panel">
+  <div
+    class="glass-panel"
+    id="builderPanel"
+  >
 
-    <h3 class="builder-title">
+    <h3
+      class="builder-title"
+      id="builderTitle"
+    >
       🧩 مجمع البرومبتات
     </h3>
 
@@ -336,7 +684,7 @@
 
 
   <!-- ===============================
-       COMMANDS
+       COMMANDS / CODES
   ================================ -->
 
   <main class="commands-main">
@@ -347,7 +695,7 @@
     >
 
       <div class="loading-spinner">
-        ⏳ جاري تحميل الأوامر...
+        ⏳ جاري تحميل المكتبة...
       </div>
 
     </div>
@@ -422,34 +770,50 @@
 
 
 
-<!-- ملف البطاقات -->
+<!-- ملف البطاقات الخاص بأوامر AI -->
 <script src="cards.js"></script>
 
 
 <script>
 
 
-/* ===============================
+/* =========================================================
    Firebase
-================================ */
+========================================================= */
 
 const FIREBASE_BASE =
   "https://alnoaif-default-rtdb.firebaseio.com";
 
 
-const META_PATH =
-  "__paths";
 
-
-
-/* ===============================
-   قراءة path
-================================ */
+/* =========================================================
+   قراءة Query
+========================================================= */
 
 const params =
   new URLSearchParams(
     location.search
   );
+
+
+/*
+  النظام القديم:
+
+  library.html?path=photography
+
+  النظام الجديد لـ Sketchware:
+
+  library.html?root=sketchware&path=textview
+*/
+
+
+let currentRoot =
+  String(
+    params.get("root") || ""
+  )
+  .trim()
+  .replace(/^\/+|\/+$/g, "")
+  .toLowerCase();
 
 
 let currentLibraryPath =
@@ -460,38 +824,181 @@ let currentLibraryPath =
   .replace(/^\/+|\/+$/g, "");
 
 
+
+/* =========================================================
+   أنواع المكتبات
+========================================================= */
+
+const LIBRARY_TYPES = {
+
+  sketchware: {
+
+    name:
+      "أكواد Sketchware",
+
+    icon:
+      "📱",
+
+    back:
+      "sketchware.html",
+
+    type:
+      "code",
+
+    metaPath:
+      "sketchware/__paths"
+
+  },
+
+  androidstudio: {
+
+    name:
+      "أكواد Android Studio",
+
+    icon:
+      "🤖",
+
+    back:
+      "android-studio.html",
+
+    type:
+      "code",
+
+    metaPath:
+      "androidstudio/__paths"
+
+  },
+
+  html: {
+
+    name:
+      "أكواد HTML",
+
+    icon:
+      "🌐",
+
+    back:
+      "html-codes.html",
+
+    type:
+      "code",
+
+    metaPath:
+      "html/__paths"
+
+  }
+
+};
+
+
+
+/*
+  إذا لم يوجد root
+  نعتبرها مكتبة أوامر AI القديمة
+  الموجودة مباشرة في جذر Firebase
+*/
+
+const isCodeLibrary =
+  Boolean(
+    currentRoot &&
+    LIBRARY_TYPES[currentRoot]
+  );
+
+
+const currentLibraryConfig =
+  isCodeLibrary
+  ? LIBRARY_TYPES[currentRoot]
+  : {
+
+      name:
+        "مكتبة الأوامر",
+
+      icon:
+        "✦",
+
+      back:
+        "home.html",
+
+      type:
+        "command",
+
+      metaPath:
+        "__paths"
+
+    };
+
+
+
+/* =========================================================
+   Variables
+========================================================= */
+
 let libraryName =
-  "مكتبة الأوامر";
+  currentLibraryConfig.name;
 
 
-let fetchedCommands = [];
+let fetchedItems = [];
+
 
 let currentCategory =
   "الكل";
+
 
 let showOnlyFavs =
   false;
 
 
 
-/* ===============================
-   المفضلة
-================================ */
+/* =========================================================
+   Storage
+========================================================= */
+
+function favoritesStorageKey() {
+
+  if (isCodeLibrary) {
+
+    return (
+      "codeFav_" +
+      currentRoot +
+      "_" +
+      currentLibraryPath
+    );
+
+  }
+
+
+  /*
+    نترك أوامر AI على المفتاح القديم
+    حتى لا تضيع المفضلة السابقة
+  */
+
+  return "promptFav";
+
+}
+
 
 let favorites =
   JSON.parse(
     localStorage.getItem(
-      "promptFav"
+      favoritesStorageKey()
     ) || "[]"
   );
 
 
 
-/* ===============================
-   الأوامر الخاصة
-================================ */
-
 function customStorageKey() {
+
+  if (isCodeLibrary) {
+
+    return (
+      "customCodes_" +
+      currentRoot +
+      "_" +
+      currentLibraryPath
+    );
+
+  }
+
 
   return (
     "customCmds_" +
@@ -501,7 +1008,7 @@ function customStorageKey() {
 }
 
 
-let customCmds =
+let customItems =
   JSON.parse(
     localStorage.getItem(
       customStorageKey()
@@ -516,15 +1023,29 @@ const builder =
 
 
 
-/* ===============================
+/* =========================================================
    Firebase URL
-================================ */
+========================================================= */
 
 function firebaseURL(path) {
 
-  const encoded =
+  const cleanPath =
     String(path || "")
-    .replace(/^\/+|\/+$/g, "")
+    .replace(/^\/+|\/+$/g, "");
+
+
+  if (!cleanPath) {
+
+    return (
+      FIREBASE_BASE +
+      "/.json"
+    );
+
+  }
+
+
+  const encoded =
+    cleanPath
     .split("/")
     .map(
       part =>
@@ -544,9 +1065,40 @@ function firebaseURL(path) {
 
 
 
-/* ===============================
+/* =========================================================
+   المسار الكامل للبيانات
+========================================================= */
+
+function getFirebaseLibraryPath() {
+
+  /*
+    AI القديم:
+    photography
+
+    Sketchware:
+    sketchware/textview
+  */
+
+  if (isCodeLibrary) {
+
+    return (
+      currentRoot +
+      "/" +
+      currentLibraryPath
+    );
+
+  }
+
+
+  return currentLibraryPath;
+
+}
+
+
+
+/* =========================================================
    Escape
-================================ */
+========================================================= */
 
 function escapeHTML(value) {
 
@@ -561,9 +1113,177 @@ function escapeHTML(value) {
 
 
 
-/* ===============================
+/* =========================================================
+   إعداد واجهة الصفحة حسب نوع المكتبة
+========================================================= */
+
+function setupLibraryUI() {
+
+  const brandLogo =
+    document.getElementById(
+      "brandLogo"
+    );
+
+
+  const backLink =
+    document.getElementById(
+      "backLink"
+    );
+
+
+  const heroBadge =
+    document.getElementById(
+      "heroBadge"
+    );
+
+
+  const typeBadge =
+    document.getElementById(
+      "libraryTypeBadge"
+    );
+
+
+  const searchInput =
+    document.getElementById(
+      "searchInput"
+    );
+
+
+  const totalLabel =
+    document.getElementById(
+      "totalStatLabel"
+    );
+
+
+  const totalIcon =
+    document.getElementById(
+      "totalStatIcon"
+    );
+
+
+  const addButton =
+    document.getElementById(
+      "customAddButton"
+    );
+
+
+  const builderTitle =
+    document.getElementById(
+      "builderTitle"
+    );
+
+
+  if (isCodeLibrary) {
+
+    brandLogo.textContent =
+      currentLibraryConfig.icon +
+      " " +
+      currentLibraryConfig.name;
+
+
+    brandLogo.href =
+      currentLibraryConfig.back;
+
+
+    backLink.href =
+      currentLibraryConfig.back;
+
+
+    backLink.textContent =
+      "← الأقسام";
+
+
+    heroBadge.textContent =
+      currentLibraryConfig.icon +
+      " مكتبة أكواد";
+
+
+    typeBadge.textContent =
+      currentLibraryConfig.name;
+
+
+    searchInput.placeholder =
+      "ابحث باسم الكود أو الوصف أو داخل الكود...";
+
+
+    totalLabel.textContent =
+      "إجمالي الأكواد";
+
+
+    totalIcon.textContent =
+      "🧩";
+
+
+    addButton.textContent =
+      "➕ كود خاص";
+
+
+    builderTitle.textContent =
+      "🧩 مجمع الأكواد";
+
+
+    builder.placeholder =
+      "الأكواد المختارة ستظهر هنا...";
+
+
+  } else {
+
+    brandLogo.textContent =
+      "✦ مكتبة الأوامر";
+
+
+    brandLogo.href =
+      "home.html";
+
+
+    backLink.href =
+      "home.html";
+
+
+    backLink.textContent =
+      "← الأقسام";
+
+
+    heroBadge.textContent =
+      "✦ مكتبة ذكية";
+
+
+    typeBadge.textContent =
+      "أوامر الذكاء الاصطناعي";
+
+
+    searchInput.placeholder =
+      "ابحث باسم الأمر أو الوصف...";
+
+
+    totalLabel.textContent =
+      "إجمالي الأوامر";
+
+
+    totalIcon.textContent =
+      "💻";
+
+
+    addButton.textContent =
+      "➕ أمر خاص";
+
+
+    builderTitle.textContent =
+      "🧩 مجمع البرومبتات";
+
+
+    builder.placeholder =
+      "الأوامر المختارة ستظهر هنا...";
+
+  }
+
+}
+
+
+
+/* =========================================================
    Metadata
-================================ */
+========================================================= */
 
 async function fetchLibraryMeta() {
 
@@ -571,8 +1291,15 @@ async function fetchLibraryMeta() {
 
     const response =
       await fetch(
-        firebaseURL(META_PATH)
+        firebaseURL(
+          currentLibraryConfig.metaPath
+        )
       );
+
+
+    if (!response.ok) {
+      return;
+    }
 
 
     const data =
@@ -592,7 +1319,9 @@ async function fetchLibraryMeta() {
           !item ||
           typeof item !== "object"
         ) {
+
           return false;
+
         }
 
 
@@ -600,7 +1329,10 @@ async function fetchLibraryMeta() {
           String(
             item.path || ""
           )
-          .replace(/^\/+|\/+$/g, "");
+          .replace(
+            /^\/+|\/+$/g,
+            ""
+          );
 
 
         return (
@@ -612,31 +1344,91 @@ async function fetchLibraryMeta() {
 
 
     if (!meta) {
+
+      /*
+        في حالة عدم وجود metadata
+      */
+
+      libraryName =
+        currentLibraryPath ||
+        currentLibraryConfig.name;
+
+
+      document.getElementById(
+        "libraryTitle"
+      ).textContent =
+        libraryName;
+
+
+      document.getElementById(
+        "libraryDescription"
+      ).textContent =
+
+        isCodeLibrary
+
+        ? `استعرض أكواد ${libraryName} وانسخ الكود الذي تحتاجه.`
+
+        : `تصفح أوامر ${libraryName} واختر الأمر الذي يناسبك.`;
+
+
       return;
+
     }
 
 
     libraryName =
       meta.nameAr ||
-      libraryName;
+      currentLibraryPath ||
+      currentLibraryConfig.name;
 
 
     document.getElementById(
       "libraryTitle"
     ).textContent =
+
+      (
+        meta.icon ||
+        (
+          isCodeLibrary
+          ? currentLibraryConfig.icon
+          : ""
+        )
+      )
+
+      +
+
+      (
+        meta.icon ||
+        isCodeLibrary
+        ? " "
+        : ""
+      )
+
+      +
+
       libraryName;
 
 
     document.getElementById(
       "libraryDescription"
     ).textContent =
+
       meta.desc ||
+
       meta.description ||
-      `تصفح أوامر ${libraryName} واختر الأمر الذي يناسبك.`;
+
+      (
+        isCodeLibrary
+
+        ? `استعرض أكواد ${libraryName} وانسخ الكود مباشرة.`
+
+        : `تصفح أوامر ${libraryName} واختر الأمر الذي يناسبك.`
+      );
 
 
     document.title =
-      `${libraryName} | مكتبة الأوامر`;
+
+      `${libraryName} | ${currentLibraryConfig.name}`;
 
   }
 
@@ -653,9 +1445,32 @@ async function fetchLibraryMeta() {
 
 
 
-/* ===============================
+/* =========================================================
    Parsing Firebase
-================================ */
+========================================================= */
+
+function parseFirebaseData(data) {
+
+  if (isCodeLibrary) {
+
+    return parseFirebaseCodes(
+      data
+    );
+
+  }
+
+
+  return parseFirebaseCommands(
+    data
+  );
+
+}
+
+
+
+/* =========================================================
+   Parsing AI Commands
+========================================================= */
 
 function parseFirebaseCommands(data) {
 
@@ -674,7 +1489,10 @@ function parseFirebaseCommands(data) {
       if (
         item &&
         typeof item === "object" &&
-        (item.c || item.d)
+        (
+          item.c ||
+          item.d
+        )
       ) {
 
         result.push({
@@ -687,7 +1505,10 @@ function parseFirebaseCommands(data) {
 
           category:
             item.category ||
-            "عام"
+            "عام",
+
+          type:
+            "command"
 
         });
 
@@ -704,76 +1525,59 @@ function parseFirebaseCommands(data) {
   if (
     typeof data !== "object"
   ) {
+
     return result;
+
   }
 
 
   Object.entries(data)
-  .forEach(([category, value]) => {
-
-
-    /* Array */
-
-    if (Array.isArray(value)) {
-
-      value.forEach(item => {
-
-        if (
-          item &&
-          typeof item === "object" &&
-          (item.c || item.d)
-        ) {
-
-          result.push({
-
-            c:
-              item.c || "",
-
-            d:
-              item.d || "",
-
-            category:
-              item.category ||
-              category ||
-              "عام"
-
-          });
-
-        }
-
-      });
-
-
-      return;
-
-    }
-
-
-    /* Object */
-
-    if (
-      value &&
-      typeof value === "object"
-    ) {
+  .forEach(
+    ([category, value]) => {
 
 
       if (
-        value.c ||
-        value.d
+        String(category)
+        .startsWith("__")
       ) {
 
-        result.push({
+        return;
 
-          c:
-            value.c || "",
+      }
 
-          d:
-            value.d || "",
 
-          category:
-            value.category ||
-            category ||
-            "عام"
+      if (Array.isArray(value)) {
+
+        value.forEach(item => {
+
+          if (
+            item &&
+            typeof item === "object" &&
+            (
+              item.c ||
+              item.d
+            )
+          ) {
+
+            result.push({
+
+              c:
+                item.c || "",
+
+              d:
+                item.d || "",
+
+              category:
+                item.category ||
+                category ||
+                "عام",
+
+              type:
+                "command"
+
+            });
+
+          }
 
         });
 
@@ -783,37 +1587,79 @@ function parseFirebaseCommands(data) {
       }
 
 
-      Object.values(value)
-      .forEach(item => {
+      if (
+        value &&
+        typeof value === "object"
+      ) {
+
 
         if (
-          item &&
-          typeof item === "object" &&
-          (item.c || item.d)
+          value.c ||
+          value.d
         ) {
 
           result.push({
 
             c:
-              item.c || "",
+              value.c || "",
 
             d:
-              item.d || "",
+              value.d || "",
 
             category:
-              item.category ||
+              value.category ||
               category ||
-              "عام"
+              "عام",
+
+            type:
+              "command"
 
           });
 
+
+          return;
+
         }
 
-      });
+
+        Object.values(value)
+        .forEach(item => {
+
+          if (
+            item &&
+            typeof item === "object" &&
+            (
+              item.c ||
+              item.d
+            )
+          ) {
+
+            result.push({
+
+              c:
+                item.c || "",
+
+              d:
+                item.d || "",
+
+              category:
+                item.category ||
+                category ||
+                "عام",
+
+              type:
+                "command"
+
+            });
+
+          }
+
+        });
+
+      }
 
     }
-
-  });
+  );
 
 
   return result;
@@ -822,9 +1668,305 @@ function parseFirebaseCommands(data) {
 
 
 
-/* ===============================
+/* =========================================================
+   Parsing Codes
+========================================================= */
+
+function parseFirebaseCodes(data) {
+
+  const result = [];
+
+
+  if (!data) {
+    return result;
+  }
+
+
+  /*
+    عنصر كود واحد
+  */
+
+  if (
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    (
+      data.code ||
+      data.title
+    )
+  ) {
+
+    result.push({
+
+      title:
+        data.title ||
+        data.name ||
+        "كود برمجي",
+
+      code:
+        data.code ||
+        data.c ||
+        "",
+
+      desc:
+        data.desc ||
+        data.d ||
+        "",
+
+      category:
+        data.category ||
+        "عام",
+
+      type:
+        "code"
+
+    });
+
+
+    return result;
+
+  }
+
+
+  /*
+    Array مباشر
+  */
+
+  if (Array.isArray(data)) {
+
+    data.forEach(item => {
+
+      const parsed =
+        normalizeCodeItem(
+          item,
+          "عام"
+        );
+
+
+      if (parsed) {
+
+        result.push(
+          parsed
+        );
+
+      }
+
+    });
+
+
+    return result;
+
+  }
+
+
+  if (
+    typeof data !== "object"
+  ) {
+
+    return result;
+
+  }
+
+
+  /*
+    تصنيفات
+  */
+
+  Object.entries(data)
+  .forEach(
+    ([category, value]) => {
+
+
+      if (
+        String(category)
+        .startsWith("__")
+      ) {
+
+        return;
+
+      }
+
+
+      /*
+        Array
+      */
+
+      if (Array.isArray(value)) {
+
+        value.forEach(item => {
+
+          const parsed =
+            normalizeCodeItem(
+              item,
+              category
+            );
+
+
+          if (parsed) {
+
+            result.push(
+              parsed
+            );
+
+          }
+
+        });
+
+
+        return;
+
+      }
+
+
+      /*
+        Object
+      */
+
+      if (
+        value &&
+        typeof value === "object"
+      ) {
+
+
+        /*
+          عنصر واحد
+        */
+
+        if (
+          value.code ||
+          value.title ||
+          value.c
+        ) {
+
+          const parsed =
+            normalizeCodeItem(
+              value,
+              category
+            );
+
+
+          if (parsed) {
+
+            result.push(
+              parsed
+            );
+
+          }
+
+
+          return;
+
+        }
+
+
+        /*
+          Firebase object indexed
+        */
+
+        Object.values(value)
+        .forEach(item => {
+
+          const parsed =
+            normalizeCodeItem(
+              item,
+              category
+            );
+
+
+          if (parsed) {
+
+            result.push(
+              parsed
+            );
+
+          }
+
+        });
+
+      }
+
+    }
+  );
+
+
+  return result;
+
+}
+
+
+
+/* =========================================================
+   Normalize Code
+========================================================= */
+
+function normalizeCodeItem(
+  item,
+  category
+) {
+
+  if (
+    !item ||
+    typeof item !== "object"
+  ) {
+
+    return null;
+
+  }
+
+
+  const code =
+    String(
+      item.code ??
+      item.c ??
+      ""
+    );
+
+
+  if (!code.trim()) {
+
+    return null;
+
+  }
+
+
+  return {
+
+    title:
+      String(
+        item.title ??
+        item.name ??
+        "كود برمجي"
+      ).trim(),
+
+    code:
+      code,
+
+    desc:
+      String(
+        item.desc ??
+        item.d ??
+        ""
+      ).trim(),
+
+    category:
+      String(
+        item.category ??
+        category ??
+        "عام"
+      ).trim(),
+
+    type:
+      "code"
+
+  };
+
+}
+
+
+
+/* =========================================================
    تحميل المكتبة
-================================ */
+========================================================= */
 
 async function loadLibrary() {
 
@@ -844,7 +1986,8 @@ async function loadLibrary() {
 
         <br><br>
 
-        ارجع للصفحة الرئيسية واختر أحد الأقسام.
+        ارجع إلى صفحة الأقسام
+        واختر أحد الأقسام.
 
       </div>
 
@@ -867,10 +2010,14 @@ async function loadLibrary() {
 
   try {
 
+    const fullPath =
+      getFirebaseLibraryPath();
+
+
     const response =
       await fetch(
         firebaseURL(
-          currentLibraryPath
+          fullPath
         )
       );
 
@@ -888,13 +2035,15 @@ async function loadLibrary() {
       await response.json();
 
 
-    fetchedCommands =
-      parseFirebaseCommands(data);
+    fetchedItems =
+      parseFirebaseData(
+        data
+      );
 
 
     renderCategories();
 
-    renderCommands();
+    renderItems();
 
     updateStats();
 
@@ -902,7 +2051,9 @@ async function loadLibrary() {
 
   catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
 
     grid.innerHTML = `
@@ -921,24 +2072,47 @@ async function loadLibrary() {
 
 
 
-/* ===============================
+/* =========================================================
    All items
-================================ */
+========================================================= */
 
 function allItems() {
 
   return [
-    ...fetchedCommands,
-    ...customCmds
+    ...fetchedItems,
+    ...customItems
   ];
 
 }
 
 
 
-/* ===============================
+/* =========================================================
+   مفتاح العنصر للمفضلة
+========================================================= */
+
+function getFavoriteKey(item) {
+
+  if (isCodeLibrary) {
+
+    return String(
+      item.code || ""
+    );
+
+  }
+
+
+  return String(
+    item.c || ""
+  );
+
+}
+
+
+
+/* =========================================================
    Stats
-================================ */
+========================================================= */
 
 function updateStats() {
 
@@ -955,7 +2129,9 @@ function updateStats() {
   const favCount =
     items.filter(
       item =>
-        favorites.includes(item.c)
+        favorites.includes(
+          getFavoriteKey(item)
+        )
     ).length;
 
 
@@ -968,9 +2144,9 @@ function updateStats() {
 
 
 
-/* ===============================
-   حساب عدد أوامر كل تصنيف
-================================ */
+/* =========================================================
+   عدد عناصر التصنيف
+========================================================= */
 
 function getCategoryCount(category) {
 
@@ -978,29 +2154,45 @@ function getCategoryCount(category) {
     allItems();
 
 
-  if (category === "الكل") {
+  if (
+    category === "الكل"
+  ) {
 
     return items.length;
 
   }
 
 
-  return items.filter(item => {
+  if (
+    category === "خاص بي"
+  ) {
 
-    return (
-      (item.category || "عام") ===
-      category
-    );
+    return customItems.length;
 
-  }).length;
+  }
+
+
+  return items.filter(
+    item => {
+
+      return (
+        (
+          item.category ||
+          "عام"
+        ) ===
+        category
+      );
+
+    }
+  ).length;
 
 }
 
 
 
-/* ===============================
+/* =========================================================
    Categories
-================================ */
+========================================================= */
 
 function renderCategories() {
 
@@ -1012,7 +2204,7 @@ function renderCategories() {
 
   const set =
     new Set(
-      fetchedCommands.map(
+      fetchedItems.map(
         item =>
           item.category ||
           "عام"
@@ -1026,7 +2218,12 @@ function renderCategories() {
   ];
 
 
-  if (customCmds.length) {
+  if (
+    customItems.length &&
+    !cats.includes(
+      "خاص بي"
+    )
+  ) {
 
     cats.push(
       "خاص بي"
@@ -1035,7 +2232,8 @@ function renderCategories() {
   }
 
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
 
   cats.forEach(cat => {
@@ -1062,8 +2260,6 @@ function renderCategories() {
     }
 
 
-    /* اسم التصنيف */
-
     const nameSpan =
       document.createElement(
         "span"
@@ -1073,8 +2269,6 @@ function renderCategories() {
     nameSpan.textContent =
       cat;
 
-
-    /* العدد */
 
     const countSpan =
       document.createElement(
@@ -1087,7 +2281,9 @@ function renderCategories() {
 
 
     countSpan.textContent =
-      getCategoryCount(cat);
+      getCategoryCount(
+        cat
+      );
 
 
     button.appendChild(
@@ -1117,9 +2313,9 @@ function renderCategories() {
 
 
 
-/* ===============================
+/* =========================================================
    Select category
-================================ */
+========================================================= */
 
 function selectCategory(cat) {
 
@@ -1140,15 +2336,15 @@ function selectCategory(cat) {
 
   renderCategories();
 
-  renderCommands();
+  renderItems();
 
 }
 
 
 
-/* ===============================
+/* =========================================================
    Favorite filter
-================================ */
+========================================================= */
 
 function toggleFavFilter() {
 
@@ -1166,15 +2362,35 @@ function toggleFavFilter() {
 
   renderCategories();
 
-  renderCommands();
+  renderItems();
 
 }
 
 
 
-/* ===============================
+/* =========================================================
    Render
-================================ */
+========================================================= */
+
+function renderItems() {
+
+  if (isCodeLibrary) {
+
+    renderCodes();
+
+  } else {
+
+    renderCommands();
+
+  }
+
+}
+
+
+
+/* =========================================================
+   Render AI Commands
+========================================================= */
 
 function renderCommands() {
 
@@ -1258,25 +2474,15 @@ function renderCommands() {
     });
 
 
-  grid.innerHTML = "";
+  grid.innerHTML =
+    "";
 
 
   if (!filtered.length) {
 
-    grid.innerHTML = `
-
-      <div class="empty-results">
-
-        <div class="empty-results-icon">
-          🔍
-        </div>
-
-        لا توجد نتائج مطابقة.
-
-      </div>
-
-    `;
-
+    showEmptyResults(
+      grid
+    );
 
     updateStats();
 
@@ -1287,6 +2493,11 @@ function renderCommands() {
 
   filtered.forEach(item => {
 
+
+    /*
+      نستخدم cards.js القديم
+      لمكتبة أوامر AI فقط
+    */
 
     const card =
       createCommandCard(
@@ -1302,13 +2513,13 @@ function renderCommands() {
 
           onFavorite:
             () =>
-              toggleFavorite(
-                item.c
+              toggleFavoriteItem(
+                item
               ),
 
           onCopy:
             () =>
-              copyCommand(
+              copyText(
                 item.c
               ),
 
@@ -1338,7 +2549,9 @@ function renderCommands() {
       );
 
 
-    grid.appendChild(card);
+    grid.appendChild(
+      card
+    );
 
   });
 
@@ -1349,20 +2562,426 @@ function renderCommands() {
 
 
 
-/* ===============================
-   Favorite
-================================ */
+/* =========================================================
+   Render Codes
+========================================================= */
 
-function toggleFavorite(command) {
+function renderCodes() {
+
+  const grid =
+    document.getElementById(
+      "commandsGrid"
+    );
+
+
+  const query =
+    document.getElementById(
+      "searchInput"
+    )
+    .value
+    .trim()
+    .toLowerCase();
+
+
+  const filtered =
+    allItems()
+    .filter(item => {
+
+
+      const title =
+        String(
+          item.title || ""
+        ).toLowerCase();
+
+
+      const code =
+        String(
+          item.code || ""
+        ).toLowerCase();
+
+
+      const description =
+        String(
+          item.desc || ""
+        ).toLowerCase();
+
+
+      const category =
+        String(
+          item.category || ""
+        ).toLowerCase();
+
+
+      const searchMatch =
+
+        title.includes(query) ||
+
+        code.includes(query) ||
+
+        description.includes(query) ||
+
+        category.includes(query);
+
+
+      const categoryMatch =
+
+        currentCategory ===
+        "الكل"
+
+        ||
+
+        item.category ===
+        currentCategory;
+
+
+      const favMatch =
+
+        !showOnlyFavs
+
+        ||
+
+        favorites.includes(
+          item.code
+        );
+
+
+      return (
+
+        searchMatch &&
+        categoryMatch &&
+        favMatch
+
+      );
+
+    });
+
+
+  grid.innerHTML =
+    "";
+
+
+  if (!filtered.length) {
+
+    showEmptyResults(
+      grid
+    );
+
+    updateStats();
+
+    return;
+
+  }
+
+
+  filtered.forEach(
+    (item, index) => {
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+
+      card.className =
+        "code-card";
+
+
+      const codeId =
+        "code_" +
+        Date.now() +
+        "_" +
+        index +
+        "_" +
+        Math.random()
+        .toString(36)
+        .slice(2,7);
+
+
+      const favorite =
+        favorites.includes(
+          item.code
+        );
+
+
+      card.innerHTML = `
+
+        <div class="code-card-header">
+
+          <div class="code-card-title">
+
+            ${escapeHTML(
+              item.title ||
+              "كود برمجي"
+            )}
+
+          </div>
+
+
+          <button
+            type="button"
+            class="code-favorite-btn ${favorite ? "active" : ""}"
+            title="المفضلة"
+          >
+            ${favorite ? "⭐" : "☆"}
+          </button>
+
+        </div>
+
+
+        <div class="code-area">
+
+          <button
+            type="button"
+            class="code-copy-btn"
+          >
+            📋 نسخ
+          </button>
+
+
+          <pre
+            class="code-content"
+            id="${codeId}"
+          ><code>${escapeHTML(
+            item.code
+          )}</code></pre>
+
+        </div>
+
+
+        <div class="code-description">
+
+          ${escapeHTML(
+            item.desc ||
+            "بدون وصف"
+          )}
+
+        </div>
+
+
+        <div class="code-actions">
+
+          <button
+            type="button"
+            class="code-action-btn code-builder-btn"
+          >
+            ➕ للمجمع
+          </button>
+
+
+          <button
+            type="button"
+            class="code-action-btn code-share-btn"
+          >
+            📤 مشاركة
+          </button>
+
+
+          <button
+            type="button"
+            class="code-action-btn code-png-btn"
+          >
+            🖼️ PNG
+          </button>
+
+        </div>
+
+      `;
+
+
+      const favoriteBtn =
+        card.querySelector(
+          ".code-favorite-btn"
+        );
+
+
+      const copyBtn =
+        card.querySelector(
+          ".code-copy-btn"
+        );
+
+
+      const builderBtn =
+        card.querySelector(
+          ".code-builder-btn"
+        );
+
+
+      const shareBtn =
+        card.querySelector(
+          ".code-share-btn"
+        );
+
+
+      const pngBtn =
+        card.querySelector(
+          ".code-png-btn"
+        );
+
+
+      favoriteBtn.addEventListener(
+        "click",
+        () => {
+
+          toggleFavoriteItem(
+            item
+          );
+
+        }
+      );
+
+
+      copyBtn.addEventListener(
+        "click",
+        async () => {
+
+          await copyText(
+            item.code
+          );
+
+
+          copyBtn.textContent =
+            "✓ تم النسخ";
+
+
+          copyBtn.classList.add(
+            "copied"
+          );
+
+
+          setTimeout(
+            () => {
+
+              copyBtn.textContent =
+                "📋 نسخ";
+
+
+              copyBtn.classList.remove(
+                "copied"
+              );
+
+            },
+            1600
+          );
+
+        }
+      );
+
+
+      builderBtn.addEventListener(
+        "click",
+        () => {
+
+          addBuilder(
+            item.code
+          );
+
+        }
+      );
+
+
+      shareBtn.addEventListener(
+        "click",
+        () => {
+
+          shareCodeTXT(
+            item
+          );
+
+        }
+      );
+
+
+      pngBtn.addEventListener(
+        "click",
+        () => {
+
+          shareCardPNG(
+
+            item.title ||
+            "كود برمجي",
+
+            item.code +
+            (
+              item.desc
+              ? "\n\n" + item.desc
+              : ""
+            ),
+
+            item.category ||
+            libraryName
+
+          );
+
+        }
+      );
+
+
+      grid.appendChild(
+        card
+      );
+
+    }
+  );
+
+
+  updateStats();
+
+}
+
+
+
+/* =========================================================
+   Empty
+========================================================= */
+
+function showEmptyResults(grid) {
+
+  grid.innerHTML = `
+
+    <div class="empty-results">
+
+      <div class="empty-results-icon">
+        🔍
+      </div>
+
+      لا توجد نتائج مطابقة.
+
+    </div>
+
+  `;
+
+}
+
+
+
+/* =========================================================
+   Favorite
+========================================================= */
+
+function toggleFavoriteItem(item) {
+
+  const key =
+    getFavoriteKey(
+      item
+    );
+
+
+  if (!key) {
+    return;
+  }
+
 
   if (
-    favorites.includes(command)
+    favorites.includes(
+      key
+    )
   ) {
 
     favorites =
       favorites.filter(
-        item =>
-          item !== command
+        value =>
+          value !== key
       );
 
 
@@ -1374,7 +2993,9 @@ function toggleFavorite(command) {
 
   else {
 
-    favorites.push(command);
+    favorites.push(
+      key
+    );
 
 
     showToast(
@@ -1386,7 +3007,7 @@ function toggleFavorite(command) {
 
   localStorage.setItem(
 
-    "promptFav",
+    favoritesStorageKey(),
 
     JSON.stringify(
       favorites
@@ -1395,27 +3016,15 @@ function toggleFavorite(command) {
   );
 
 
-  renderCommands();
+  renderItems();
 
 }
 
 
 
-/* ===============================
+/* =========================================================
    Copy
-================================ */
-
-async function copyCommand(command) {
-
-  await copyText(command);
-
-}
-
-
-
-/* ===============================
-   Copy general
-================================ */
+========================================================= */
 
 async function copyText(text) {
 
@@ -1423,7 +3032,9 @@ async function copyText(text) {
 
     await navigator
       .clipboard
-      .writeText(text);
+      .writeText(
+        text
+      );
 
 
     showToast(
@@ -1478,53 +3089,88 @@ async function copyText(text) {
 
 
 
-/* ===============================
+/* =========================================================
    Builder
-================================ */
+========================================================= */
 
-function addBuilder(command) {
+function addBuilder(text) {
 
-  const lines =
-    builder.value
-    .split("\n")
-    .map(
-      line =>
-        line.trim()
-    )
-    .filter(Boolean);
+  const currentText =
+    builder.value.trim();
 
+
+  /*
+    في الأكواد قد يحتوي النص
+    على أكثر من سطر
+  */
 
   if (
-    lines.includes(command)
+    currentText &&
+    currentText.includes(
+      text
+    )
   ) {
 
     showToast(
-      "ℹ️ الأمر موجود مسبقاً"
+      isCodeLibrary
+      ? "ℹ️ الكود موجود مسبقاً"
+      : "ℹ️ الأمر موجود مسبقاً"
     );
+
 
     return;
 
   }
 
 
-  lines.push(command);
+  if (!currentText) {
 
+    builder.value =
+      text;
 
-  builder.value =
-    lines.join("\n");
+  } else {
+
+    builder.value =
+      currentText +
+      "\n\n" +
+      text;
+
+  }
 
 
   showToast(
-    "✅ تمت الإضافة للمنشئ"
+    isCodeLibrary
+    ? "✅ تمت إضافة الكود للمجمع"
+    : "✅ تمت الإضافة للمنشئ"
   );
 
 }
 
 
 
-/* ===============================
-   Custom command
-================================ */
+/* =========================================================
+   Custom item
+========================================================= */
+
+function promptAddCustomItem() {
+
+  if (isCodeLibrary) {
+
+    promptAddCustomCode();
+
+  } else {
+
+    promptAddCustomCommand();
+
+  }
+
+}
+
+
+
+/* =========================================================
+   Custom Command
+========================================================= */
 
 function promptAddCustomCommand() {
 
@@ -1562,7 +3208,9 @@ function promptAddCustomCommand() {
     allItems()
     .some(
       item =>
-        String(item.c)
+        String(
+          item.c || ""
+        )
         .toLowerCase()
         ===
         command.toLowerCase()
@@ -1580,7 +3228,7 @@ function promptAddCustomCommand() {
   }
 
 
-  customCmds.push({
+  customItems.push({
 
     c:
       command,
@@ -1589,25 +3237,20 @@ function promptAddCustomCommand() {
       description,
 
     category:
-      "خاص بي"
+      "خاص بي",
+
+    type:
+      "command"
 
   });
 
 
-  localStorage.setItem(
-
-    customStorageKey(),
-
-    JSON.stringify(
-      customCmds
-    )
-
-  );
+  saveCustomItems();
 
 
   renderCategories();
 
-  renderCommands();
+  renderItems();
 
 
   showToast(
@@ -1618,9 +3261,132 @@ function promptAddCustomCommand() {
 
 
 
-/* ===============================
-   TXT card
-================================ */
+/* =========================================================
+   Custom Code
+========================================================= */
+
+function promptAddCustomCode() {
+
+  let title =
+    prompt(
+      "أدخل عنوان الكود:"
+    );
+
+
+  if (!title) {
+    return;
+  }
+
+
+  title =
+    title.trim();
+
+
+  let code =
+    prompt(
+      "ألصق الكود البرمجي:"
+    );
+
+
+  if (!code) {
+    return;
+  }
+
+
+  let description =
+    prompt(
+      "أدخل وصف الكود:"
+    );
+
+
+  description =
+    description
+    ? description.trim()
+    : "";
+
+
+  const exists =
+    allItems()
+    .some(
+      item =>
+        String(
+          item.code || ""
+        ).trim()
+        ===
+        code.trim()
+    );
+
+
+  if (exists) {
+
+    showToast(
+      "⚠️ الكود موجود مسبقاً"
+    );
+
+    return;
+
+  }
+
+
+  customItems.push({
+
+    title:
+      title,
+
+    code:
+      code,
+
+    desc:
+      description,
+
+    category:
+      "خاص بي",
+
+    type:
+      "code"
+
+  });
+
+
+  saveCustomItems();
+
+
+  renderCategories();
+
+  renderItems();
+
+
+  showToast(
+    "✅ تمت إضافة الكود"
+  );
+
+}
+
+
+
+/* =========================================================
+   Save Custom
+========================================================= */
+
+function saveCustomItems() {
+
+  localStorage.setItem(
+
+    customStorageKey(),
+
+    JSON.stringify(
+      customItems
+    )
+
+  );
+
+}
+
+
+
+/* =========================================================
+   TXT AI card
+========================================================= */
 
 async function shareCardTXT(
   command,
@@ -1633,7 +3399,9 @@ async function shareCardTXT(
     `الوصف: ${description}`;
 
 
-  if (navigator.share) {
+  if (
+    navigator.share
+  ) {
 
     try {
 
@@ -1642,9 +3410,11 @@ async function shareCardTXT(
         title:
           command,
 
-        text
+        text:
+          text
 
       });
+
 
       return;
 
@@ -1655,15 +3425,71 @@ async function shareCardTXT(
   }
 
 
-  copyText(text);
+  copyText(
+    text
+  );
 
 }
 
 
 
-/* ===============================
+/* =========================================================
+   Share code
+========================================================= */
+
+async function shareCodeTXT(item) {
+
+  const text =
+
+    `${item.title || "كود برمجي"}\n\n` +
+
+    `${item.code || ""}` +
+
+    (
+      item.desc
+      ? `\n\nالوصف:\n${item.desc}`
+      : ""
+    );
+
+
+  if (
+    navigator.share
+  ) {
+
+    try {
+
+      await navigator.share({
+
+        title:
+          item.title ||
+          "كود برمجي",
+
+        text:
+          text
+
+      });
+
+
+      return;
+
+    }
+
+    catch {}
+
+  }
+
+
+  copyText(
+    text
+  );
+
+}
+
+
+
+/* =========================================================
    PNG
-================================ */
+========================================================= */
 
 async function shareCardPNG(
   command,
@@ -1723,11 +3549,21 @@ async function shareCardPNG(
 
 
         const cleanName =
-          command.replace(
+          String(command)
+          .replace(
             /[\/\\:*?"<>|]/g,
             ""
-          ) ||
-          "command";
+          )
+          .substring(
+            0,
+            60
+          )
+          ||
+          (
+            isCodeLibrary
+            ? "code"
+            : "command"
+          );
 
 
         const file =
@@ -1735,7 +3571,8 @@ async function shareCardPNG(
 
             [blob],
 
-            cleanName + ".png",
+            cleanName +
+            ".png",
 
             {
               type:
@@ -1757,7 +3594,8 @@ async function shareCardPNG(
 
             await navigator.share({
 
-              files: [file],
+              files:
+                [file],
 
               title:
                 command,
@@ -1766,6 +3604,7 @@ async function shareCardPNG(
                 description
 
             });
+
 
             return;
 
@@ -1789,7 +3628,8 @@ async function shareCardPNG(
 
 
         link.download =
-          cleanName + ".png";
+          cleanName +
+          ".png";
 
 
         link.click();
@@ -1807,7 +3647,10 @@ async function shareCardPNG(
 
   catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
+
 
     showToast(
       "❌ تعذر إنشاء الصورة"
@@ -1819,9 +3662,9 @@ async function shareCardPNG(
 
 
 
-/* ===============================
+/* =========================================================
    Builder copy
-================================ */
+========================================================= */
 
 function copyBuilder() {
 
@@ -1832,23 +3675,28 @@ function copyBuilder() {
   if (!text) {
 
     showToast(
-      "⚠️ المنشئ فارغ"
+      isCodeLibrary
+      ? "⚠️ مجمع الأكواد فارغ"
+      : "⚠️ المنشئ فارغ"
     );
+
 
     return;
 
   }
 
 
-  copyText(text);
+  copyText(
+    text
+  );
 
 }
 
 
 
-/* ===============================
+/* =========================================================
    Builder share
-================================ */
+========================================================= */
 
 async function shareTXTBuilder() {
 
@@ -1859,15 +3707,20 @@ async function shareTXTBuilder() {
   if (!text) {
 
     showToast(
-      "⚠️ المنشئ فارغ"
+      isCodeLibrary
+      ? "⚠️ مجمع الأكواد فارغ"
+      : "⚠️ المنشئ فارغ"
     );
+
 
     return;
 
   }
 
 
-  if (navigator.share) {
+  if (
+    navigator.share
+  ) {
 
     try {
 
@@ -1876,9 +3729,11 @@ async function shareTXTBuilder() {
         title:
           libraryName,
 
-        text
+        text:
+          text
 
       });
+
 
       return;
 
@@ -1889,15 +3744,17 @@ async function shareTXTBuilder() {
   }
 
 
-  copyText(text);
+  copyText(
+    text
+  );
 
 }
 
 
 
-/* ===============================
+/* =========================================================
    Builder PNG
-================================ */
+========================================================= */
 
 function exportBuilderPNG() {
 
@@ -1908,8 +3765,11 @@ function exportBuilderPNG() {
   if (!text) {
 
     showToast(
-      "⚠️ المنشئ فارغ"
+      isCodeLibrary
+      ? "⚠️ مجمع الأكواد فارغ"
+      : "⚠️ المنشئ فارغ"
     );
+
 
     return;
 
@@ -1918,7 +3778,9 @@ function exportBuilderPNG() {
 
   shareCardPNG(
 
-    "أوامر مجمعة",
+    isCodeLibrary
+    ? "أكواد مجمعة"
+    : "أوامر مجمعة",
 
     text,
 
@@ -1930,13 +3792,15 @@ function exportBuilderPNG() {
 
 
 
-/* ===============================
+/* =========================================================
    Clear Builder
-================================ */
+========================================================= */
 
 function clearBuilder() {
 
-  builder.value = "";
+  builder.value =
+    "";
+
 
   showToast(
     "🗑️ تم المسح"
@@ -1946,9 +3810,9 @@ function clearBuilder() {
 
 
 
-/* ===============================
-   Export all
-================================ */
+/* =========================================================
+   Export TXT
+========================================================= */
 
 function exportTXT() {
 
@@ -1959,27 +3823,76 @@ function exportTXT() {
   if (!items.length) {
 
     showToast(
-      "⚠️ لا توجد أوامر"
+      isCodeLibrary
+      ? "⚠️ لا توجد أكواد"
+      : "⚠️ لا توجد أوامر"
     );
+
 
     return;
 
   }
 
 
-  const text =
-    items.map(item => {
+  let text =
+    "";
 
-      return (
-        item.c +
-        "\n" +
-        item.d
+
+  if (isCodeLibrary) {
+
+    text =
+      items
+      .map(item => {
+
+        return (
+
+          "العنوان: " +
+          (
+            item.title ||
+            "كود برمجي"
+          ) +
+
+          "\n\n" +
+
+          (
+            item.code ||
+            ""
+          ) +
+
+          (
+            item.desc
+
+            ? "\n\nالوصف: " +
+              item.desc
+
+            : ""
+          )
+
+        );
+
+      })
+      .join(
+        "\n\n━━━━━━━━━━━━━━━━━━━━\n\n"
       );
 
-    })
-    .join(
-      "\n\n━━━━━━━━━━━━━━\n\n"
-    );
+  } else {
+
+    text =
+      items
+      .map(item => {
+
+        return (
+          item.c +
+          "\n" +
+          item.d
+        );
+
+      })
+      .join(
+        "\n\n━━━━━━━━━━━━━━\n\n"
+      );
+
+  }
 
 
   const blob =
@@ -2009,7 +3922,19 @@ function exportTXT() {
 
 
   link.download =
-    currentLibraryPath +
+
+    (
+      isCodeLibrary
+
+      ? currentRoot +
+        "_" +
+        currentLibraryPath
+
+      : currentLibraryPath
+    )
+
+    +
+
     ".txt";
 
 
@@ -2029,9 +3954,9 @@ function exportTXT() {
 
 
 
-/* ===============================
+/* =========================================================
    Toast
-================================ */
+========================================================= */
 
 function showToast(message) {
 
@@ -2071,23 +3996,26 @@ function showToast(message) {
 
 
 
-/* ===============================
+/* =========================================================
    Search
-================================ */
+========================================================= */
 
-document.getElementById(
+document
+.getElementById(
   "searchInput"
 )
 .addEventListener(
   "input",
-  renderCommands
+  renderItems
 );
 
 
 
-/* ===============================
+/* =========================================================
    Start
-================================ */
+========================================================= */
+
+setupLibraryUI();
 
 loadLibrary();
 
@@ -2096,4 +4024,5 @@ loadLibrary();
 
 
 </body>
-</html>
+
+  </html>
