@@ -3,598 +3,1042 @@
 
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-  <title>مكتبة الأوامر والأكواد</title>
+<title>مكتبة الأوامر والأكواد</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-  <!-- =========================
-       خط Tajawal
-  ========================== -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
+<link
+  href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
 
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
+<style>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
+:root{
 
-  <!-- =========================
-       ملف التنسيق الرئيسي
-  ========================== -->
+  --bg:#07101d;
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  --bg2:#0b1728;
 
+  --card:#101e31;
 
-  <style>
+  --card2:#14243b;
 
-    /* ==========================================
-       إعدادات إضافية للصفحة الرئيسية
-    ========================================== */
+  --border:#263b59;
 
-    * {
-      box-sizing: border-box;
-    }
+  --blue:#3387ff;
 
+  --blue2:#2563eb;
 
-    body {
-      font-family: "Tajawal", sans-serif;
-    }
+  --purple:#8b5cf6;
 
+  --green:#22c55e;
 
-    /* ==========================================
-       الشعار
-    ========================================== */
+  --cyan:#06b6d4;
 
-    .brand-wrapper {
+  --orange:#f59e0b;
 
-      display: flex;
-      align-items: center;
-      gap: 10px;
+  --text:#f8fafc;
 
-      text-decoration: none;
+  --muted:#94a3b8;
+}
 
-    }
+html{
+  scroll-behavior:smooth;
+}
 
+body{
 
-    .brand-image {
+  min-height:100vh;
 
-      width: 44px;
-      height: 44px;
+  font-family:"Tajawal",sans-serif;
 
-      border-radius: 13px;
+  color:var(--text);
 
-      object-fit: cover;
+  background:
 
-      border: 1px solid var(--glass-border);
+    radial-gradient(
+      circle at top right,
+      rgba(51,135,255,.16),
+      transparent 28%
+    ),
 
-      background:
-        rgba(255, 255, 255, 0.08);
+    radial-gradient(
+      circle at bottom left,
+      rgba(139,92,246,.12),
+      transparent 30%
+    ),
 
-    }
+    var(--bg);
+}
 
 
-    .brand-name {
+/* ==========================================
+   CONTAINER
+========================================== */
 
-      font-size: 1rem;
-      font-weight: 800;
+.container{
 
-      background:
-        linear-gradient(
-          45deg,
-          var(--primary),
-          #ffffff,
-          var(--secondary)
-        );
+  width:min(
+    1180px,
+    calc(100% - 30px)
+  );
 
-      -webkit-background-clip: text;
-      background-clip: text;
+  margin:auto;
+}
 
-      color: transparent;
 
-    }
+/* ==========================================
+   NAV
+========================================== */
 
+.site-nav{
 
+  position:sticky;
 
-    /* ==========================================
-       Hero
-    ========================================== */
+  top:0;
 
-    .hero-badge {
+  z-index:100;
 
-      display: inline-flex;
+  background:
+    rgba(7,16,29,.88);
 
-      align-items: center;
-      justify-content: center;
+  border-bottom:
+    1px solid rgba(255,255,255,.07);
 
-      padding: 7px 15px;
+  backdrop-filter:
+    blur(18px);
 
-      margin-bottom: 12px;
+  -webkit-backdrop-filter:
+    blur(18px);
+}
 
-      border-radius: 50px;
+.nav-inner{
 
-      font-size: 0.78rem;
-      font-weight: 700;
+  min-height:72px;
 
-      color: var(--primary);
+  display:flex;
 
-      background:
-        rgba(0, 242, 254, 0.08);
+  align-items:center;
 
-      border:
-        1px solid rgba(0, 242, 254, 0.20);
+  justify-content:space-between;
 
-    }
+  gap:15px;
+}
 
+.brand-wrapper{
 
-    .info-bar {
+  display:flex;
 
-      display: flex;
+  align-items:center;
 
-      align-items: center;
-      justify-content: center;
+  gap:11px;
 
-      flex-wrap: wrap;
+  text-decoration:none;
 
-      gap: 8px;
+  color:#fff;
+}
 
-      margin-top: 18px;
+.brand-image{
 
-      color: var(--text-secondary);
+  width:44px;
 
-      font-size: 0.78rem;
+  height:44px;
 
-    }
+  border-radius:13px;
 
+  object-fit:cover;
 
+  border:
+    1px solid
+    rgba(255,255,255,.10);
 
-    /* ==========================================
-       عنوان الأقسام
-    ========================================== */
+  background:#101d30;
+}
 
-    .section-head {
+.brand-info strong{
 
-      text-align: center;
+  display:block;
 
-      margin-bottom: 25px;
+  font-size:16px;
 
-    }
+  font-weight:800;
+}
 
+.brand-info span{
 
-    .section-head h2 {
+  display:block;
 
-      font-size: 1.45rem;
+  margin-top:2px;
 
-      margin-bottom: 7px;
+  font-size:11px;
 
-      color: #ffffff;
+  color:var(--muted);
+}
 
-    }
+.nav-badge{
 
+  display:inline-flex;
 
-    .section-head p {
+  align-items:center;
 
-      color: var(--text-secondary);
+  gap:7px;
 
-      font-size: 0.88rem;
+  padding:
+    8px 12px;
 
-      line-height: 1.8;
+  background:
+    rgba(34,197,94,.08);
 
-    }
+  border:
+    1px solid
+    rgba(34,197,94,.20);
 
+  border-radius:50px;
 
+  color:#86efac;
 
-    /* ==========================================
-       شبكة الأقسام
-    ========================================== */
+  font-size:11px;
 
-    .main-options-grid {
+  font-weight:700;
+}
 
-      display: grid;
 
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(240px, 1fr)
-        );
+/* ==========================================
+   HERO
+========================================== */
 
-      gap: 18px;
+.hero{
 
-    }
+  padding:
+    55px 0
+    30px;
+}
 
+.hero-card{
 
+  position:relative;
 
-    /* ==========================================
-       بطاقة القسم
-    ========================================== */
+  overflow:hidden;
 
-    .main-option-card {
+  padding:
+    38px 32px;
 
-      position: relative;
+  border-radius:26px;
 
-      overflow: hidden;
+  border:
+    1px solid
+    rgba(255,255,255,.08);
 
-      min-height: 275px;
+  background:
 
-      display: flex;
-      flex-direction: column;
+    linear-gradient(
+      135deg,
+      rgba(51,135,255,.10),
+      rgba(139,92,246,.08)
+    ),
 
-      padding: 22px;
+    rgba(16,29,48,.86);
 
-      border-radius: 20px;
+  box-shadow:
+    0 25px 70px
+    rgba(0,0,0,.20);
+}
 
-      background:
-        rgba(255, 255, 255, 0.045);
+.hero-card::after{
 
-      border:
-        1px solid rgba(255, 255, 255, 0.09);
+  content:"";
 
-      backdrop-filter:
-        blur(14px);
+  position:absolute;
 
-      -webkit-backdrop-filter:
-        blur(14px);
+  width:260px;
 
-      transition:
-        transform 0.25s ease,
-        border-color 0.25s ease,
-        box-shadow 0.25s ease;
+  height:260px;
 
-    }
+  left:-100px;
 
+  top:-120px;
 
-    .main-option-card::before {
+  border-radius:50%;
 
-      content: "";
+  background:
+    rgba(51,135,255,.18);
 
-      position: absolute;
+  filter:blur(20px);
 
-      top: 0;
-      right: 0;
+  pointer-events:none;
+}
 
-      width: 100%;
-      height: 3px;
+.hero-content{
 
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          var(--primary),
-          var(--secondary),
-          transparent
-        );
+  position:relative;
 
-    }
+  z-index:2;
+}
 
+.hero-tag{
 
-    .main-option-card::after {
+  display:inline-flex;
 
-      content: "";
+  align-items:center;
 
-      position: absolute;
+  gap:7px;
 
-      width: 160px;
-      height: 160px;
+  margin-bottom:16px;
 
-      top: -80px;
-      left: -80px;
+  padding:
+    7px 12px;
 
-      border-radius: 50%;
+  border-radius:50px;
 
-      background:
-        radial-gradient(
-          circle,
-          rgba(0, 242, 254, 0.12),
-          transparent 70%
-        );
+  background:
+    rgba(51,135,255,.10);
 
-      pointer-events: none;
+  border:
+    1px solid
+    rgba(51,135,255,.20);
 
-    }
+  color:#9bc8ff;
 
+  font-size:12px;
 
-    .main-option-card:hover {
+  font-weight:700;
+}
 
-      transform:
-        translateY(-5px);
+.hero h1{
 
-      border-color:
-        rgba(0, 242, 254, 0.25);
+  font-size:
+    clamp(
+      30px,
+      7vw,
+      49px
+    );
 
-      box-shadow:
-        0 14px 40px
-        rgba(0, 0, 0, 0.20);
+  line-height:1.3;
 
-    }
+  font-weight:900;
 
+  margin-bottom:13px;
+}
 
+.hero p{
 
-    /* ==========================================
-       الأيقونة
-    ========================================== */
+  max-width:760px;
 
-    .option-icon {
+  color:#aab8ca;
 
-      width: 65px;
-      height: 65px;
+  font-size:15px;
 
-      display: flex;
+  line-height:2;
+}
 
-      align-items: center;
-      justify-content: center;
 
-      border-radius: 18px;
+/* ==========================================
+   SEARCH
+========================================== */
 
-      margin-bottom: 17px;
+.search-panel{
 
-      font-size: 2rem;
+  margin-top:22px;
 
-      background:
-        linear-gradient(
-          135deg,
-          rgba(0, 242, 254, 0.13),
-          rgba(127, 0, 255, 0.16)
-        );
+  display:flex;
 
-      border:
-        1px solid
-        rgba(255, 255, 255, 0.10);
+  align-items:center;
 
-    }
+  gap:11px;
+}
 
+.search-wrapper{
 
+  position:relative;
 
-    /* ==========================================
-       النصوص
-    ========================================== */
+  flex:1;
+}
 
-    .option-title {
+.search-wrapper span{
 
-      color: #ffffff;
+  position:absolute;
 
-      font-size: 1.05rem;
+  right:16px;
 
-      font-weight: 800;
+  top:50%;
 
-      line-height: 1.7;
+  transform:
+    translateY(-50%);
 
-      margin-bottom: 9px;
+  pointer-events:none;
+}
 
-    }
+.search-input{
 
+  width:100%;
 
-    .option-desc {
+  height:52px;
 
-      color: var(--text-secondary);
+  padding:
+    0 48px
+    0 15px;
 
-      font-size: 0.84rem;
+  background:#081525;
 
-      line-height: 1.85;
+  border:
+    1px solid var(--border);
 
-      margin-bottom: 18px;
+  border-radius:14px;
 
-    }
+  outline:none;
 
+  color:#fff;
 
+  font-family:"Tajawal",sans-serif;
 
-    /* ==========================================
-       شارة اللغة
-    ========================================== */
+  font-size:14px;
 
-    .language-badge {
+  transition:.2s;
+}
 
-      display: inline-flex;
+.search-input:focus{
 
-      align-items: center;
+  border-color:var(--blue);
 
-      width: fit-content;
+  box-shadow:
+    0 0 0 3px
+    rgba(51,135,255,.10);
+}
 
-      padding: 5px 10px;
+.refresh-btn{
 
-      margin-bottom: 17px;
+  height:52px;
 
-      border-radius: 8px;
+  padding:
+    0 18px;
 
-      direction: ltr;
+  border:0;
 
-      font-size: 0.70rem;
+  border-radius:14px;
 
-      font-family:
-        monospace;
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #3387ff
+    );
 
-      color: var(--primary);
+  color:#fff;
 
-      background:
-        rgba(0, 242, 254, 0.06);
+  font-family:"Tajawal",sans-serif;
 
-      border:
-        1px solid
-        rgba(0, 242, 254, 0.12);
+  font-weight:800;
 
-    }
+  cursor:pointer;
+}
 
 
+/* ==========================================
+   STATS
+========================================== */
 
-    /* ==========================================
-       زر الفتح
-    ========================================== */
+.stats{
 
-    .option-button {
+  display:flex;
 
-      width: 100%;
+  flex-wrap:wrap;
 
-      display: flex;
+  gap:9px;
 
-      align-items: center;
-      justify-content: space-between;
+  margin-top:18px;
+}
 
-      gap: 10px;
+.stat{
 
-      padding: 12px 15px;
+  display:inline-flex;
 
-      margin-top: auto;
+  align-items:center;
 
-      border-radius: 11px;
+  gap:6px;
 
-      text-decoration: none;
+  padding:
+    8px 12px;
 
-      color: #000000;
+  border:
+    1px solid var(--border);
 
-      font-size: 0.85rem;
+  border-radius:10px;
 
-      font-weight: 800;
+  background:
+    rgba(8,21,37,.70);
 
-      background:
-        linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-dark)
-        );
+  color:#aab8ca;
 
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+  font-size:12px;
+}
 
-    }
+.stat strong{
 
+  color:#fff;
 
-    .option-button:hover {
+  font-family:
+    "Fira Code",
+    monospace;
+}
 
-      transform:
-        translateY(-2px);
 
-      box-shadow:
-        0 8px 25px
-        rgba(0, 242, 254, 0.22);
+/* ==========================================
+   CONTENT
+========================================== */
 
-    }
+.content{
 
+  padding:
+    10px 0
+    70px;
+}
 
+.library-section{
 
-    /* ==========================================
-       الإحصائيات
-    ========================================== */
+  margin-top:32px;
+}
 
-    .stats-container {
+.section-header{
 
-      margin-bottom: 25px;
+  display:flex;
 
-    }
+  align-items:flex-end;
 
+  justify-content:space-between;
 
+  gap:15px;
 
-    /* ==========================================
-       Footer
-    ========================================== */
+  margin-bottom:16px;
+}
 
-    .site-footer {
+.section-info h2{
 
-      width:
-        calc(100% - 24px);
+  font-size:22px;
 
-      max-width:
-        1000px;
+  font-weight:900;
 
-      margin:
-        35px auto 0;
+  margin-bottom:5px;
+}
 
-      padding:
-        20px 12px;
+.section-info p{
 
-      text-align: center;
+  color:var(--muted);
 
-      color:
-        var(--text-secondary);
+  font-size:13px;
 
-      font-size:
-        0.8rem;
+  line-height:1.7;
+}
 
-      border-top:
-        1px solid var(--border);
+.section-count{
 
-    }
+  display:inline-flex;
 
+  align-items:center;
 
-    .site-footer strong {
+  justify-content:center;
 
-      color:
-        var(--primary);
+  min-width:40px;
 
-    }
+  padding:
+    6px 10px;
 
+  border-radius:50px;
 
+  background:#14243b;
 
-    /* ==========================================
-       الجوال
-    ========================================== */
+  border:
+    1px solid var(--border);
 
-    @media
-    (max-width: 600px) {
+  color:#cbd5e1;
 
-      .main-options-grid {
+  font-family:
+    "Fira Code",
+    monospace;
 
-        grid-template-columns:
-          1fr;
+  font-size:11px;
+}
 
-        gap:
-          14px;
 
-      }
+/* ==========================================
+   AI CARD
+========================================== */
 
+.ai-main-card{
 
-      .main-option-card {
+  position:relative;
 
-        min-height:
-          245px;
+  display:grid;
 
-        padding:
-          18px;
+  grid-template-columns:
+    auto 1fr auto;
 
-      }
+  align-items:center;
 
+  gap:18px;
 
-      .option-icon {
+  text-decoration:none;
 
-        width:
-          58px;
+  color:inherit;
 
-        height:
-          58px;
+  padding:22px;
 
-        font-size:
-          1.8rem;
+  border-radius:20px;
 
-      }
+  border:
+    1px solid
+    rgba(139,92,246,.28);
 
+  background:
 
-      .option-title {
+    linear-gradient(
+      135deg,
+      rgba(124,58,237,.15),
+      rgba(37,99,235,.10)
+    ),
 
-        font-size:
-          1rem;
+    #101e31;
 
-      }
+  transition:.25s;
+}
 
-    }
+.ai-main-card:hover{
 
-  </style>
+  transform:
+    translateY(-3px);
+
+  border-color:
+    rgba(139,92,246,.60);
+
+  box-shadow:
+    0 20px 45px
+    rgba(0,0,0,.18);
+}
+
+.ai-icon{
+
+  width:62px;
+
+  height:62px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  border-radius:18px;
+
+  font-size:30px;
+
+  background:
+
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
+}
+
+.ai-content h3{
+
+  font-size:19px;
+
+  font-weight:900;
+
+  margin-bottom:6px;
+}
+
+.ai-content p{
+
+  color:#9eacc0;
+
+  line-height:1.8;
+
+  font-size:13px;
+}
+
+.ai-open{
+
+  color:#dbeafe;
+
+  font-size:13px;
+
+  font-weight:800;
+}
+
+
+/* ==========================================
+   GRID
+========================================== */
+
+.cards-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0,1fr)
+    );
+
+  gap:15px;
+}
+
+
+/* ==========================================
+   CATEGORY CARD
+========================================== */
+
+.category-card{
+
+  position:relative;
+
+  display:flex;
+
+  flex-direction:column;
+
+  min-height:200px;
+
+  padding:18px;
+
+  text-decoration:none;
+
+  color:inherit;
+
+  border-radius:18px;
+
+  border:
+    1px solid var(--border);
+
+  background:
+
+    linear-gradient(
+      145deg,
+      rgba(20,36,59,.96),
+      rgba(10,22,39,.96)
+    );
+
+  box-shadow:
+    0 12px 30px
+    rgba(0,0,0,.10);
+
+  overflow:hidden;
+
+  transition:.25s;
+}
+
+.category-card:hover{
+
+  transform:
+    translateY(-4px);
+
+  border-color:
+    rgba(51,135,255,.55);
+
+  box-shadow:
+    0 18px 40px
+    rgba(0,0,0,.20);
+}
+
+.category-icon{
+
+  width:52px;
+
+  height:52px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  margin-bottom:14px;
+
+  border-radius:15px;
+
+  background:
+    rgba(51,135,255,.10);
+
+  border:
+    1px solid
+    rgba(51,135,255,.15);
+
+  font-size:26px;
+}
+
+.category-title{
+
+  color:#fff;
+
+  font-size:16px;
+
+  font-weight:900;
+
+  line-height:1.6;
+
+  margin-bottom:7px;
+}
+
+.category-desc{
+
+  flex:1;
+
+  color:#94a3b8;
+
+  font-size:12px;
+
+  line-height:1.9;
+
+  margin-bottom:14px;
+}
+
+.card-footer{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:10px;
+
+  padding-top:12px;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,.06);
+}
+
+.card-path{
+
+  direction:ltr;
+
+  text-align:left;
+
+  color:#7cb7ff;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size:10px;
+}
+
+.card-open{
+
+  color:#cbd5e1;
+
+  font-size:11px;
+
+  font-weight:800;
+}
+
+
+/* ==========================================
+   LIBRARY BADGES
+========================================== */
+
+.library-label{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:6px;
+
+  margin-bottom:9px;
+
+  padding:
+    4px 8px;
+
+  border-radius:7px;
+
+  background:
+    rgba(255,255,255,.05);
+
+  color:#aab8ca;
+
+  font-size:10px;
+
+  font-weight:700;
+}
+
+
+/* ==========================================
+   STATES
+========================================== */
+
+.loading-box,
+.empty-box,
+.error-box{
+
+  grid-column:1/-1;
+
+  width:100%;
+
+  padding:
+    38px 18px;
+
+  text-align:center;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:17px;
+
+  background:
+    rgba(16,29,48,.70);
+
+  color:#94a3b8;
+
+  line-height:1.9;
+}
+
+.error-box{
+
+  color:#fca5a5;
+
+  border-color:
+    rgba(239,68,68,.25);
+}
+
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.site-footer{
+
+  margin-top:40px;
+
+  padding:
+    25px 15px;
+
+  text-align:center;
+
+  border-top:
+    1px solid rgba(255,255,255,.07);
+
+  color:#718096;
+
+  font-size:13px;
+
+  line-height:1.8;
+}
+
+.site-footer strong{
+
+  color:#7cb7ff;
+
+  font-weight:800;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:900px){
+
+  .cards-grid{
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0,1fr)
+      );
+  }
+
+}
+
+@media(max-width:600px){
+
+  .container{
+
+    width:
+      calc(100% - 20px);
+  }
+
+  .site-nav{
+
+    position:relative;
+  }
+
+  .nav-badge{
+
+    display:none;
+  }
+
+  .hero{
+
+    padding-top:27px;
+  }
+
+  .hero-card{
+
+    padding:
+      25px 19px;
+
+    border-radius:20px;
+  }
+
+  .hero p{
+
+    font-size:13px;
+  }
+
+  .search-panel{
+
+    display:grid;
+
+    grid-template-columns:1fr;
+  }
+
+  .refresh-btn{
+
+    width:100%;
+  }
+
+  .cards-grid{
+
+    grid-template-columns:1fr;
+  }
+
+  .ai-main-card{
+
+    grid-template-columns:
+      auto 1fr;
+  }
+
+  .ai-open{
+
+    display:none;
+  }
+
+  .category-card{
+
+    min-height:180px;
+  }
+
+}
+
+</style>
 
 </head>
 
@@ -602,557 +1046,1430 @@
 <body>
 
 
-  <div class="container">
+<!-- ==========================================
+     NAV
+========================================== -->
 
+<nav class="site-nav">
 
-    <!-- =========================
-         NAVBAR
-    ========================== -->
+  <div class="container nav-inner">
 
-    <nav class="site-nav">
+    <a
+      href="index.html"
+      class="brand-wrapper"
+    >
 
-
-      <a
-        href="index.html"
-        class="brand-wrapper"
+      <img
+        class="brand-image"
+        src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
+        alt="شعار المكتبة"
       >
 
+      <div class="brand-info">
 
-        <img
-          src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
-          alt="شعار مكتبة الأوامر"
-          class="brand-image"
-        >
-
-
-        <div class="brand-name">
-
-          مكتبة الأوامر
-
-        </div>
-
-
-      </a>
-
-
-
-      <a
-        href="https://alnoaif2026.github.io"
-        class="external-link"
-      >
-
-        🌐 الرئيسية
-
-      </a>
-
-
-    </nav>
-
-
-
-    <!-- =========================
-         HERO
-    ========================== -->
-
-    <header class="hero">
-
-
-      <div class="hero-badge">
-
-        ✦ مكتبة الأوامر والأكواد الذكية
-
-      </div>
-
-
-      <h1>
-
-        اختر مكتبتك
+        <strong>
+          مكتبة الأوامر والأكواد
+        </strong>
 
         <span>
-          وابدأ مباشرة
+          AI • Java • HTML
         </span>
 
-      </h1>
-
-
-      <p>
-
-        مجموعة متكاملة من أوامر الذكاء الاصطناعي
-        والأكواد البرمجية لتطوير التطبيقات
-        وإنشاء صفحات ومواقع الويب.
-
-      </p>
-
-
-
-      <div class="info-bar">
-
-
-        <div class="info-item">
-
-          🤖 ذكاء اصطناعي
-
-        </div>
-
-
-        <div class="info-item">
-
-          •
-
-        </div>
-
-
-        <div class="info-item">
-
-          ☕ Java
-
-        </div>
-
-
-        <div class="info-item">
-
-          •
-
-        </div>
-
-
-        <div class="info-item">
-
-          🌐 HTML
-
-        </div>
-
-
-        <div class="info-item">
-
-          •
-
-        </div>
-
-
-        <div class="info-item">
-
-          📱 تطوير تطبيقات
-
-        </div>
-
-
       </div>
 
-
-    </header>
-
+    </a>
 
 
-    <!-- =========================
-         STATS
-    ========================== -->
+    <div class="nav-badge">
 
-    <div class="stats-container">
+      <span>
+        ●
+      </span>
 
-
-      <div class="stat-card">
-
-
-        <div class="stat-icon">
-
-          📚
-
-        </div>
-
-
-        <div class="stat-content">
-
-
-          <span
-            class="stat-number"
-          >
-
-            4
-
-          </span>
-
-
-          <span
-            class="stat-label"
-          >
-
-            مكتبات رئيسية
-
-          </span>
-
-
-        </div>
-
-
-      </div>
-
-
-
-      <div class="stat-card">
-
-
-        <div class="stat-icon">
-
-          ⚡
-
-        </div>
-
-
-        <div class="stat-content">
-
-
-          <span
-            class="stat-number"
-          >
-
-            متاح
-
-          </span>
-
-
-          <span
-            class="stat-label"
-          >
-
-            حالة المكتبة
-
-          </span>
-
-
-        </div>
-
-
-      </div>
-
+      <span id="firebaseStatus">
+        جاري الاتصال
+      </span>
 
     </div>
 
+  </div>
+
+</nav>
 
 
-    <!-- =========================
-         الأقسام الرئيسية
-    ========================== -->
 
-    <main>
+<!-- ==========================================
+     HERO
+========================================== -->
+
+<header class="hero">
+
+  <div class="container">
+
+    <div class="hero-card">
+
+      <div class="hero-content">
+
+        <div class="hero-tag">
+          ✦ مكتبة برمجية متجددة
+        </div>
+
+        <h1>
+          اختر الكود الذي تحتاجه
+        </h1>
+
+        <p>
+
+          أوامر الذكاء الاصطناعي وأكواد Sketchware
+          وAndroid Studio وHTML في مكان واحد.
+
+          يتم جلب أقسام الأكواد مباشرة من Firebase،
+          لذلك أي قسم جديد تضيفه سيظهر هنا تلقائيًا.
+
+        </p>
 
 
-      <div class="glass-panel">
+        <div class="search-panel">
+
+          <div class="search-wrapper">
+
+            <span>
+              🔍
+            </span>
+
+            <input
+              type="search"
+              id="searchInput"
+              class="search-input"
+              placeholder="ابحث في أقسام Sketchware و Android Studio و HTML..."
+              autocomplete="off"
+            >
+
+          </div>
 
 
-        <div class="section-head">
+          <button
+            type="button"
+            class="refresh-btn"
+            onclick="loadAllLibraries()"
+          >
+            🔄 تحديث
+          </button>
 
+        </div>
+
+
+        <div class="stats">
+
+          <div class="stat">
+
+            الأقسام:
+
+            <strong id="totalSections">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            Sketchware:
+
+            <strong id="sketchwareCount">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            Android Studio:
+
+            <strong id="androidCount">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            HTML:
+
+            <strong id="htmlCount">
+              0
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+
+<!-- ==========================================
+     CONTENT
+========================================== -->
+
+<main class="content">
+
+  <div class="container">
+
+
+    <!-- ======================================
+         AI
+    ======================================= -->
+
+    <section
+      class="library-section"
+      id="aiSection"
+    >
+
+      <div class="section-header">
+
+        <div class="section-info">
 
           <h2>
-
-            الأقسام الرئيسية
-
+            🤖 أوامر الذكاء الاصطناعي
           </h2>
 
-
           <p>
-
-            اختر المجال الذي تريد الدخول إليه
-            للوصول إلى الأوامر والأكواد الخاصة به.
-
+            مكتبة الأوامر والبرومبتات الذكية.
           </p>
 
-
         </div>
-
-
-
-        <div class="main-options-grid">
-
-
-
-          <!-- ==================================
-               الذكاء الاصطناعي
-          =================================== -->
-
-          <article class="main-option-card">
-
-
-            <div class="option-icon">
-
-              🤖
-
-            </div>
-
-
-            <h3 class="option-title">
-
-              أوامر تطبيقات الذكاء الاصطناعي
-
-            </h3>
-
-
-            <div class="language-badge">
-
-              AI PROMPTS
-
-            </div>
-
-
-            <p class="option-desc">
-
-              مكتبة متكاملة تضم أوامر الذكاء الاصطناعي
-              للتصوير والتعليم والبرمجة والسيارات
-              والهندسة والحياة اليومية ومختلف المجالات.
-
-            </p>
-
-
-            <a
-              href="home.html"
-              class="option-button"
-            >
-
-              <span>
-
-                فتح مكتبة الأوامر
-
-              </span>
-
-
-              <span>
-
-                ←
-
-              </span>
-
-
-            </a>
-
-
-          </article>
-
-
-
-          <!-- ==================================
-               Sketchware
-          =================================== -->
-
-          <article class="main-option-card">
-
-
-            <div class="option-icon">
-
-              📱
-
-            </div>
-
-
-            <h3 class="option-title">
-
-              أكواد برمجية Java لتطبيق Sketchware
-
-            </h3>
-
-
-            <div class="language-badge">
-
-              JAVA • SKETCHWARE
-
-            </div>
-
-
-            <p class="option-desc">
-
-              مجموعة أكواد Java جاهزة للاستخدام
-              داخل Sketchware وSketchware Pro
-              لتطوير تطبيقات أندرويد وإضافة الخصائص
-              والوظائف المتقدمة.
-
-            </p>
-
-
-            <a
-              href="sketchware.html"
-              class="option-button"
-            >
-
-              <span>
-
-                فتح أكواد Sketchware
-
-              </span>
-
-
-              <span>
-
-                ←
-
-              </span>
-
-
-            </a>
-
-
-          </article>
-
-
-
-          <!-- ==================================
-               Android Studio
-          =================================== -->
-
-          <article class="main-option-card">
-
-
-            <div class="option-icon">
-
-              🤖
-
-            </div>
-
-
-            <h3 class="option-title">
-
-              أكواد برمجية Java لتطبيق Android Studio
-
-            </h3>
-
-
-            <div class="language-badge">
-
-              JAVA • ANDROID STUDIO
-
-            </div>
-
-
-            <p class="option-desc">
-
-              أكواد Java لتطوير تطبيقات أندرويد
-              باستخدام Android Studio تشمل الواجهات
-              وقواعد البيانات والشبكات والإشعارات
-              ومكونات التطبيقات.
-
-            </p>
-
-
-            <a
-              href="android-studio.html"
-              class="option-button"
-            >
-
-              <span>
-
-                فتح أكواد Android Studio
-
-              </span>
-
-
-              <span>
-
-                ←
-
-              </span>
-
-
-            </a>
-
-
-          </article>
-
-
-
-          <!-- ==================================
-               HTML
-          =================================== -->
-
-          <article class="main-option-card">
-
-
-            <div class="option-icon">
-
-              🌐
-
-            </div>
-
-
-            <h3 class="option-title">
-
-              أكواد برمجية HTML لبناء صفحات الويب
-
-            </h3>
-
-
-            <div class="language-badge">
-
-              HTML • CSS • JAVASCRIPT
-
-            </div>
-
-
-            <p class="option-desc">
-
-              مكتبة أكواد لإنشاء وتصميم صفحات الويب
-              باستخدام HTML وCSS وJavaScript
-              تشمل النماذج والواجهات والقوائم
-              والبطاقات والتصاميم الحديثة.
-
-            </p>
-
-
-            <a
-              href="html-codes.html"
-              class="option-button"
-            >
-
-              <span>
-
-                فتح أكواد HTML
-
-              </span>
-
-
-              <span>
-
-                ←
-
-              </span>
-
-
-            </a>
-
-
-          </article>
-
-
-        </div>
-
 
       </div>
 
 
-    </main>
+      <a
+        href="home.html"
+        class="ai-main-card"
+      >
+
+        <div class="ai-icon">
+          🤖
+        </div>
+
+
+        <div class="ai-content">
+
+          <h3>
+            مكتبة أوامر الذكاء الاصطناعي
+          </h3>
+
+          <p>
+
+            التصوير والتعليم والهندسة والسيارات
+            والبرمجة ومئات الأوامر المصنفة.
+
+          </p>
+
+        </div>
+
+
+        <div class="ai-open">
+          فتح المكتبة ←
+        </div>
+
+      </a>
+
+    </section>
+
+
+
+    <!-- ======================================
+         SKETCHWARE
+    ======================================= -->
+
+    <section
+      class="library-section"
+      id="sketchwareSection"
+    >
+
+      <div class="section-header">
+
+        <div class="section-info">
+
+          <h2>
+            📱 أكواد Sketchware
+          </h2>
+
+          <p>
+            أكواد Java جاهزة للاستخدام داخل Sketchware.
+          </p>
+
+        </div>
+
+
+        <span
+          class="section-count"
+          id="sketchwareSectionCount"
+        >
+          0
+        </span>
+
+      </div>
+
+
+      <div
+        class="cards-grid"
+        id="sketchwareGrid"
+      >
+
+        <div class="loading-box">
+          ⏳ جاري تحميل أقسام Sketchware...
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ======================================
+         ANDROID STUDIO
+    ======================================= -->
+
+    <section
+      class="library-section"
+      id="androidstudioSection"
+    >
+
+      <div class="section-header">
+
+        <div class="section-info">
+
+          <h2>
+            🤖 أكواد Android Studio
+          </h2>
+
+          <p>
+            أكواد Java وأدوات تطوير تطبيقات Android.
+          </p>
+
+        </div>
+
+
+        <span
+          class="section-count"
+          id="androidstudioSectionCount"
+        >
+          0
+        </span>
+
+      </div>
+
+
+      <div
+        class="cards-grid"
+        id="androidstudioGrid"
+      >
+
+        <div class="loading-box">
+          ⏳ جاري تحميل أقسام Android Studio...
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ======================================
+         HTML
+    ======================================= -->
+
+    <section
+      class="library-section"
+      id="htmlSection"
+    >
+
+      <div class="section-header">
+
+        <div class="section-info">
+
+          <h2>
+            🌐 أكواد HTML
+          </h2>
+
+          <p>
+            أكواد HTML وCSS وJavaScript لبناء صفحات الويب.
+          </p>
+
+        </div>
+
+
+        <span
+          class="section-count"
+          id="htmlSectionCount"
+        >
+          0
+        </span>
+
+      </div>
+
+
+      <div
+        class="cards-grid"
+        id="htmlGrid"
+      >
+
+        <div class="loading-box">
+          ⏳ جاري تحميل أقسام HTML...
+        </div>
+
+      </div>
+
+    </section>
 
 
   </div>
 
+</main>
 
 
-  <!-- =========================
-       FOOTER
-  ========================== -->
 
-  <footer class="site-footer">
+<!-- ==========================================
+     FOOTER
+========================================== -->
+
+<footer class="site-footer">
+
+  تمت برمجة هذا الموقع بواسطة
+
+  <strong>
+    علي المالكي (أبو نايف)
+  </strong>
+
+</footer>
 
 
-    جميع الحقوق محفوظة © 2026
+
+<script>
+
+/* ==========================================================
+   FIREBASE
+========================================================== */
+
+const FIREBASE_BASE =
+  "https://alnoaif-default-rtdb.firebaseio.com";
 
 
-    <strong>
 
-      مكتبة الأوامر والأكواد | علي المالكي
+/* ==========================================================
+   المكتبات
+========================================================== */
 
-    </strong>
+const CODE_LIBRARIES = {
+
+  sketchware: {
+
+    root:
+      "sketchware",
+
+    name:
+      "Sketchware",
+
+    icon:
+      "📱",
+
+    gridId:
+      "sketchwareGrid",
+
+    sectionId:
+      "sketchwareSection",
+
+    sectionCountId:
+      "sketchwareSectionCount",
+
+    statId:
+      "sketchwareCount",
+
+    defaultIcon:
+      "📱"
+
+  },
 
 
-  </footer>
+  androidstudio: {
 
+    root:
+      "androidstudio",
+
+    name:
+      "Android Studio",
+
+    icon:
+      "🤖",
+
+    gridId:
+      "androidstudioGrid",
+
+    sectionId:
+      "androidstudioSection",
+
+    sectionCountId:
+      "androidstudioSectionCount",
+
+    statId:
+      "androidCount",
+
+    defaultIcon:
+      "🤖"
+
+  },
+
+
+  html: {
+
+    root:
+      "html",
+
+    name:
+      "HTML",
+
+    icon:
+      "🌐",
+
+    gridId:
+      "htmlGrid",
+
+    sectionId:
+      "htmlSection",
+
+    sectionCountId:
+      "htmlSectionCount",
+
+    statId:
+      "htmlCount",
+
+    defaultIcon:
+      "🌐"
+
+  }
+
+};
+
+
+
+/* ==========================================================
+   جميع الأقسام
+========================================================== */
+
+let allSections = [];
+
+
+
+/* ==========================================================
+   Firebase URL
+========================================================== */
+
+function firebaseURL(path) {
+
+  const cleanPath =
+    String(path || "")
+    .trim()
+    .replace(
+      /^\/+|\/+$/g,
+      ""
+    );
+
+
+  if (!cleanPath) {
+
+    return (
+      FIREBASE_BASE +
+      "/.json"
+    );
+
+  }
+
+
+  const encoded =
+    cleanPath
+    .split("/")
+    .map(
+      part =>
+        encodeURIComponent(
+          part
+        )
+    )
+    .join("/");
+
+
+  return (
+    FIREBASE_BASE +
+    "/" +
+    encoded +
+    ".json"
+  );
+
+}
+
+
+
+/* ==========================================================
+   Escape
+========================================================== */
+
+function escapeHTML(value) {
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+
+/* ==========================================================
+   جلب مكتبة واحدة
+========================================================== */
+
+async function fetchCodeLibrary(
+  key
+) {
+
+  const config =
+    CODE_LIBRARIES[key];
+
+
+  /*
+    جلب المسارات الفعلية
+
+    مثال:
+    /sketchware
+  */
+
+  const pathsResponse =
+    await fetch(
+
+      firebaseURL(
+        config.root
+      )
+
+      +
+
+      "?shallow=true"
+
+    );
+
+
+  if (!pathsResponse.ok) {
+
+    throw new Error(
+      `تعذر جلب ${config.name}`
+    );
+
+  }
+
+
+  const pathsData =
+    await pathsResponse.json();
+
+
+  let paths =
+    pathsData
+    ? Object.keys(
+        pathsData
+      )
+    : [];
+
+
+  /*
+    لا نعرض __paths
+  */
+
+  paths =
+    paths.filter(
+      path =>
+        path !== "__paths"
+    );
+
+
+
+  /*
+    جلب Metadata
+
+    /sketchware/__paths
+  */
+
+  let metadata = {};
+
+
+  try {
+
+    const metaResponse =
+      await fetch(
+
+        firebaseURL(
+          config.root +
+          "/__paths"
+        )
+
+      );
+
+
+    if (
+      metaResponse.ok
+    ) {
+
+      metadata =
+        await metaResponse.json()
+        || {};
+
+    }
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+  }
+
+
+
+  /*
+    تحويل metadata إلى Map
+  */
+
+  const metaMap = {};
+
+
+  if (
+    metadata &&
+    typeof metadata === "object"
+  ) {
+
+    Object.values(
+      metadata
+    )
+    .forEach(
+      item => {
+
+
+        if (
+          item &&
+          typeof item === "object" &&
+          item.path
+        ) {
+
+          const cleanPath =
+            String(
+              item.path
+            )
+            .trim()
+            .replace(
+              /^\/+|\/+$/g,
+              ""
+            );
+
+
+          metaMap[
+            cleanPath
+          ] =
+            item;
+
+        }
+
+      }
+    );
+
+  }
+
+
+
+  /*
+    بناء الأقسام
+  */
+
+  const sections =
+    paths.map(
+      path => {
+
+
+        const meta =
+          metaMap[path] ||
+          {};
+
+
+        return {
+
+          root:
+            config.root,
+
+          library:
+            config.name,
+
+          libraryIcon:
+            config.icon,
+
+          path:
+            path,
+
+          name:
+            meta.nameAr ||
+            path,
+
+          icon:
+            meta.icon ||
+            config.defaultIcon,
+
+          desc:
+            meta.desc ||
+            meta.description ||
+            getDefaultDescription(
+              config.root,
+              path,
+              meta.nameAr
+            )
+
+        };
+
+      }
+    );
+
+
+  /*
+    ترتيب عربي
+  */
+
+  sections.sort(
+    (a,b) =>
+
+      a.name.localeCompare(
+        b.name,
+        "ar"
+      )
+
+  );
+
+
+  return sections;
+
+}
+
+
+
+/* ==========================================================
+   وصف افتراضي
+========================================================== */
+
+function getDefaultDescription(
+  root,
+  path,
+  name
+) {
+
+  if (name) {
+
+    if (
+      root === "sketchware"
+    ) {
+
+      return (
+        "مجموعة أكواد " +
+        name +
+        " الجاهزة للاستخدام في Sketchware."
+      );
+
+    }
+
+
+    if (
+      root === "androidstudio"
+    ) {
+
+      return (
+        "مجموعة أكواد " +
+        name +
+        " لتطوير تطبيقات Android."
+      );
+
+    }
+
+
+    if (
+      root === "html"
+    ) {
+
+      return (
+        "مجموعة أكواد " +
+        name +
+        " لتطوير صفحات الويب."
+      );
+
+    }
+
+  }
+
+
+  return (
+    "مجموعة أكواد برمجية جاهزة للنسخ والاستخدام."
+  );
+
+}
+
+
+
+/* ==========================================================
+   تحميل جميع المكتبات
+========================================================== */
+
+async function loadAllLibraries() {
+
+  document
+  .getElementById(
+    "firebaseStatus"
+  )
+  .textContent =
+    "جاري التحديث";
+
+
+  allSections = [];
+
+
+  /*
+    Loading
+  */
+
+  Object.values(
+    CODE_LIBRARIES
+  )
+  .forEach(
+    config => {
+
+      document
+      .getElementById(
+        config.gridId
+      )
+      .innerHTML = `
+
+        <div class="loading-box">
+
+          ⏳ جاري تحميل
+          ${escapeHTML(
+            config.name
+          )}...
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  const keys =
+    Object.keys(
+      CODE_LIBRARIES
+    );
+
+
+  /*
+    Promise.allSettled
+    حتى لو مكتبة واحدة فيها خطأ
+    باقي المكتبات تعمل.
+  */
+
+  const results =
+    await Promise.allSettled(
+
+      keys.map(
+        key =>
+          fetchCodeLibrary(
+            key
+          )
+      )
+
+    );
+
+
+  results.forEach(
+    (result,index) => {
+
+
+      const key =
+        keys[index];
+
+
+      const config =
+        CODE_LIBRARIES[key];
+
+
+      if (
+        result.status ===
+        "fulfilled"
+      ) {
+
+        const sections =
+          result.value;
+
+
+        allSections.push(
+          ...sections
+        );
+
+
+        renderLibrary(
+          key,
+          sections
+        );
+
+      }
+
+      else {
+
+        console.error(
+          result.reason
+        );
+
+
+        const grid =
+          document.getElementById(
+            config.gridId
+          );
+
+
+        grid.innerHTML = `
+
+          <div class="error-box">
+
+            ❌ تعذر تحميل
+            ${escapeHTML(
+              config.name
+            )}
+
+          </div>
+
+        `;
+
+
+        document
+        .getElementById(
+          config.sectionCountId
+        )
+        .textContent =
+          "0";
+
+
+        document
+        .getElementById(
+          config.statId
+        )
+        .textContent =
+          "0";
+
+      }
+
+    }
+  );
+
+
+  updateTotalStats();
+
+
+  document
+  .getElementById(
+    "firebaseStatus"
+  )
+  .textContent =
+    "متصل";
+
+}
+
+
+
+/* ==========================================================
+   رسم مكتبة
+========================================================== */
+
+function renderLibrary(
+  key,
+  sections
+) {
+
+  const config =
+    CODE_LIBRARIES[key];
+
+
+  const grid =
+    document.getElementById(
+      config.gridId
+    );
+
+
+  const section =
+    document.getElementById(
+      config.sectionId
+    );
+
+
+  grid.innerHTML =
+    "";
+
+
+  document
+  .getElementById(
+    config.sectionCountId
+  )
+  .textContent =
+    sections.length;
+
+
+  document
+  .getElementById(
+    config.statId
+  )
+  .textContent =
+    sections.length;
+
+
+
+  /*
+    إذا المكتبة فارغة نخفيها
+    أو يمكن إظهار رسالة فارغة.
+    هنا نخفيها حتى تظهر فقط
+    عند إضافة قسم في Firebase.
+  */
+
+  if (
+    sections.length === 0
+  ) {
+
+    section.style.display =
+      "none";
+
+    return;
+
+  }
+
+
+  section.style.display =
+    "";
+
+
+  sections.forEach(
+    item => {
+
+
+      const card =
+        document.createElement(
+          "a"
+        );
+
+
+      /*
+        أهم جزء:
+
+        لا توجد صفحة sketchware.html
+
+        يفتح مباشرة:
+
+        library.html
+        ?root=sketchware
+        &path=textview
+      */
+
+      card.href =
+
+        "library.html" +
+
+        "?root=" +
+
+        encodeURIComponent(
+          item.root
+        )
+
+        +
+
+        "&path=" +
+
+        encodeURIComponent(
+          item.path
+        );
+
+
+      card.className =
+        "category-card";
+
+
+      card.dataset.search =
+
+        (
+          item.name +
+          " " +
+          item.path +
+          " " +
+          item.desc +
+          " " +
+          item.library
+        )
+        .toLowerCase();
+
+
+      card.dataset.root =
+        item.root;
+
+
+      card.innerHTML = `
+
+        <div class="library-label">
+
+          ${escapeHTML(
+            item.libraryIcon
+          )}
+
+          ${escapeHTML(
+            item.library
+          )}
+
+        </div>
+
+
+        <div class="category-icon">
+
+          ${escapeHTML(
+            item.icon
+          )}
+
+        </div>
+
+
+        <div class="category-title">
+
+          ${escapeHTML(
+            item.name
+          )}
+
+        </div>
+
+
+        <div class="category-desc">
+
+          ${escapeHTML(
+            item.desc
+          )}
+
+        </div>
+
+
+        <div class="card-footer">
+
+          <span class="card-path">
+
+            /${escapeHTML(
+              item.root
+            )}/${escapeHTML(
+              item.path
+            )}
+
+          </span>
+
+
+          <span class="card-open">
+
+            عرض الأكواد ←
+
+          </span>
+
+        </div>
+
+      `;
+
+
+      grid.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+
+/* ==========================================================
+   TOTAL STATS
+========================================================== */
+
+function updateTotalStats() {
+
+  document
+  .getElementById(
+    "totalSections"
+  )
+  .textContent =
+    allSections.length;
+
+}
+
+
+
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+document
+.getElementById(
+  "searchInput"
+)
+.addEventListener(
+  "input",
+  function() {
+
+
+    const query =
+      this.value
+      .trim()
+      .toLowerCase();
+
+
+    /*
+      بطاقات الأكواد فقط
+      AI يبقى ظاهر
+    */
+
+    document
+    .querySelectorAll(
+      ".category-card"
+    )
+    .forEach(
+      card => {
+
+
+        const text =
+          card.dataset.search ||
+          "";
+
+
+        card.style.display =
+
+          !query ||
+          text.includes(
+            query
+          )
+
+          ? ""
+
+          : "none";
+
+      }
+    );
+
+
+
+    /*
+      إذا لا توجد نتائج في مكتبة
+      نخفي القسم أثناء البحث
+    */
+
+    Object.values(
+      CODE_LIBRARIES
+    )
+    .forEach(
+      config => {
+
+
+        const section =
+          document.getElementById(
+            config.sectionId
+          );
+
+
+        const cards =
+          [
+            ...document
+            .getElementById(
+              config.gridId
+            )
+            .querySelectorAll(
+              ".category-card"
+            )
+          ];
+
+
+        /*
+          لو المكتبة أصلًا فارغة
+        */
+
+        if (
+          cards.length === 0
+        ) {
+
+          section.style.display =
+            "none";
+
+          return;
+
+        }
+
+
+        const hasVisible =
+          cards.some(
+            card =>
+              card.style.display !==
+              "none"
+          );
+
+
+        section.style.display =
+
+          hasVisible
+          ? ""
+          : "none";
+
+      }
+    );
+
+  }
+);
+
+
+
+/* ==========================================================
+   START
+========================================================== */
+
+window.addEventListener(
+  "DOMContentLoaded",
+  loadAllLibraries
+);
+
+</script>
 
 </body>
-
 </html> 
