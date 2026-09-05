@@ -1,1 +1,1695 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>مكتبة أكواد Sketchware</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+
+    --bg:#08111f;
+
+    --bg2:#0b1727;
+
+    --card:#101d30;
+
+    --card2:#14243b;
+
+    --border:#263b59;
+
+    --blue:#3387ff;
+
+    --green:#22c55e;
+
+    --purple:#8b5cf6;
+
+    --cyan:#06b6d4;
+
+    --text:#f8fafc;
+
+    --muted:#94a3b8;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    min-height:100vh;
+
+    font-family:"Cairo",sans-serif;
+
+    color:var(--text);
+
+    background:
+
+        radial-gradient(
+            circle at top right,
+            rgba(51,135,255,.18),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at bottom left,
+            rgba(139,92,246,.13),
+            transparent 30%
+        ),
+
+        var(--bg);
+}
+
+
+/* ===================================
+   CONTAINER
+=================================== */
+
+.container{
+
+    width:min(
+        1180px,
+        calc(100% - 32px)
+    );
+
+    margin:auto;
+}
+
+
+/* ===================================
+   NAV
+=================================== */
+
+.navbar{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    background:
+        rgba(8,17,31,.86);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    border-bottom:
+        1px solid rgba(38,59,89,.8);
+}
+
+.nav-inner{
+
+    min-height:74px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+}
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    color:#fff;
+
+    text-decoration:none;
+}
+
+.brand-icon{
+
+    width:44px;
+
+    height:44px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:13px;
+
+    font-size:23px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #3387ff,
+            #7c3aed
+        );
+
+    box-shadow:
+        0 8px 30px
+        rgba(51,135,255,.25);
+}
+
+.brand-text strong{
+
+    display:block;
+
+    font-size:16px;
+}
+
+.brand-text span{
+
+    display:block;
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    direction:ltr;
+
+    text-align:right;
+}
+
+.back-btn{
+
+    text-decoration:none;
+
+    color:#dbeafe;
+
+    border:
+        1px solid var(--border);
+
+    background:#0d1a2c;
+
+    border-radius:11px;
+
+    padding:9px 14px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    transition:.2s;
+}
+
+.back-btn:hover{
+
+    border-color:var(--blue);
+
+    background:#14243b;
+}
+
+
+/* ===================================
+   HERO
+=================================== */
+
+.hero{
+
+    padding:
+        55px 0
+        30px;
+}
+
+.hero-box{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:
+        34px 30px;
+
+    border-radius:26px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(51,135,255,.12),
+            rgba(139,92,246,.08)
+        ),
+
+        rgba(16,29,48,.84);
+
+    box-shadow:
+        0 25px 70px
+        rgba(0,0,0,.18);
+}
+
+.hero-box::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+
+    height:220px;
+
+    border-radius:50%;
+
+    background:
+        rgba(51,135,255,.16);
+
+    filter:blur(20px);
+
+    left:-80px;
+
+    top:-110px;
+}
+
+.hero-content{
+
+    position:relative;
+
+    z-index:2;
+}
+
+.hero-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    padding:
+        7px 12px;
+
+    border-radius:100px;
+
+    background:
+        rgba(34,197,94,.11);
+
+    border:
+        1px solid rgba(34,197,94,.25);
+
+    color:#86efac;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+}
+
+.hero h1{
+
+    font-size:
+        clamp(
+            28px,
+            6vw,
+            46px
+        );
+
+    line-height:1.35;
+
+    font-weight:800;
+
+    margin-bottom:12px;
+}
+
+.hero p{
+
+    max-width:720px;
+
+    color:#b6c2d2;
+
+    line-height:2;
+
+    font-size:15px;
+}
+
+
+/* ===================================
+   TOOLBAR
+=================================== */
+
+.toolbar{
+
+    margin-top:22px;
+
+    display:grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    gap:12px;
+
+    align-items:center;
+}
+
+.search-box{
+
+    position:relative;
+}
+
+.search-box input{
+
+    width:100%;
+
+    padding:
+        14px 48px
+        14px 15px;
+
+    border-radius:14px;
+
+    border:
+        1px solid var(--border);
+
+    background:#081525;
+
+    color:#fff;
+
+    outline:none;
+
+    font-family:"Cairo",sans-serif;
+
+    font-size:14px;
+}
+
+.search-box input:focus{
+
+    border-color:var(--blue);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(51,135,255,.12);
+}
+
+.search-icon{
+
+    position:absolute;
+
+    right:16px;
+
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    pointer-events:none;
+}
+
+.refresh-btn{
+
+    height:48px;
+
+    padding:
+        0 18px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    background:
+        var(--blue);
+
+    color:#fff;
+
+    font-family:"Cairo",sans-serif;
+
+    font-weight:700;
+}
+
+
+/* ===================================
+   STATS
+=================================== */
+
+.stats{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:18px;
+}
+
+.stat{
+
+    border:
+        1px solid var(--border);
+
+    background:
+        rgba(8,21,37,.75);
+
+    padding:
+        8px 13px;
+
+    border-radius:10px;
+
+    color:#b7c5d8;
+
+    font-size:12px;
+}
+
+.stat strong{
+
+    color:#fff;
+}
+
+
+/* ===================================
+   SECTION
+=================================== */
+
+.section{
+
+    padding:
+        15px 0
+        70px;
+}
+
+.section-title{
+
+    margin-bottom:18px;
+}
+
+.section-title h2{
+
+    font-size:22px;
+
+    font-weight:800;
+
+    margin-bottom:4px;
+}
+
+.section-title p{
+
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+
+/* ===================================
+   GRID
+=================================== */
+
+.categories-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0,1fr)
+        );
+
+    gap:16px;
+}
+
+
+/* ===================================
+   CATEGORY CARD
+=================================== */
+
+.category-card{
+
+    position:relative;
+
+    text-decoration:none;
+
+    color:inherit;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:210px;
+
+    overflow:hidden;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:19px;
+
+    padding:20px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(20,36,59,.96),
+            rgba(11,24,41,.96)
+        );
+
+    transition:
+        .25s ease;
+
+    box-shadow:
+        0 15px 35px
+        rgba(0,0,0,.12);
+}
+
+.category-card:hover{
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(51,135,255,.7);
+
+    box-shadow:
+        0 22px 50px
+        rgba(0,0,0,.22);
+}
+
+.category-icon{
+
+    width:54px;
+
+    height:54px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:16px;
+
+    font-size:27px;
+
+    margin-bottom:15px;
+
+    background:
+        rgba(51,135,255,.12);
+
+    border:
+        1px solid rgba(51,135,255,.17);
+}
+
+.category-title{
+
+    font-size:17px;
+
+    font-weight:800;
+
+    margin-bottom:8px;
+}
+
+.category-desc{
+
+    color:#9eacc0;
+
+    font-size:13px;
+
+    line-height:1.8;
+
+    margin-bottom:15px;
+
+    flex:1;
+}
+
+.category-footer{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding-top:13px;
+
+    border-top:
+        1px solid rgba(38,59,89,.7);
+}
+
+.category-path{
+
+    direction:ltr;
+
+    font-family:"Fira Code",monospace;
+
+    font-size:11px;
+
+    color:#7cb7ff;
+}
+
+.open-text{
+
+    color:#dbeafe;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+
+/* ===================================
+   LOADING
+=================================== */
+
+.loading,
+.empty,
+.error-box{
+
+    grid-column:1/-1;
+
+    text-align:center;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        rgba(16,29,48,.75);
+
+    border-radius:18px;
+
+    padding:
+        45px 20px;
+
+    color:var(--muted);
+}
+
+.loading-icon{
+
+    font-size:35px;
+
+    margin-bottom:10px;
+}
+
+.error-box{
+
+    color:#fda4af;
+
+    border-color:
+        rgba(239,68,68,.3);
+}
+
+
+/* ===================================
+   FOOTER
+=================================== */
+
+.footer{
+
+    border-top:
+        1px solid var(--border);
+
+    color:#718096;
+
+    font-size:12px;
+
+    padding:
+        25px 0;
+
+    text-align:center;
+}
+
+
+/* ===================================
+   MOBILE
+=================================== */
+
+@media(
+    max-width:900px
+){
+
+    .categories-grid{
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0,1fr)
+            );
+    }
+}
+
+@media(
+    max-width:600px
+){
+
+    .container{
+
+        width:
+            min(
+                100% - 22px,
+                1180px
+            );
+    }
+
+    .navbar{
+
+        position:relative;
+    }
+
+    .nav-inner{
+
+        min-height:65px;
+    }
+
+    .brand-text span{
+
+        display:none;
+    }
+
+    .hero{
+
+        padding-top:28px;
+    }
+
+    .hero-box{
+
+        padding:
+            25px 19px;
+
+        border-radius:20px;
+    }
+
+    .hero p{
+
+        font-size:13px;
+    }
+
+    .toolbar{
+
+        grid-template-columns:1fr;
+    }
+
+    .refresh-btn{
+
+        width:100%;
+    }
+
+    .categories-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .category-card{
+
+        min-height:185px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ===================================
+     NAVBAR
+=================================== -->
+
+<nav class="navbar">
+
+    <div class="container nav-inner">
+
+        <a
+            href="index.html"
+            class="brand"
+        >
+
+            <div class="brand-icon">
+                📱
+            </div>
+
+            <div class="brand-text">
+
+                <strong>
+                    أكواد Sketchware
+                </strong>
+
+                <span>
+                    Java Code Library
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="index.html"
+            class="back-btn"
+        >
+            ← الرئيسية
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ===================================
+     HERO
+=================================== -->
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="hero-box">
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+                    ● مكتبة أكواد برمجية
+                </div>
+
+                <h1>
+                    أكواد Sketchware
+                </h1>
+
+                <p>
+                    اختر القسم المطلوب لعرض الأكواد البرمجية
+                    الخاصة بتطبيق Sketchware ونسخ الكود مباشرة.
+                </p>
+
+
+                <div class="toolbar">
+
+                    <div class="search-box">
+
+                        <span class="search-icon">
+                            🔍
+                        </span>
+
+                        <input
+                            type="search"
+                            id="searchInput"
+                            placeholder="ابحث عن قسم..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="refresh-btn"
+                        onclick="loadCategories()"
+                    >
+                        🔄 تحديث
+                    </button>
+
+                </div>
+
+
+                <div class="stats">
+
+                    <div class="stat">
+                        الأقسام:
+                        <strong id="categoryCount">
+                            0
+                        </strong>
+                    </div>
+
+                    <div class="stat">
+                        المكتبة:
+                        <strong>
+                            Sketchware
+                        </strong>
+                    </div>
+
+                    <div class="stat">
+                        الحالة:
+                        <strong id="firebaseStatus">
+                            اتصال...
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ===================================
+     CATEGORIES
+=================================== -->
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>
+                الأقسام
+            </h2>
+
+            <p>
+                اختر القسم الذي تريد عرض أكواده
+            </p>
+
+        </div>
+
+
+        <div
+            class="categories-grid"
+            id="categoriesGrid"
+        >
+
+            <div class="loading">
+
+                <div class="loading-icon">
+                    ⏳
+                </div>
+
+                جاري جلب أقسام Sketchware...
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<footer class="footer">
+
+    <div class="container">
+        مكتبة الأوامر والأكواد | علي المالكي
+    </div>
+
+</footer>
+
+
+
+<script>
+
+/* ===================================
+   FIREBASE
+=================================== */
+
+const FIREBASE_URL =
+    "https://alnoaif-default-rtdb.firebaseio.com";
+
+
+/*
+    المسار الخاص بمكتبة Sketchware
+*/
+
+const LIBRARY_ROOT =
+    "sketchware";
+
+
+/*
+    بيانات الأقسام محفوظة هنا:
+
+    /sketchware/__paths
+*/
+
+const META_PATH =
+    LIBRARY_ROOT +
+    "/__paths";
+
+
+let allCategories = [];
+
+
+
+/* ===================================
+   FIREBASE URL
+=================================== */
+
+function firebaseURL(path){
+
+    path =
+        String(path || "")
+        .replace(
+            /^\/+|\/+$/g,
+            ""
+        );
+
+
+    const encoded =
+        path
+        .split("/")
+        .map(
+            part =>
+                encodeURIComponent(
+                    part
+                )
+        )
+        .join("/");
+
+
+    return (
+        FIREBASE_URL +
+        "/" +
+        encoded +
+        ".json"
+    );
+}
+
+
+
+/* ===================================
+   LOAD CATEGORIES
+=================================== */
+
+async function loadCategories(){
+
+    const grid =
+        document.getElementById(
+            "categoriesGrid"
+        );
+
+
+    const status =
+        document.getElementById(
+            "firebaseStatus"
+        );
+
+
+    grid.innerHTML = `
+
+        <div class="loading">
+
+            <div class="loading-icon">
+                ⏳
+            </div>
+
+            جاري جلب أقسام Sketchware...
+
+        </div>
+
+    `;
+
+
+    status.textContent =
+        "جاري الاتصال";
+
+
+    try{
+
+
+        /*
+            أولًا:
+            جلب Metadata
+        */
+
+        const metaResponse =
+            await fetch(
+                firebaseURL(
+                    META_PATH
+                )
+            );
+
+
+        if(!metaResponse.ok){
+
+            throw new Error(
+                "تعذر جلب بيانات الأقسام"
+            );
+        }
+
+
+        const metadata =
+            await metaResponse.json();
+
+
+        /*
+            ثانيًا:
+            جلب المسارات الموجودة فعليًا
+        */
+
+        const pathsResponse =
+            await fetch(
+                firebaseURL(
+                    LIBRARY_ROOT
+                ) +
+                "?shallow=true"
+            );
+
+
+        if(!pathsResponse.ok){
+
+            throw new Error(
+                "تعذر جلب مسارات المكتبة"
+            );
+        }
+
+
+        const pathsData =
+            await pathsResponse.json();
+
+
+        let paths =
+            pathsData
+            ? Object.keys(pathsData)
+            : [];
+
+
+        paths =
+            paths.filter(
+                path =>
+                    path !== "__paths"
+            );
+
+
+        /*
+            تحويل Metadata إلى Map
+        */
+
+        const metadataMap = {};
+
+
+        if(
+            metadata &&
+            typeof metadata === "object"
+        ){
+
+            Object.values(
+                metadata
+            )
+            .forEach(
+                item=>{
+
+
+                    if(
+                        item &&
+                        typeof item === "object" &&
+                        item.path
+                    ){
+
+                        metadataMap[
+                            item.path
+                        ] =
+                            item;
+                    }
+
+                }
+            );
+        }
+
+
+        /*
+            تكوين الأقسام
+        */
+
+        allCategories =
+            paths.map(
+                path=>{
+
+
+                    const meta =
+                        metadataMap[
+                            path
+                        ] || {};
+
+
+                    return {
+
+                        path:path,
+
+                        name:
+                            meta.nameAr ||
+                            path,
+
+                        icon:
+                            meta.icon ||
+                            "📂",
+
+                        desc:
+                            meta.desc ||
+                            meta.description ||
+                            getDefaultDescription(
+                                path,
+                                meta.nameAr
+                            )
+
+                    };
+
+                }
+            );
+
+
+        /*
+            الترتيب
+        */
+
+        allCategories.sort(
+            (a,b)=>
+
+                a.name
+                .localeCompare(
+                    b.name,
+                    "ar"
+                )
+
+        );
+
+
+        status.textContent =
+            "متصل";
+
+
+        renderCategories(
+            allCategories
+        );
+
+
+    }catch(error){
+
+
+        console.error(
+            error
+        );
+
+
+        status.textContent =
+            "خطأ";
+
+
+        grid.innerHTML = `
+
+            <div class="error-box">
+
+                ❌ تعذر تحميل أقسام Sketchware
+
+                <br><br>
+
+                ${escapeHTML(
+                    error.message
+                )}
+
+            </div>
+
+        `;
+
+    }
+}
+
+
+
+/* ===================================
+   DEFAULT DESCRIPTION
+=================================== */
+
+function getDefaultDescription(
+    path,
+    name
+){
+
+    if(name){
+
+        return (
+            "مجموعة أكواد " +
+            name +
+            " لتطبيق Sketchware."
+        );
+    }
+
+
+    const descriptions = {
+
+        textview:
+            "أكواد TextView والتأثيرات وتنسيق النصوص.",
+
+        edittext:
+            "أكواد EditText وحقول الإدخال.",
+
+        button:
+            "أكواد الأزرار والتأثيرات والأحداث.",
+
+        imageview:
+            "أكواد ImageView والصور.",
+
+        firebase:
+            "أكواد Firebase للقراءة والحفظ والتعديل والحذف.",
+
+        intent:
+            "أكواد Intent والتنقل بين الصفحات والتطبيقات.",
+
+        intents:
+            "أكواد Intent والتنقل بين الصفحات والتطبيقات.",
+
+        animation:
+            "أكواد الحركة والتأثيرات البصرية.",
+
+        animations:
+            "أكواد الحركة والتأثيرات البصرية.",
+
+        dialog:
+            "أكواد النوافذ والحوارات.",
+
+        dialogs:
+            "أكواد النوافذ والحوارات.",
+
+        listview:
+            "أكواد ListView والقوائم.",
+
+        recyclerview:
+            "أكواد RecyclerView والقوائم المتقدمة.",
+
+        webview:
+            "أكواد WebView وعرض صفحات الويب.",
+
+        toast:
+            "أكواد رسائل Toast والتنبيهات.",
+
+        sharedpreferences:
+            "أكواد حفظ البيانات المحلية.",
+
+        customviews:
+            "أكواد وتخصيص الواجهات والعناصر.",
+
+        components:
+            "أكواد المكونات المختلفة في Sketchware."
+
+    };
+
+
+    return (
+        descriptions[
+            String(path)
+            .toLowerCase()
+        ]
+        ||
+        "مجموعة أكواد برمجية جاهزة للاستخدام في Sketchware."
+    );
+}
+
+
+
+/* ===================================
+   RENDER
+=================================== */
+
+function renderCategories(
+    categories
+){
+
+    const grid =
+        document.getElementById(
+            "categoriesGrid"
+        );
+
+
+    const count =
+        document.getElementById(
+            "categoryCount"
+        );
+
+
+    count.textContent =
+        categories.length;
+
+
+    grid.innerHTML =
+        "";
+
+
+    if(
+        categories.length === 0
+    ){
+
+        grid.innerHTML = `
+
+            <div class="empty">
+
+                📂
+
+                <br><br>
+
+                لا توجد أقسام حاليًا.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    categories.forEach(
+        item=>{
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            /*
+                عند الضغط:
+
+                library.html
+                ?root=sketchware
+                &path=textview
+            */
+
+            link.href =
+
+                "library.html" +
+
+                "?root=" +
+
+                encodeURIComponent(
+                    LIBRARY_ROOT
+                ) +
+
+                "&path=" +
+
+                encodeURIComponent(
+                    item.path
+                );
+
+
+            link.className =
+                "category-card";
+
+
+            link.dataset.search =
+
+                (
+                    item.name +
+                    " " +
+                    item.path +
+                    " " +
+                    item.desc
+                )
+                .toLowerCase();
+
+
+            link.innerHTML = `
+
+                <div class="category-icon">
+
+                    ${escapeHTML(
+                        item.icon
+                    )}
+
+                </div>
+
+
+                <div class="category-title">
+
+                    ${escapeHTML(
+                        item.name
+                    )}
+
+                </div>
+
+
+                <div class="category-desc">
+
+                    ${escapeHTML(
+                        item.desc
+                    )}
+
+                </div>
+
+
+                <div class="category-footer">
+
+                    <span class="category-path">
+
+                        /${escapeHTML(
+                            item.path
+                        )}
+
+                    </span>
+
+
+                    <span class="open-text">
+
+                        عرض الأكواد ←
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(
+                link
+            );
+
+        }
+    );
+}
+
+
+
+/* ===================================
+   SEARCH
+=================================== */
+
+document
+.getElementById(
+    "searchInput"
+)
+.addEventListener(
+    "input",
+    function(){
+
+
+        const query =
+            this.value
+            .trim()
+            .toLowerCase();
+
+
+        if(!query){
+
+            renderCategories(
+                allCategories
+            );
+
+            return;
+        }
+
+
+        const filtered =
+            allCategories.filter(
+                item=>{
+
+
+                    const search =
+                        (
+                            item.name +
+                            " " +
+                            item.path +
+                            " " +
+                            item.desc
+                        )
+                        .toLowerCase();
+
+
+                    return search.includes(
+                        query
+                    );
+
+                }
+            );
+
+
+        renderCategories(
+            filtered
+        );
+
+    }
+);
+
+
+
+/* ===================================
+   ESCAPE
+=================================== */
+
+function escapeHTML(
+    value
+){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+}
+
+
+
+/* ===================================
+   START
+=================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    loadCategories
+);
+
+</script>
+
+</body>
+</html>
