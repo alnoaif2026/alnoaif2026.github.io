@@ -32,9 +32,9 @@
 <body>
 
 
-<!-- ================================
+<!-- =========================================
      NAVBAR
-================================ -->
+========================================= -->
 
 <nav class="site-nav">
 
@@ -85,9 +85,9 @@
 
 
 
-<!-- ================================
+<!-- =========================================
      HERO
-================================ -->
+========================================= -->
 
 <header class="hero">
 
@@ -99,9 +99,11 @@
                 ✦ مكتبة متجددة من Firebase
             </div>
 
+
             <h1>
                 مكتبة الأوامر والأكواد
             </h1>
+
 
             <p>
 
@@ -115,6 +117,7 @@
 
 
             <div class="search-area">
+
 
                 <div class="search-box">
 
@@ -145,6 +148,7 @@
 
             <div class="hero-stats">
 
+
                 <div class="hero-stat">
 
                     <strong id="librariesCount">
@@ -170,6 +174,7 @@
 
                 </div>
 
+
             </div>
 
         </div>
@@ -180,18 +185,18 @@
 
 
 
-<!-- ================================
+<!-- =========================================
      MAIN
-================================ -->
+========================================= -->
 
 <main class="main-content">
 
     <div class="container">
 
 
-        <!-- ==========================
-             AI
-        =========================== -->
+        <!-- =================================
+             AI LIBRARY
+        ================================== -->
 
         <section
             class="main-library-section"
@@ -221,7 +226,11 @@
                 id="aiLibraryCard"
             >
 
-                <div class="ai-icon">
+
+                <div
+                    class="ai-icon"
+                    id="aiLibraryIcon"
+                >
                     🤖
                 </div>
 
@@ -232,12 +241,17 @@
                         أوامر AI
                     </div>
 
+
                     <h3 id="aiLibraryName">
                         أوامر الذكاء الاصطناعي
                     </h3>
 
-                    <p>
-                        افتح مكتبة الذكاء الاصطناعي لعرض جميع المسارات والأوامر المصنفة.
+
+                    <p id="aiLibraryDescription">
+
+                        افتح مكتبة الذكاء الاصطناعي
+                        لعرض جميع المسارات والأوامر المصنفة.
+
                     </p>
 
                 </div>
@@ -253,9 +267,9 @@
 
 
 
-        <!-- ==========================
-             DYNAMIC LIBRARIES
-        =========================== -->
+        <!-- =================================
+             CODE LIBRARIES
+        ================================== -->
 
         <section class="libraries-area">
 
@@ -268,7 +282,7 @@
                     </h2>
 
                     <p>
-                        المكتبات والأقسام المضافة من Firebase.
+                        المكتبات والأقسام المضافة مباشرة من Firebase.
                     </p>
 
                 </div>
@@ -292,9 +306,10 @@
         </section>
 
 
-        <!-- ==========================
-             EMPTY SEARCH
-        =========================== -->
+
+        <!-- =================================
+             NO RESULTS
+        ================================== -->
 
         <div
             id="noResults"
@@ -312,15 +327,17 @@
 
 
 
-<!-- ================================
+<!-- =========================================
      FOOTER
-================================ -->
+========================================= -->
 
 <footer class="site-footer">
 
     مكتبة الأوامر والأكواد
 
-    <span>•</span>
+    <span>
+        •
+    </span>
 
     <strong>
         علي المالكي
@@ -332,12 +349,13 @@
 
 <script>
 
-/* =========================================
+/* =========================================================
    FIREBASE
-========================================= */
+========================================================= */
 
 const FIREBASE_URL =
     "https://alnoaif-default-rtdb.firebaseio.com";
+
 
 const LIBRARIES_META_ROOT =
     "__libraries";
@@ -348,16 +366,98 @@ let libraries = {};
 let allSearchItems = [];
 
 
-/* =========================================
-   FIREBASE URL
-========================================= */
 
-function firebasePath(path = ""){
+/* =========================================================
+   DEFAULT LIBRARIES
+========================================================= */
+
+/*
+    نستخدمها كاحتياط إذا لم تكن
+    __libraries موجودة أو كانت بعض
+    المكتبات القديمة غير مسجلة فيها.
+*/
+
+const DEFAULT_LIBRARIES = {
+
+    ai:{
+
+        key:"ai",
+
+        nameAr:
+            "أوامر الذكاء الاصطناعي",
+
+        icon:"🤖",
+
+        type:"commands",
+
+        legacyRoot:true
+
+    },
+
+
+    sketchware:{
+
+        key:"sketchware",
+
+        nameAr:
+            "أكواد Sketchware",
+
+        icon:"📱",
+
+        type:"codes"
+
+    },
+
+
+    androidstudio:{
+
+        key:"androidstudio",
+
+        nameAr:
+            "أكواد Android Studio",
+
+        icon:"🤖",
+
+        type:"codes"
+
+    },
+
+
+    html:{
+
+        key:"html",
+
+        nameAr:
+            "أكواد HTML",
+
+        icon:"🌐",
+
+        type:"codes"
+
+    }
+
+};
+
+
+
+/* =========================================================
+   FIREBASE PATH
+========================================================= */
+
+function firebasePath(
+    path = ""
+){
 
     path =
-        String(path || "")
+        String(
+            path || ""
+        )
         .trim()
-        .replace(/^\/+|\/+$/g,"");
+        .replace(
+            /^\/+|\/+$/g,
+            ""
+        );
+
 
     if(!path){
 
@@ -367,14 +467,18 @@ function firebasePath(path = ""){
         );
     }
 
+
     const encoded =
         path
         .split("/")
         .map(
             part =>
-                encodeURIComponent(part)
+                encodeURIComponent(
+                    part
+                )
         )
         .join("/");
+
 
     return (
         FIREBASE_URL +
@@ -385,51 +489,81 @@ function firebasePath(path = ""){
 }
 
 
-/* =========================================
-   ESCAPE
-========================================= */
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
 function escapeHTML(value){
 
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 }
 
 
-/* =========================================
-   STATUS
-========================================= */
 
-function setStatus(type,text){
+/* =========================================================
+   STATUS
+========================================================= */
+
+function setStatus(
+    type,
+    text
+){
 
     const dot =
         document.getElementById(
             "statusDot"
         );
 
+
     const status =
         document.getElementById(
             "firebaseStatus"
         );
 
+
     dot.className =
         "status-dot " +
         type;
+
 
     status.textContent =
         text;
 }
 
 
-/* =========================================
+
+/* =========================================================
    LOAD LIBRARIES
-========================================= */
+========================================================= */
 
 async function loadLibraries(){
+
+    let firebaseLibraries =
+        {};
+
 
     try{
 
@@ -440,33 +574,78 @@ async function loadLibraries(){
                 )
             );
 
-        if(!response.ok){
 
-            throw new Error(
-                "فشل جلب المكتبات"
-            );
+        if(response.ok){
+
+            firebaseLibraries =
+                await response.json()
+                ||
+                {};
         }
 
-        const data =
-            await response.json();
-
-        libraries =
-            data || {};
-
-        return libraries;
-
-    }catch(error){
-
-        console.error(error);
-
-        return {};
     }
+
+    catch(error){
+
+        console.error(
+            "تعذر قراءة __libraries:",
+            error
+        );
+    }
+
+
+    /*
+        دمج المكتبات الافتراضية
+        مع المكتبات الموجودة في Firebase
+    */
+
+    libraries =
+        JSON.parse(
+            JSON.stringify(
+                DEFAULT_LIBRARIES
+            )
+        );
+
+
+    Object.entries(
+        firebaseLibraries
+    )
+    .forEach(
+        ([key,item])=>{
+
+
+            if(
+                !item ||
+                typeof item !==
+                "object"
+            ){
+
+                return;
+            }
+
+
+            libraries[key] = {
+
+                ...(libraries[key] || {}),
+
+                ...item,
+
+                key:key
+
+            };
+
+        }
+    );
+
+
+    return libraries;
 }
 
 
-/* =========================================
-   LOAD SECTIONS
-========================================= */
+
+/* =========================================================
+   LOAD LIBRARY SECTIONS
+========================================================= */
 
 async function loadLibrarySections(
     libraryKey,
@@ -474,14 +653,13 @@ async function loadLibrarySections(
 ){
 
     /*
-        لا نعرض AI هنا
+        أوامر AI لا تظهر هنا
         لأنها تفتح home.html
     */
 
     if(
-        libraryKey === "ai"
-        ||
-        libraryData.type === "commands"
+        libraryKey === "ai" ||
+        libraryData?.type === "commands"
     ){
 
         return [];
@@ -490,90 +668,215 @@ async function loadLibrarySections(
 
     try{
 
-        const response =
-            await fetch(
-                firebasePath(
-                    libraryKey
-                )
-                +
-                "?shallow=true"
-            );
 
-        if(!response.ok){
+        /* =====================================
+           1. المسارات الفعلية
+        ===================================== */
 
-            return [];
+        let actualPaths =
+            [];
+
+
+        try{
+
+            const response =
+                await fetch(
+
+                    firebasePath(
+                        libraryKey
+                    )
+
+                    +
+
+                    "?shallow=true"
+
+                );
+
+
+            if(response.ok){
+
+                const data =
+                    await response.json();
+
+
+                actualPaths =
+                    data
+                    ? Object.keys(
+                        data
+                    )
+                    : [];
+
+
+                actualPaths =
+                    actualPaths.filter(
+                        path =>
+                            path !==
+                            "__paths"
+                    );
+
+            }
+
         }
 
-        const data =
-            await response.json();
+        catch(error){
 
-        let paths =
-            data
-            ? Object.keys(data)
-            : [];
+            console.error(
 
-        paths =
-            paths.filter(
-                path =>
-                    path !== "__paths"
+                "خطأ في قراءة مسارات المكتبة:",
+
+                libraryKey,
+
+                error
+
             );
+        }
 
 
-        let metadata = {};
+
+        /* =====================================
+           2. بيانات __paths
+        ===================================== */
+
+        let metadata =
+            {};
+
 
         try{
 
             const metaResponse =
                 await fetch(
+
                     firebasePath(
+
                         libraryKey +
                         "/__paths"
+
                     )
+
                 );
+
 
             if(metaResponse.ok){
 
                 metadata =
                     await metaResponse.json()
-                    || {};
+                    ||
+                    {};
             }
 
-        }catch(error){
+        }
 
-            console.error(error);
+        catch(error){
+
+            console.error(
+
+                "خطأ في قراءة metadata:",
+
+                libraryKey,
+
+                error
+
+            );
         }
 
 
-        const metaMap = {};
+
+        /* =====================================
+           3. Metadata Map
+        ===================================== */
+
+        const metaMap =
+            {};
+
+
+        const metadataPaths =
+            [];
+
 
         Object.values(
-            metadata || {}
+            metadata ||
+            {}
         )
         .forEach(
             item => {
 
+
                 if(
-                    item &&
-                    typeof item === "object" &&
-                    item.path
+                    !item ||
+                    typeof item !==
+                    "object" ||
+                    !item.path
                 ){
 
-                    metaMap[
-                        item.path
-                    ] =
-                        item;
+                    return;
                 }
+
+
+                const cleanPath =
+                    String(
+                        item.path
+                    )
+                    .trim()
+                    .replace(
+                        /^\/+|\/+$/g,
+                        ""
+                    );
+
+
+                if(!cleanPath){
+
+                    return;
+                }
+
+
+                metaMap[
+                    cleanPath
+                ] =
+                    item;
+
+
+                metadataPaths.push(
+                    cleanPath
+                );
+
             }
         );
 
+
+
+        /* =====================================
+           4. دمج المسارات
+        ===================================== */
+
+        const paths =
+            [
+
+                ...new Set([
+
+                    ...actualPaths,
+
+                    ...metadataPaths
+
+                ])
+
+            ];
+
+
+
+        /* =====================================
+           5. إنشاء الأقسام
+        ===================================== */
 
         return paths
         .map(
             path => {
 
+
                 const meta =
                     metaMap[path]
-                    || {};
+                    ||
+                    {};
+
 
                 return {
 
@@ -610,7 +913,31 @@ async function loadLibrarySections(
                         ||
                         meta.description
                         ||
-                        `قسم ${meta.nameAr || path} ضمن ${libraryData.nameAr || libraryKey}.`
+                        (
+                            "قسم " +
+
+                            (
+                                meta.nameAr
+                                ||
+                                path
+                            )
+
+                            +
+
+                            " ضمن "
+
+                            +
+
+                            (
+                                libraryData.nameAr
+                                ||
+                                libraryKey
+                            )
+
+                            +
+
+                            "."
+                        )
 
                 };
 
@@ -618,28 +945,37 @@ async function loadLibrarySections(
         )
         .sort(
             (a,b)=>
+
                 a.name.localeCompare(
                     b.name,
                     "ar"
                 )
         );
 
-    }catch(error){
+    }
+
+    catch(error){
 
         console.error(
+
             "خطأ في المكتبة:",
+
             libraryKey,
+
             error
+
         );
+
 
         return [];
     }
 }
 
 
-/* =========================================
+
+/* =========================================================
    CREATE LIBRARY BLOCK
-========================================= */
+========================================================= */
 
 function createLibraryBlock(
     libraryKey,
@@ -647,18 +983,11 @@ function createLibraryBlock(
     sections
 ){
 
-    if(
-        !sections.length
-    ){
-
-        return null;
-    }
-
-
     const wrapper =
         document.createElement(
             "section"
         );
+
 
     wrapper.className =
         "dynamic-library";
@@ -666,18 +995,27 @@ function createLibraryBlock(
 
     wrapper.dataset.search =
         (
+
             (
                 libraryData.nameAr
                 ||
                 libraryKey
             )
+
             +
+
             " "
+
             +
+
             libraryKey
+
             +
+
             " "
+
             +
+
             sections
             .map(
                 item =>
@@ -686,15 +1024,19 @@ function createLibraryBlock(
                     item.path
             )
             .join(" ")
+
         )
         .toLowerCase();
+
 
 
     wrapper.innerHTML = `
 
         <div class="dynamic-library-header">
 
+
             <div class="library-heading">
+
 
                 <div class="library-main-icon">
 
@@ -706,11 +1048,16 @@ function createLibraryBlock(
 
                 </div>
 
+
                 <div>
 
+
                     <div class="library-type-badge code-badge">
+
                         أكواد
+
                     </div>
+
 
                     <h2>
 
@@ -722,16 +1069,24 @@ function createLibraryBlock(
 
                     </h2>
 
+
                     <p>
 
+                        ${sections.length}
+
                         ${
-                            sections.length
+                            sections.length === 1
+
+                            ? "قسم"
+
+                            : "أقسام"
                         }
-                        قسم متاح
 
                     </p>
 
+
                 </div>
+
 
             </div>
 
@@ -744,6 +1099,7 @@ function createLibraryBlock(
 
             </span>
 
+
         </div>
 
 
@@ -752,14 +1108,70 @@ function createLibraryBlock(
     `;
 
 
+
     const grid =
         wrapper.querySelector(
             ".sections-grid"
         );
 
 
+
+    /* =====================================
+       مكتبة بدون أقسام
+    ===================================== */
+
+    if(
+        sections.length === 0
+    ){
+
+        grid.innerHTML = `
+
+            <div class="empty-library-sections">
+
+
+                <div class="empty-library-icon">
+
+                    ${escapeHTML(
+                        libraryData.icon
+                        ||
+                        "📚"
+                    )}
+
+                </div>
+
+
+                <strong>
+
+                    لا توجد أقسام بعد
+
+                </strong>
+
+
+                <p>
+
+                    أضف قسمًا من مدير المكتبات
+                    وسيظهر هنا تلقائيًا.
+
+                </p>
+
+
+            </div>
+
+        `;
+
+
+        return wrapper;
+    }
+
+
+
+    /* =====================================
+       الأقسام
+    ===================================== */
+
     sections.forEach(
         section => {
+
 
             const card =
                 document.createElement(
@@ -796,28 +1208,45 @@ function createLibraryBlock(
                 );
 
 
+
             card.dataset.search =
                 (
+
                     section.name
+
                     +
+
                     " "
+
                     +
+
                     section.path
+
                     +
+
                     " "
+
                     +
+
                     section.desc
+
                     +
+
                     " "
+
                     +
+
                     section.libraryName
+
                 )
                 .toLowerCase();
+
 
 
             card.innerHTML = `
 
                 <div class="section-card-top">
+
 
                     <div class="section-icon">
 
@@ -835,6 +1264,7 @@ function createLibraryBlock(
                         )}
 
                     </span>
+
 
                 </div>
 
@@ -859,6 +1289,7 @@ function createLibraryBlock(
 
                 <div class="section-card-footer">
 
+
                     <span>
 
                         ${escapeHTML(
@@ -871,9 +1302,13 @@ function createLibraryBlock(
 
                     </span>
 
+
                     <strong>
+
                         عرض الأكواد ←
+
                     </strong>
+
 
                 </div>
 
@@ -897,9 +1332,10 @@ function createLibraryBlock(
 }
 
 
-/* =========================================
-   RENDER
-========================================= */
+
+/* =========================================================
+   RENDER LIBRARIES
+========================================================= */
 
 async function renderLibraries(){
 
@@ -907,6 +1343,7 @@ async function renderLibraries(){
         document.getElementById(
             "librariesContainer"
         );
+
 
     container.innerHTML =
         "";
@@ -916,22 +1353,42 @@ async function renderLibraries(){
         [];
 
 
+    /*
+        جميع المكتبات ماعدا AI
+        أو أي مكتبة نوعها commands
+    */
+
     const entries =
         Object.entries(
             libraries
         )
         .filter(
-            ([key,data]) =>
+            ([key,data]) => {
 
-                key !== "ai"
 
-                &&
+                if(
+                    key === "ai"
+                ){
 
-                (
-                    data?.type
-                    ||
-                    "codes"
-                ) !== "commands"
+                    return false;
+                }
+
+
+                return (
+
+                    (
+                        data?.type
+                        ||
+                        "codes"
+                    )
+
+                    !==
+
+                    "commands"
+
+                );
+
+            }
         )
         .sort(
             (a,b)=>
@@ -956,8 +1413,9 @@ async function renderLibraries(){
         0;
 
 
-    let visibleLibraries =
+    let totalLibraries =
         0;
+
 
 
     for(
@@ -975,14 +1433,6 @@ async function renderLibraries(){
             );
 
 
-        if(
-            !sections.length
-        ){
-
-            continue;
-        }
-
-
         const block =
             createLibraryBlock(
                 key,
@@ -991,32 +1441,47 @@ async function renderLibraries(){
             );
 
 
-        if(block){
-
-            container.appendChild(
-                block
-            );
+        container.appendChild(
+            block
+        );
 
 
-            totalSections +=
-                sections.length;
+        totalSections +=
+            sections.length;
 
 
-            visibleLibraries++;
-        }
+        totalLibraries++;
+
     }
 
 
+
     /*
-        AI + مكتبات الأكواد
+        +1 لمكتبة AI
     */
+
+    const hasAI =
+        Boolean(
+            libraries.ai
+        );
+
 
     document
     .getElementById(
         "librariesCount"
     )
     .textContent =
-        visibleLibraries + 1;
+
+        totalLibraries
+
+        +
+
+        (
+            hasAI
+            ? 1
+            : 0
+        );
+
 
 
     document
@@ -1027,19 +1492,21 @@ async function renderLibraries(){
         totalSections;
 
 
+
     if(
-        !visibleLibraries
+        totalLibraries === 0
     ){
 
         container.innerHTML = `
 
             <div class="empty-card">
 
-                📚 لا توجد مكتبات أكواد تحتوي على أقسام حاليًا.
+                📚 لا توجد مكتبات أكواد حتى الآن.
 
                 <br>
 
-                أضف مكتبة وقسمًا من مدير Firebase وسيظهر هنا تلقائيًا.
+                أضف مكتبة من مدير Firebase
+                وستظهر هنا مباشرة.
 
             </div>
 
@@ -1048,9 +1515,10 @@ async function renderLibraries(){
 }
 
 
-/* =========================================
-   AI DATA
-========================================= */
+
+/* =========================================================
+   UPDATE AI
+========================================================= */
 
 function updateAIInformation(){
 
@@ -1058,10 +1526,23 @@ function updateAIInformation(){
         libraries.ai;
 
 
+    const aiSection =
+        document.getElementById(
+            "aiMainSection"
+        );
+
+
     if(!ai){
+
+        aiSection.style.display =
+            "none";
 
         return;
     }
+
+
+    aiSection.style.display =
+        "";
 
 
     document
@@ -1069,15 +1550,28 @@ function updateAIInformation(){
         "aiLibraryName"
     )
     .textContent =
+
         ai.nameAr
         ||
         "أوامر الذكاء الاصطناعي";
+
+
+    document
+    .getElementById(
+        "aiLibraryIcon"
+    )
+    .textContent =
+
+        ai.icon
+        ||
+        "🤖";
 }
 
 
-/* =========================================
+
+/* =========================================================
    SEARCH
-========================================= */
+========================================================= */
 
 function filterSearch(){
 
@@ -1091,13 +1585,14 @@ function filterSearch(){
         .toLowerCase();
 
 
-    let resultCount =
+    let visibleResults =
         0;
 
 
-    /*
-        AI
-    */
+
+    /* =====================================
+       AI
+    ===================================== */
 
     const aiSection =
         document.getElementById(
@@ -1105,35 +1600,55 @@ function filterSearch(){
         );
 
 
-    const aiText =
-        aiSection
-        .textContent
-        .toLowerCase();
+    if(
+        libraries.ai
+    ){
+
+        const aiText =
+            (
+
+                libraries.ai.nameAr
+                ||
+                ""
+
+            )
+
+            +
+
+            " "
+
+            +
+
+            "ai ذكاء اصطناعي اوامر prompts";
 
 
-    const showAI =
-        !query
-        ||
-        aiText.includes(
-            query
-        );
+        const showAI =
+            !query
+            ||
+            aiText
+            .toLowerCase()
+            .includes(
+                query
+            );
 
 
-    aiSection.style.display =
-        showAI
-        ? ""
-        : "none";
+        aiSection.style.display =
+            showAI
+            ? ""
+            : "none";
 
 
-    if(showAI){
+        if(showAI){
 
-        resultCount++;
+            visibleResults++;
+        }
     }
 
 
-    /*
-        الأقسام
-    */
+
+    /* =====================================
+       CODE LIBRARIES
+    ===================================== */
 
     document
     .querySelectorAll(
@@ -1145,11 +1660,90 @@ function filterSearch(){
 
             const cards =
                 [
+
                     ...library
                     .querySelectorAll(
                         ".section-card"
                     )
+
                 ];
+
+
+            const librarySearch =
+                library.dataset.search
+                ||
+                "";
+
+
+            const libraryMatches =
+                !query
+                ||
+                librarySearch.includes(
+                    query
+                );
+
+
+            /*
+                مكتبة بدون أقسام
+            */
+
+            if(
+                cards.length === 0
+            ){
+
+                library.style.display =
+
+                    libraryMatches
+
+                    ? ""
+
+                    : "none";
+
+
+                if(libraryMatches){
+
+                    visibleResults++;
+                }
+
+
+                return;
+            }
+
+
+
+            /*
+                إذا اسم المكتبة نفسه مطابق
+                نظهر جميع أقسامها
+            */
+
+            if(
+                query &&
+                librarySearch.includes(
+                    query
+                )
+            ){
+
+                cards.forEach(
+                    card => {
+
+                        card.style.display =
+                            "";
+
+                    }
+                );
+
+
+                library.style.display =
+                    "";
+
+
+                visibleResults +=
+                    cards.length;
+
+
+                return;
+            }
+
 
 
             let visibleCards =
@@ -1175,8 +1769,11 @@ function filterSearch(){
 
 
                     card.style.display =
+
                         visible
+
                         ? ""
+
                         : "none";
 
 
@@ -1189,50 +1786,21 @@ function filterSearch(){
             );
 
 
-            const libraryText =
-                library.dataset.search
-                ||
-                "";
-
-
-            /*
-                لو البحث يطابق اسم المكتبة
-                نظهر كل بطاقاتها
-            */
-
-            if(
-                query &&
-                libraryText.includes(
-                    query
-                )
-            ){
-
-                cards.forEach(
-                    card => {
-
-                        card.style.display =
-                            "";
-
-                    }
-                );
-
-
-                visibleCards =
-                    cards.length;
-            }
-
-
             library.style.display =
+
                 visibleCards
+
                 ? ""
+
                 : "none";
 
 
-            resultCount +=
+            visibleResults +=
                 visibleCards;
 
         }
     );
+
 
 
     document
@@ -1241,15 +1809,18 @@ function filterSearch(){
     )
     .style.display =
 
-        resultCount
+        visibleResults
+
         ? "none"
+
         : "block";
 }
 
 
-/* =========================================
+
+/* =========================================================
    LOAD PAGE
-========================================= */
+========================================================= */
 
 async function loadPage(){
 
@@ -1287,17 +1858,21 @@ async function loadPage(){
         await renderLibraries();
 
 
+        filterSearch();
+
+
         setStatus(
             "success",
             "متصل بـ Firebase"
         );
 
+    }
 
-        filterSearch();
+    catch(error){
 
-    }catch(error){
-
-        console.error(error);
+        console.error(
+            error
+        );
 
 
         setStatus(
@@ -1319,9 +1894,10 @@ async function loadPage(){
 }
 
 
-/* =========================================
+
+/* =========================================================
    SEARCH EVENT
-========================================= */
+========================================================= */
 
 document
 .getElementById(
@@ -1333,9 +1909,10 @@ document
 );
 
 
-/* =========================================
+
+/* =========================================================
    START
-========================================= */
+========================================================= */
 
 window.addEventListener(
     "DOMContentLoaded",
@@ -1347,4 +1924,4 @@ window.addEventListener(
 
 </body>
 
-</html>
+</html> 
