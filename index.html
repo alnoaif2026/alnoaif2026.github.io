@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>مكتبة الأوامر والأكواد</title>
+<title>مكتبة الأوامر والأكواد والخدمات</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -58,7 +58,7 @@
                 </strong>
 
                 <span>
-                    AI • Code • Web
+                    AI • Code • Cyber
                 </span>
 
             </div>
@@ -74,7 +74,7 @@
             ></span>
 
             <span id="firebaseStatus">
-                جاري الاتصال
+                جاري تحميل المحتوى
             </span>
 
         </div>
@@ -96,22 +96,23 @@
         <div class="hero-card">
 
             <div class="hero-badge">
-                ✦ مكتبة متجددة من Firebase
+                ✦ مكتبة رقمية متجددة باستمرار
             </div>
 
 
             <h1>
-                مكتبة الأوامر والأكواد
+                مكتبة الأوامر والأكواد والخدمات
             </h1>
 
 
             <p>
 
                 تصفح أوامر الذكاء الاصطناعي والأكواد البرمجية
-                من مكان واحد.
+                والخدمات السيبرانية من مكان واحد.
 
-                أي مكتبة أو قسم جديد تضيفه من مدير Firebase
-                سيظهر هنا تلقائيًا.
+                يتم تحديث المكتبات والأقسام والخدمات الجديدة تلقائيًا
+                لتظهر لك مباشرة،
+                بإشراف وبرمجة علي المالكي.
 
             </p>
 
@@ -128,7 +129,7 @@
                     <input
                         type="search"
                         id="searchInput"
-                        placeholder="ابحث عن مكتبة أو قسم..."
+                        placeholder="ابحث عن مكتبة أو قسم أو خدمة..."
                         autocomplete="off"
                     >
 
@@ -156,7 +157,7 @@
                     </strong>
 
                     <span>
-                        المكتبات
+                        المكتبات والخدمات
                     </span>
 
                 </div>
@@ -250,7 +251,7 @@
                     <p id="aiLibraryDescription">
 
                         افتح مكتبة الذكاء الاصطناعي
-                        لعرض جميع المسارات والأوامر المصنفة.
+                        لعرض جميع الأقسام والأوامر المصنفة.
 
                     </p>
 
@@ -268,7 +269,7 @@
 
 
         <!-- =================================
-             CODE LIBRARIES
+             DYNAMIC LIBRARIES
         ================================== -->
 
         <section class="libraries-area">
@@ -278,11 +279,12 @@
                 <div>
 
                     <h2>
-                        📚 مكتبات الأكواد
+                        📚 المكتبات والخدمات
                     </h2>
 
                     <p>
-                        المكتبات والأقسام المضافة مباشرة من Firebase.
+                        مكتبات برمجية وخدمات سيبرانية وأدوات متنوعة
+                        في مكان واحد.
                     </p>
 
                 </div>
@@ -296,9 +298,7 @@
             >
 
                 <div class="loading-card">
-
-                    ⏳ جاري تحميل المكتبات...
-
+                    ⏳ جاري تحميل المكتبات والخدمات...
                 </div>
 
             </div>
@@ -333,7 +333,7 @@
 
 <footer class="site-footer">
 
-    مكتبة الأوامر والأكواد
+    مكتبة الأوامر والأكواد والخدمات
 
     <span>
         •
@@ -350,7 +350,7 @@
 <script>
 
 /* =========================================================
-   FIREBASE
+   DATABASE
 ========================================================= */
 
 const FIREBASE_URL =
@@ -370,12 +370,6 @@ let allSearchItems = [];
 /* =========================================================
    DEFAULT LIBRARIES
 ========================================================= */
-
-/*
-    نستخدمها كاحتياط إذا لم تكن
-    __libraries موجودة أو كانت بعض
-    المكتبات القديمة غير مسجلة فيها.
-*/
 
 const DEFAULT_LIBRARIES = {
 
@@ -441,7 +435,7 @@ const DEFAULT_LIBRARIES = {
 
 
 /* =========================================================
-   FIREBASE PATH
+   DATABASE PATH
 ========================================================= */
 
 function firebasePath(
@@ -561,7 +555,7 @@ function setStatus(
 
 async function loadLibraries(){
 
-    let firebaseLibraries =
+    let savedLibraries =
         {};
 
 
@@ -577,7 +571,7 @@ async function loadLibraries(){
 
         if(response.ok){
 
-            firebaseLibraries =
+            savedLibraries =
                 await response.json()
                 ||
                 {};
@@ -588,16 +582,11 @@ async function loadLibraries(){
     catch(error){
 
         console.error(
-            "تعذر قراءة __libraries:",
+            "تعذر قراءة بيانات المكتبات:",
             error
         );
     }
 
-
-    /*
-        دمج المكتبات الافتراضية
-        مع المكتبات الموجودة في Firebase
-    */
 
     libraries =
         JSON.parse(
@@ -608,7 +597,7 @@ async function loadLibraries(){
 
 
     Object.entries(
-        firebaseLibraries
+        savedLibraries
     )
     .forEach(
         ([key,item])=>{
@@ -652,11 +641,6 @@ async function loadLibrarySections(
     libraryData
 ){
 
-    /*
-        أوامر AI لا تظهر هنا
-        لأنها تفتح home.html
-    */
-
     if(
         libraryKey === "ai" ||
         libraryData?.type === "commands"
@@ -670,7 +654,7 @@ async function loadLibrarySections(
 
 
         /* =====================================
-           1. المسارات الفعلية
+           المسارات الفعلية
         ===================================== */
 
         let actualPaths =
@@ -721,20 +705,16 @@ async function loadLibrarySections(
         catch(error){
 
             console.error(
-
-                "خطأ في قراءة مسارات المكتبة:",
-
+                "تعذر قراءة الأقسام:",
                 libraryKey,
-
                 error
-
             );
         }
 
 
 
         /* =====================================
-           2. بيانات __paths
+           بيانات الأقسام
         ===================================== */
 
         let metadata =
@@ -769,20 +749,16 @@ async function loadLibrarySections(
         catch(error){
 
             console.error(
-
-                "خطأ في قراءة metadata:",
-
+                "تعذر قراءة بيانات الأقسام:",
                 libraryKey,
-
                 error
-
             );
         }
 
 
 
         /* =====================================
-           3. Metadata Map
+           MAP
         ===================================== */
 
         const metaMap =
@@ -845,7 +821,7 @@ async function loadLibrarySections(
 
 
         /* =====================================
-           4. دمج المسارات
+           MERGE
         ===================================== */
 
         const paths =
@@ -864,7 +840,7 @@ async function loadLibrarySections(
 
 
         /* =====================================
-           5. إنشاء الأقسام
+           CREATE SECTIONS
         ===================================== */
 
         return paths
@@ -899,7 +875,7 @@ async function loadLibrarySections(
                     name:
                         meta.nameAr
                         ||
-                        path,
+                        "قسم جديد",
 
                     icon:
                         meta.icon
@@ -914,24 +890,12 @@ async function loadLibrarySections(
                         meta.description
                         ||
                         (
-                            "قسم " +
-
-                            (
-                                meta.nameAr
-                                ||
-                                path
-                            )
-
-                            +
-
-                            " ضمن "
-
-                            +
+                            "مجموعة محتويات وأدوات ضمن " +
 
                             (
                                 libraryData.nameAr
                                 ||
-                                libraryKey
+                                "المكتبة"
                             )
 
                             +
@@ -957,13 +921,8 @@ async function loadLibrarySections(
     catch(error){
 
         console.error(
-
-            "خطأ في المكتبة:",
-
-            libraryKey,
-
+            "خطأ أثناء تحميل المكتبة:",
             error
-
         );
 
 
@@ -999,16 +958,8 @@ function createLibraryBlock(
             (
                 libraryData.nameAr
                 ||
-                libraryKey
+                ""
             )
-
-            +
-
-            " "
-
-            +
-
-            libraryKey
 
             +
 
@@ -1021,7 +972,7 @@ function createLibraryBlock(
                 item =>
                     item.name +
                     " " +
-                    item.path
+                    item.desc
             )
             .join(" ")
 
@@ -1054,7 +1005,15 @@ function createLibraryBlock(
 
                     <div class="library-type-badge code-badge">
 
-                        أكواد
+                        ${
+                            libraryData.type === "service"
+                            ||
+                            libraryData.type === "services"
+
+                            ? "خدمات"
+
+                            : "مكتبة"
+                        }
 
                     </div>
 
@@ -1064,7 +1023,7 @@ function createLibraryBlock(
                         ${escapeHTML(
                             libraryData.nameAr
                             ||
-                            libraryKey
+                            "مكتبة"
                         )}
 
                     </h2>
@@ -1076,9 +1035,7 @@ function createLibraryBlock(
 
                         ${
                             sections.length === 1
-
                             ? "قسم"
-
                             : "أقسام"
                         }
 
@@ -1089,15 +1046,6 @@ function createLibraryBlock(
 
 
             </div>
-
-
-            <span class="library-path">
-
-                /${escapeHTML(
-                    libraryKey
-                )}
-
-            </span>
 
 
         </div>
@@ -1117,7 +1065,7 @@ function createLibraryBlock(
 
 
     /* =====================================
-       مكتبة بدون أقسام
+       EMPTY
     ===================================== */
 
     if(
@@ -1141,16 +1089,14 @@ function createLibraryBlock(
 
 
                 <strong>
-
                     لا توجد أقسام بعد
-
                 </strong>
 
 
                 <p>
 
-                    أضف قسمًا من مدير المكتبات
-                    وسيظهر هنا تلقائيًا.
+                    سيتم إظهار الأقسام الجديدة هنا
+                    فور إضافتها وتحديثها.
 
                 </p>
 
@@ -1166,7 +1112,7 @@ function createLibraryBlock(
 
 
     /* =====================================
-       الأقسام
+       SECTIONS
     ===================================== */
 
     sections.forEach(
@@ -1220,14 +1166,6 @@ function createLibraryBlock(
 
                     +
 
-                    section.path
-
-                    +
-
-                    " "
-
-                    +
-
                     section.desc
 
                     +
@@ -1245,6 +1183,7 @@ function createLibraryBlock(
 
             card.innerHTML = `
 
+
                 <div class="section-card-top">
 
 
@@ -1257,16 +1196,8 @@ function createLibraryBlock(
                     </div>
 
 
-                    <span class="section-code-path">
-
-                        /${escapeHTML(
-                            section.path
-                        )}
-
-                    </span>
-
-
                 </div>
+
 
 
                 <h3>
@@ -1278,6 +1209,7 @@ function createLibraryBlock(
                 </h3>
 
 
+
                 <p>
 
                     ${escapeHTML(
@@ -1285,6 +1217,7 @@ function createLibraryBlock(
                     )}
 
                 </p>
+
 
 
                 <div class="section-card-footer">
@@ -1305,12 +1238,13 @@ function createLibraryBlock(
 
                     <strong>
 
-                        عرض الأكواد ←
+                        عرض المحتوى ←
 
                     </strong>
 
 
                 </div>
+
 
             `;
 
@@ -1352,11 +1286,6 @@ async function renderLibraries(){
     allSearchItems =
         [];
 
-
-    /*
-        جميع المكتبات ماعدا AI
-        أو أي مكتبة نوعها commands
-    */
 
     const entries =
         Object.entries(
@@ -1456,10 +1385,6 @@ async function renderLibraries(){
 
 
 
-    /*
-        +1 لمكتبة AI
-    */
-
     const hasAI =
         Boolean(
             libraries.ai
@@ -1501,12 +1426,7 @@ async function renderLibraries(){
 
             <div class="empty-card">
 
-                📚 لا توجد مكتبات أكواد حتى الآن.
-
-                <br>
-
-                أضف مكتبة من مدير Firebase
-                وستظهر هنا مباشرة.
+                📚 لا توجد مكتبات أو خدمات متاحة حاليًا.
 
             </div>
 
@@ -1647,7 +1567,7 @@ function filterSearch(){
 
 
     /* =====================================
-       CODE LIBRARIES
+       LIBRARIES
     ===================================== */
 
     document
@@ -1683,9 +1603,6 @@ function filterSearch(){
                 );
 
 
-            /*
-                مكتبة بدون أقسام
-            */
 
             if(
                 cards.length === 0
@@ -1700,7 +1617,9 @@ function filterSearch(){
                     : "none";
 
 
-                if(libraryMatches){
+                if(
+                    libraryMatches
+                ){
 
                     visibleResults++;
                 }
@@ -1710,11 +1629,6 @@ function filterSearch(){
             }
 
 
-
-            /*
-                إذا اسم المكتبة نفسه مطابق
-                نظهر جميع أقسامها
-            */
 
             if(
                 query &&
@@ -1777,7 +1691,9 @@ function filterSearch(){
                         : "none";
 
 
-                    if(visible){
+                    if(
+                        visible
+                    ){
 
                         visibleCards++;
                     }
@@ -1826,7 +1742,7 @@ async function loadPage(){
 
     setStatus(
         "loading",
-        "جاري التحديث..."
+        "جاري تحديث المحتوى..."
     );
 
 
@@ -1840,7 +1756,7 @@ async function loadPage(){
 
         <div class="loading-card">
 
-            ⏳ جاري تحميل المكتبات والأقسام...
+            ⏳ جاري تحميل المكتبات والخدمات...
 
         </div>
 
@@ -1863,7 +1779,7 @@ async function loadPage(){
 
         setStatus(
             "success",
-            "متصل بـ Firebase"
+            "المحتوى محدث"
         );
 
     }
@@ -1877,7 +1793,7 @@ async function loadPage(){
 
         setStatus(
             "error",
-            "تعذر الاتصال"
+            "تعذر التحديث"
         );
 
 
@@ -1885,7 +1801,7 @@ async function loadPage(){
 
             <div class="error-card">
 
-                ❌ تعذر تحميل المكتبات من Firebase.
+                ❌ تعذر تحميل المحتوى حاليًا.
 
             </div>
 
