@@ -21,6 +21,10 @@
 
   <style>
 
+    /* ==========================================
+       BRAND
+    ========================================== */
+
     .brand-wrapper {
       display: flex;
       align-items: center;
@@ -34,35 +38,48 @@
       border-radius: 12px;
       object-fit: cover;
       border: 1px solid var(--glass-border);
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,.08);
     }
 
     .brand-name {
       font-size: 1rem;
       font-weight: 800;
+
       background: linear-gradient(
         45deg,
         var(--primary),
         #ffffff,
         var(--secondary)
       );
+
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
 
+
+    /* ==========================================
+       HERO
+    ========================================== */
+
     .hero-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+
       padding: 7px 15px;
       margin-bottom: 12px;
+
       border-radius: 50px;
-      font-size: 0.78rem;
+
+      font-size: .78rem;
       font-weight: 700;
+
       color: var(--primary);
-      background: rgba(0, 242, 254, 0.08);
-      border: 1px solid rgba(0, 242, 254, 0.20);
+
+      background: rgba(0,242,254,.08);
+
+      border: 1px solid rgba(0,242,254,.20);
     }
 
     .info-bar {
@@ -70,146 +87,521 @@
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
+
       gap: 8px;
+
       margin-top: 18px;
+
       color: var(--text-secondary);
-      font-size: 0.78rem;
+
+      font-size: .78rem;
+    }
+
+
+    /* ==========================================
+       ROOT SECTIONS
+    ========================================== */
+
+    .sections-container {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .main-section-panel {
+      position: relative;
+
+      padding: 18px;
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(15,25,45,.96),
+          rgba(20,20,45,.95)
+        );
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      box-shadow:
+        0 10px 35px rgba(0,0,0,.18);
+
+      overflow: hidden;
+    }
+
+    .main-section-panel::before {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      right: 0;
+
+      width: 100%;
+      height: 2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--primary),
+          var(--secondary),
+          transparent
+        );
     }
 
     .section-head {
-      text-align: center;
-      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+
+      margin-bottom: 15px;
+    }
+
+    .section-main-icon {
+      width: 48px;
+      height: 48px;
+
+      flex-shrink: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 1.45rem;
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0,242,254,.12),
+          rgba(127,0,255,.15)
+        );
+
+      border:
+        1px solid rgba(255,255,255,.08);
+    }
+
+    .section-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .section-head h2 {
-      font-size: 1.35rem;
-      margin-bottom: 5px;
+      font-size: 1.08rem;
+      margin: 0;
+      color: #fff;
     }
 
     .section-head p {
+      margin-top: 4px;
+
       color: var(--text-secondary);
-      font-size: 0.88rem;
+
+      font-size: .78rem;
+      line-height: 1.7;
+    }
+
+    .section-library-count {
+      flex-shrink: 0;
+
+      min-width: 34px;
+      height: 28px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 0 9px;
+
+      border-radius: 50px;
+
+      font-size: .72rem;
+      font-weight: 800;
+
+      color: var(--primary);
+
+      background: rgba(0,242,254,.08);
+
+      border: 1px solid rgba(0,242,254,.15);
+    }
+
+
+    /* ==========================================
+       TOGGLE
+    ========================================== */
+
+    .categories-toggle {
+      width: 100%;
+      min-height: 56px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      padding: 11px 14px;
+
+      border: 1px solid rgba(0,242,254,.18);
+
+      border-radius: 14px;
+
+      font-family: "Tajawal", sans-serif;
+
+      font-size: .9rem;
+      font-weight: 800;
+
+      color: #fff;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0,242,254,.10),
+          rgba(127,0,255,.13)
+        );
+
+      cursor: pointer;
+
+      transition: .3s ease;
+    }
+
+    .categories-toggle:hover {
+      border-color: rgba(0,242,254,.35);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0,242,254,.15),
+          rgba(127,0,255,.18)
+        );
+    }
+
+    .categories-toggle:active {
+      transform: scale(.995);
+    }
+
+    .toggle-icon {
+      width: 38px;
+      height: 38px;
+
+      flex-shrink: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 10px;
+
+      font-size: 1.05rem;
+
+      background: rgba(255,255,255,.07);
+
+      border:
+        1px solid rgba(255,255,255,.06);
+    }
+
+    .toggle-text {
+      flex: 1;
+      text-align: right;
+    }
+
+    .toggle-arrow {
+      color: var(--primary);
+
+      font-size: .72rem;
+
+      transition: transform .35s ease;
+    }
+
+    .categories-toggle.active .toggle-arrow {
+      transform: rotate(180deg);
+    }
+
+
+    /* ==========================================
+       COLLAPSIBLE
+    ========================================== */
+
+    .categories-wrapper {
+      max-height: 0;
+      overflow: hidden;
+
+      opacity: 0;
+
+      margin-top: 0;
+
+      transform: translateY(-6px);
+
+      transition:
+        max-height .55s ease,
+        opacity .3s ease,
+        margin-top .3s ease,
+        transform .3s ease;
+    }
+
+    .categories-wrapper.open {
+      max-height: 10000px;
+
+      opacity: 1;
+
+      margin-top: 16px;
+
+      transform: translateY(0);
+    }
+
+
+    /* ==========================================
+       LIBRARY GRID
+    ========================================== */
+
+    .libraries-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(230px,1fr)
+        );
+
+      gap: 13px;
     }
 
     .library-card {
       position: relative;
-      min-height: 220px;
-      overflow: hidden;
+
+      min-height: 195px;
+
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+
+      padding: 15px;
+
+      overflow: hidden;
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.035),
+          rgba(255,255,255,.015)
+        );
+
+      border:
+        1px solid rgba(255,255,255,.07);
+
+      transition: .25s ease;
+    }
+
+    .library-card:hover {
+      transform: translateY(-2px);
+
+      border-color:
+        rgba(0,242,254,.20);
+
+      box-shadow:
+        0 10px 25px rgba(0,0,0,.18);
     }
 
     .library-card::before {
       content: "";
+
       position: absolute;
+
       top: 0;
       right: 0;
+
       width: 100%;
-      height: 3px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--primary),
-        var(--secondary),
-        transparent
-      );
+      height: 2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--primary),
+          var(--secondary),
+          transparent
+        );
     }
 
     .icon-box {
-      width: 55px;
-      height: 55px;
+      width: 48px;
+      height: 48px;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.7rem;
-      margin-bottom: 12px;
-      border-radius: 15px;
-      background: linear-gradient(
-        135deg,
-        rgba(0, 242, 254, 0.14),
-        rgba(127, 0, 255, 0.15)
-      );
-      border: 1px solid rgba(255, 255, 255, 0.10);
+
+      font-size: 1.45rem;
+
+      margin-bottom: 10px;
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0,242,254,.14),
+          rgba(127,0,255,.15)
+        );
+
+      border:
+        1px solid rgba(255,255,255,.08);
     }
 
     .library-card h3 {
-      font-size: 1.05rem;
-      margin-bottom: 8px;
-      color: #ffffff;
-    }
+      font-size: .97rem;
 
-    .command-desc {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      line-height: 1.8;
-      margin-bottom: 15px;
+      margin-bottom: 7px;
+
+      color: #fff;
     }
 
     .path-badge {
       display: inline-block;
+
       direction: ltr;
-      margin-bottom: 15px;
-      padding: 4px 9px;
-      border-radius: 7px;
+
+      margin-bottom: 10px;
+
+      padding: 3px 8px;
+
+      border-radius: 6px;
+
       font-family: monospace;
-      font-size: 0.7rem;
+
+      font-size: .66rem;
+
       color: var(--primary);
-      background: rgba(0, 242, 254, 0.06);
-      border: 1px solid rgba(0, 242, 254, 0.12);
+
+      background:
+        rgba(0,242,254,.06);
+
+      border:
+        1px solid rgba(0,242,254,.12);
+    }
+
+    .command-desc {
+      color: var(--text-secondary);
+
+      font-size: .78rem;
+      line-height: 1.7;
+
+      margin-bottom: 13px;
     }
 
     .library-link {
       width: 100%;
-      text-decoration: none;
-      padding: 10px 14px;
-      border-radius: 10px;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       gap: 10px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #000;
-      background: linear-gradient(
-        135deg,
-        var(--primary),
-        var(--primary-dark)
-      );
-      transition: var(--transition);
+
+      padding: 9px 12px;
+
       margin-top: auto;
+
+      border-radius: 9px;
+
+      text-decoration: none;
+
+      font-size: .78rem;
+      font-weight: 800;
+
+      color: #000;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+
+      transition: .25s ease;
     }
 
     .library-link:hover {
       transform: translateY(-1px);
-      box-shadow: 0 5px 20px rgba(0, 242, 254, 0.20);
+
+      box-shadow:
+        0 5px 18px rgba(0,242,254,.18);
     }
+
+
+    /* ==========================================
+       EMPTY / ERROR
+    ========================================== */
 
     .loading-spinner,
     .empty-results,
     .firebase-error {
-      grid-column: 1 / -1;
+
       text-align: center;
-      padding: 35px 15px;
+
+      padding: 30px 15px;
+
       border-radius: 14px;
+
       color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+
+      background:
+        rgba(255,255,255,.03);
+
+      border:
+        1px solid rgba(255,255,255,.07);
     }
 
     .firebase-error {
       color: #f87171;
     }
 
+    .section-empty {
+      padding: 15px;
+
+      text-align: center;
+
+      border-radius: 11px;
+
+      color: var(--text-secondary);
+
+      font-size: .78rem;
+
+      background:
+        rgba(255,255,255,.025);
+
+      border:
+        1px dashed rgba(255,255,255,.08);
+    }
+
+
+    /* ==========================================
+       FOOTER
+    ========================================== */
+
     .site-footer {
       width: calc(100% - 24px);
+
       max-width: 1000px;
+
       margin: 35px auto 0;
+
       padding: 20px 12px;
+
       text-align: center;
+
       color: var(--text-secondary);
-      font-size: 0.8rem;
-      border-top: 1px solid var(--border);
+
+      font-size: .8rem;
+
+      border-top:
+        1px solid var(--border);
     }
 
     .site-footer strong {
@@ -218,176 +610,56 @@
 
 
     /* ==========================================
-       زر عرض الأقسام
+       MOBILE
     ========================================== */
 
-    .categories-toggle {
+    @media(max-width:600px) {
 
-      width: 100%;
-      min-height: 58px;
+      .main-section-panel {
+        padding: 14px;
+        border-radius: 15px;
+      }
 
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      .section-head {
+        gap: 10px;
+      }
 
-      gap: 12px;
+      .section-main-icon {
+        width: 43px;
+        height: 43px;
 
-      padding: 12px 16px;
+        font-size: 1.25rem;
 
-      border: 1px solid rgba(0, 242, 254, 0.20);
+        border-radius: 12px;
+      }
 
-      border-radius: 15px;
+      .section-head h2 {
+        font-size: .98rem;
+      }
 
-      font-family: "Tajawal", sans-serif;
-
-      font-size: 0.95rem;
-
-      font-weight: 800;
-
-      color: #ffffff;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(0, 242, 254, 0.10),
-          rgba(127, 0, 255, 0.12)
-        );
-
-      cursor: pointer;
-
-      transition: all 0.3s ease;
-    }
-
-
-    .categories-toggle:hover {
-
-      border-color: rgba(0, 242, 254, 0.40);
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(0, 242, 254, 0.16),
-          rgba(127, 0, 255, 0.18)
-        );
-
-      transform: translateY(-1px);
-    }
-
-
-    .categories-toggle:active {
-      transform: scale(0.99);
-    }
-
-
-    .toggle-icon {
-
-      width: 40px;
-      height: 40px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      flex-shrink: 0;
-
-      border-radius: 11px;
-
-      font-size: 1.2rem;
-
-      background: rgba(255, 255, 255, 0.07);
-
-      border: 1px solid rgba(255,255,255,.06);
-    }
-
-
-    .toggle-text {
-
-      flex: 1;
-
-      text-align: right;
-    }
-
-
-    .toggle-arrow {
-
-      font-size: 0.75rem;
-
-      color: var(--primary);
-
-      transition: transform 0.35s ease;
-    }
-
-
-    .categories-toggle.active .toggle-arrow {
-
-      transform: rotate(180deg);
-
-    }
-
-
-    /* ==========================================
-       حاوية الأقسام
-    ========================================== */
-
-    .categories-wrapper {
-
-      max-height: 0;
-
-      overflow: hidden;
-
-      opacity: 0;
-
-      margin-top: 0;
-
-      transform: translateY(-8px);
-
-      transition:
-        max-height 0.6s ease,
-        opacity 0.35s ease,
-        margin-top 0.35s ease,
-        transform 0.35s ease;
-
-    }
-
-
-    .categories-wrapper.open {
-
-      max-height: 10000px;
-
-      opacity: 1;
-
-      margin-top: 20px;
-
-      transform: translateY(0);
-
-    }
-
-
-    /* ==========================================
-       تحسين للجوال
-    ========================================== */
-
-    @media (max-width: 600px) {
+      .section-head p {
+        font-size: .7rem;
+      }
 
       .categories-toggle {
+        min-height: 52px;
 
-        min-height: 54px;
+        padding: 9px 11px;
 
-        padding: 10px 12px;
-
-        border-radius: 13px;
-
-        font-size: 0.9rem;
-
+        font-size: .84rem;
       }
 
       .toggle-icon {
+        width: 35px;
+        height: 35px;
+      }
 
-        width: 36px;
-        height: 36px;
+      .libraries-grid {
+        grid-template-columns: 1fr;
+      }
 
-        font-size: 1.05rem;
-
+      .library-card {
+        min-height: auto;
       }
 
     }
@@ -399,1190 +671,1123 @@
 <body>
 
 
-  <div class="container">
+<div class="container">
 
 
-    <!-- =========================
-         NAVBAR
-    ========================== -->
+  <!-- ==========================================
+       NAVBAR
+  =========================================== -->
 
-    <nav class="site-nav">
+  <nav class="site-nav">
 
+    <a
+      href="index.html"
+      class="brand-wrapper"
+    >
 
-      <a
-        href="index.html"
-        class="brand-wrapper"
+      <img
+        src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A9%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
+        alt="شعار مكتبة الأوامر"
+        class="brand-image"
       >
 
-
-        <img
-          src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
-          alt="شعار مكتبة الأوامر"
-          class="brand-image"
-        >
-
-
-        <div class="brand-name">
-
-          مكتبة الأوامر
-
-        </div>
-
-
-      </a>
-
-
-      <a
-        href="https://alnoaif2026.github.io"
-        class="external-link"
-      >
-
-        🌐 الرئيسية
-
-      </a>
-
-
-    </nav>
-
-
-
-    <!-- =========================
-         HERO
-    ========================== -->
-
-    <header class="hero">
-
-
-      <div class="hero-badge">
-
-        ✦ مكتبة ذكية لتنظيم أوامرك
-
+      <div class="brand-name">
+        مكتبة الأوامر
       </div>
 
+    </a>
 
-      <h1>
 
-        كل أوامرك
+    <a
+      href="https://alnoaif2026.github.io"
+      class="external-link"
+    >
+      🌐 الرئيسية
+    </a>
 
-        <span>
+  </nav>
 
-          في مكان واحد
 
+
+  <!-- ==========================================
+       HERO
+  =========================================== -->
+
+  <header class="hero">
+
+    <div class="hero-badge">
+      ✦ مكتبة ذكية لتنظيم أوامرك
+    </div>
+
+
+    <h1>
+
+      كل أوامرك
+
+      <span>
+        في مكان واحد
+      </span>
+
+    </h1>
+
+
+    <p>
+      مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
+      لمختلف المجالات. اختر القسم المناسب وابدأ مباشرة.
+    </p>
+
+
+    <div class="info-bar">
+
+      <div class="info-item">
+        ⚡ وصول سريع للأوامر
+      </div>
+
+      <div class="info-item">
+        •
+      </div>
+
+      <div class="info-item">
+        📋 نسخ واستخدام بسهولة
+      </div>
+
+      <div class="info-item">
+        •
+      </div>
+
+      <div class="info-item">
+        📱 متوافق مع الجوال
+      </div>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- ==========================================
+       STATS
+  =========================================== -->
+
+  <div class="stats-container">
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        🗂️
+      </div>
+
+      <div class="stat-content">
+
+        <span
+          class="stat-number"
+          id="sections-count"
+        >
+          0
         </span>
 
-      </h1>
-
-
-      <p>
-
-        مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
-        لمختلف المجالات. اختر القسم المناسب وابدأ مباشرة.
-
-      </p>
-
-
-      <div class="info-bar">
-
-
-        <div class="info-item">
-
-          ⚡ وصول سريع للأوامر
-
-        </div>
-
-
-        <div class="info-item">
-
-          •
-
-        </div>
-
-
-        <div class="info-item">
-
-          📋 نسخ واستخدام بسهولة
-
-        </div>
-
-
-        <div class="info-item">
-
-          •
-
-        </div>
-
-
-        <div class="info-item">
-
-          📱 متوافق مع الجوال
-
-        </div>
-
+        <span class="stat-label">
+          الأقسام الرئيسية
+        </span>
 
       </div>
-
-
-    </header>
-
-
-
-    <!-- =========================
-         STATS
-    ========================== -->
-
-    <div class="stats-container">
-
-
-      <div class="stat-card">
-
-
-        <div class="stat-icon">
-
-          📚
-
-        </div>
-
-
-        <div class="stat-content">
-
-
-          <span
-            class="stat-number"
-            id="categories-count"
-          >
-
-            0
-
-          </span>
-
-
-          <span class="stat-label">
-
-            الأقسام المتاحة
-
-          </span>
-
-
-        </div>
-
-
-      </div>
-
-
-
-      <div class="stat-card">
-
-
-        <div class="stat-icon">
-
-          ⚡
-
-        </div>
-
-
-        <div class="stat-content">
-
-
-          <span
-            class="stat-number"
-            id="status-text"
-          >
-
-            جاري الاتصال
-
-          </span>
-
-
-          <span class="stat-label">
-
-            حالة المكتبة
-
-          </span>
-
-
-        </div>
-
-
-      </div>
-
 
     </div>
 
 
+    <div class="stat-card">
 
-    <!-- =========================
-         MAIN CONTENT
-    ========================== -->
+      <div class="stat-icon">
+        📚
+      </div>
 
-    <main>
+      <div class="stat-content">
 
-
-      <div class="glass-panel">
-
-
-        <div class="section-head">
-
-
-          <h2>
-
-            الأقسام الرئيسية
-
-          </h2>
-
-
-          <p>
-
-            اضغط على الزر لعرض جميع أقسام المكتبة.
-
-          </p>
-
-
-        </div>
-
-
-
-        <!-- =========================
-             زر فتح الأقسام
-        ========================== -->
-
-        <button
-          type="button"
-          class="categories-toggle"
-          id="categories-toggle"
-          aria-expanded="false"
-          aria-controls="categories-wrapper"
+        <span
+          class="stat-number"
+          id="libraries-count"
         >
+          0
+        </span>
 
-
-          <span class="toggle-icon">
-
-            📚
-
-          </span>
-
-
-          <span
-            class="toggle-text"
-            id="categories-toggle-text"
-          >
-
-            عرض الأقسام
-
-          </span>
-
-
-          <span
-            class="toggle-arrow"
-            id="categories-toggle-arrow"
-          >
-
-            ▼
-
-          </span>
-
-
-        </button>
-
-
-
-        <!-- =========================
-             قائمة الأقسام المخفية
-        ========================== -->
-
-        <div
-          class="categories-wrapper"
-          id="categories-wrapper"
-        >
-
-
-          <div
-            class="commands-grid"
-            id="categories-grid"
-          >
-
-
-            <div class="loading-spinner">
-
-              ⏳ جاري تحميل الأقسام...
-
-            </div>
-
-
-          </div>
-
-
-        </div>
-
+        <span class="stat-label">
+          المكتبات المتاحة
+        </span>
 
       </div>
 
+    </div>
 
-    </main>
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ⚡
+      </div>
+
+      <div class="stat-content">
+
+        <span
+          class="stat-number"
+          id="status-text"
+        >
+          جاري الاتصال
+        </span>
+
+        <span class="stat-label">
+          حالة المكتبة
+        </span>
+
+      </div>
+
+    </div>
 
 
   </div>
 
 
 
-  <!-- =========================
-       FOOTER
-  ========================== -->
+  <!-- ==========================================
+       MAIN
+  =========================================== -->
 
-  <footer class="site-footer">
+  <main>
 
+    <div
+      class="sections-container"
+      id="sections-container"
+    >
 
-    جميع الحقوق محفوظة © 2026
+      <div class="loading-spinner">
+        ⏳ جاري تحميل الأقسام والمكتبات...
+      </div>
 
+    </div>
 
-    <strong>
+  </main>
 
-      مكتبة الأوامر الذكية | علي المالكي
 
-    </strong>
+</div>
 
 
-  </footer>
 
+<!-- ==========================================
+     FOOTER
+=========================================== -->
 
+<footer class="site-footer">
 
-  <!-- =========================
-       SCRIPT
-  ========================== -->
+  جميع الحقوق محفوظة © 2026
 
-  <script>
+  <strong>
+    مكتبة الأوامر الذكية | علي المالكي
+  </strong>
 
+</footer>
 
-    /* ==========================================
-       Firebase
-    ========================================== */
 
-    const FIREBASE_URL =
-      "https://alnoaif-default-rtdb.firebaseio.com";
 
+<script>
 
-    const META_PATH =
-      "__paths";
+/* ==========================================
+   FIREBASE
+========================================== */
 
+const FIREBASE_URL =
+  "https://alnoaif-default-rtdb.firebaseio.com";
 
 
-    /* ==========================================
-       بيانات افتراضية لبعض الأقسام
-    ========================================== */
+const SECTIONS_PATH =
+  "__sections";
 
-    const predefinedMeta = {
 
+const LIBRARIES_PATH =
+  "__paths";
 
-      brmjh: {
 
-        icon: "💻",
+/* ==========================================
+   ESCAPE HTML
+========================================== */
 
-        desc:
-          "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، وإصلاح الأخطاء."
+function escapeHTML(value) {
 
-      },
+  return String(value ?? "")
 
+    .replace(/&/g,"&amp;")
 
-      astath: {
+    .replace(/</g,"&lt;")
 
-        icon: "👨‍🏫",
+    .replace(/>/g,"&gt;")
 
-        desc:
-          "أوامر المعلمين والطلاب وتحضير الدروس وإنشاء الاختبارات."
+    .replace(/"/g,"&quot;")
 
-      },
+    .replace(/'/g,"&#039;");
 
+}
 
-      talim: {
 
-        icon: "👨‍🏫",
+/* ==========================================
+   CLEAN PATH
+========================================== */
 
-        desc:
-          "أوامر التعليم وإعداد الدروس والاختبارات وشرح المواد."
+function cleanPath(path) {
 
-      },
+  return String(path || "")
 
+    .trim()
 
-      biot: {
+    .replace(/^\/+|\/+$/g,"");
 
-        icon: "🏠",
+}
 
-        desc:
-          "أوامر الطبخ والوصفات وتنظيم المنزل والتنظيف وخطط الوجبات."
 
-      },
+/* ==========================================
+   LIBRARY PAGE URL
+========================================== */
 
+function createPageURL(path) {
 
-      cars: {
+  return (
 
-        icon: "🚘",
+    "library.html?path=" +
 
-        desc:
-          "أوامر السيارات والتشخيص والصيانة والتصوير الاحترافي."
+    encodeURIComponent(path)
 
-      },
+  );
 
+}
 
-      photography: {
 
-        icon: "📸",
+/* ==========================================
+   FETCH FIREBASE
+========================================== */
 
-        desc:
-          "أوامر التصوير والكاميرات والعدسات والإضاءة السينمائية."
+async function fetchFirebase(path) {
 
-      },
+  const response =
+    await fetch(
 
+      `${FIREBASE_URL}/${path}.json`
 
-      engineering: {
+    );
 
-        icon: "⚙️",
 
-        desc:
-          "أوامر المخططات الهندسية والتصاميم التقنية والعرض التفكيكي."
+  if(!response.ok) {
 
-      },
+    throw new Error(
 
+      "HTTP " +
 
-      mechanical: {
+      response.status
 
-        icon: "🔩",
+    );
 
-        desc:
-          "أوامر الهندسة الميكانيكية وتصميم الآلات وتحليل الحركة."
+  }
 
-      },
 
+  return await response.json();
 
-      architecture: {
+}
 
-        icon: "🏛️",
 
-        desc:
-          "أوامر التصميم الداخلي والخارجي وتوزيع الأثاث والإضاءة."
+/* ==========================================
+   CREATE LIBRARY CARD
+========================================== */
+
+function createLibraryCard(item) {
+
+
+  const path =
+    cleanPath(
+
+      item.path
+
+    );
+
+
+  const name =
+    String(
+
+      item.nameAr ||
+
+      path
+
+    );
+
+
+  const icon =
+    item.icon ||
+
+    "📁";
+
+
+  const description =
+    item.desc ||
+
+    item.description ||
+
+    `مجموعة من الأوامر الخاصة بمكتبة ${name}.`;
+
+
+  const page =
+    createPageURL(path);
+
+
+  const card =
+    document.createElement(
+
+      "article"
+
+    );
+
+
+  card.className =
+    "library-card";
+
+
+  card.innerHTML = `
+
+    <div>
+
+      <div class="icon-box">
+
+        ${escapeHTML(icon)}
+
+      </div>
+
+
+      <h3>
+
+        ${escapeHTML(name)}
+
+      </h3>
+
+
+      <div class="path-badge">
+
+        /${escapeHTML(path)}
+
+      </div>
+
+
+      <p class="command-desc">
+
+        ${escapeHTML(description)}
+
+      </p>
+
+    </div>
+
+
+    <a
+      href="${page}"
+      class="library-link"
+    >
+
+      <span>
+
+        فتح مكتبة
+
+        ${escapeHTML(name)}
+
+      </span>
+
+
+      <span>
+
+        ←
+
+      </span>
+
+    </a>
+
+  `;
+
+
+  return card;
+
+}
+
+
+/* ==========================================
+   CREATE MAIN SECTION
+========================================== */
+
+function createMainSection(
+  sectionId,
+  section,
+  libraries
+) {
+
+
+  const name =
+    section.nameAr ||
+
+    section.name ||
+
+    sectionId;
+
+
+  const icon =
+    section.icon ||
+
+    "📂";
+
+
+  const description =
+    section.desc ||
+
+    section.description ||
+
+    "مجموعة من المكتبات والأوامر المرتبطة بهذا القسم.";
+
+
+  const panel =
+    document.createElement(
+
+      "section"
+
+    );
+
+
+  panel.className =
+    "main-section-panel";
+
+
+  const uniqueId =
+    "section-" +
+
+    sectionId.replace(
+      /[^a-zA-Z0-9_-]/g,
+      "-"
+    );
+
+
+  panel.innerHTML = `
+
+    <div class="section-head">
+
+      <div class="section-main-icon">
+
+        ${escapeHTML(icon)}
+
+      </div>
+
+
+      <div class="section-info">
+
+        <h2>
+
+          ${escapeHTML(name)}
+
+        </h2>
+
+
+        <p>
+
+          ${escapeHTML(description)}
+
+        </p>
+
+      </div>
+
+
+      <div class="section-library-count">
+
+        ${libraries.length}
+
+      </div>
+
+    </div>
+
+
+
+    <button
+      type="button"
+      class="categories-toggle"
+      aria-expanded="false"
+      aria-controls="${uniqueId}"
+    >
+
+      <span class="toggle-icon">
+
+        ${escapeHTML(icon)}
+
+      </span>
+
+
+      <span class="toggle-text">
+
+        عرض الأقسام
+
+      </span>
+
+
+      <span class="toggle-arrow">
+
+        ▼
+
+      </span>
+
+    </button>
+
+
+
+    <div
+      class="categories-wrapper"
+      id="${uniqueId}"
+    >
+
+      <div class="libraries-grid">
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  const button =
+    panel.querySelector(
+      ".categories-toggle"
+    );
+
+
+  const wrapper =
+    panel.querySelector(
+      ".categories-wrapper"
+    );
+
+
+  const text =
+    panel.querySelector(
+      ".toggle-text"
+    );
+
+
+  const librariesGrid =
+    panel.querySelector(
+      ".libraries-grid"
+    );
+
+
+  /* ======================================
+     ADD LIBRARIES
+  ====================================== */
+
+  if(
+    libraries.length === 0
+  ) {
+
+    librariesGrid.innerHTML = `
+
+      <div class="section-empty">
+
+        لا توجد مكتبات داخل هذا القسم حالياً.
+
+      </div>
+
+    `;
+
+  }
+
+  else {
+
+
+    libraries.forEach(
+      library => {
+
+        librariesGrid.appendChild(
+
+          createLibraryCard(
+            library
+          )
+
+        );
 
       }
+    );
+
+  }
 
 
-    };
+  /* ======================================
+     TOGGLE
+  ====================================== */
+
+  button.addEventListener(
+    "click",
+    function() {
 
 
-
-    /* ==========================================
-       تنظيف النص
-    ========================================== */
-
-    function escapeHTML(value) {
-
-
-      return String(value ?? "")
-
-        .replace(/&/g, "&amp;")
-
-        .replace(/</g, "&lt;")
-
-        .replace(/>/g, "&gt;")
-
-        .replace(/"/g, "&quot;")
-
-        .replace(/'/g, "&#039;");
+      const open =
+        wrapper
+        .classList
+        .toggle(
+          "open"
+        );
 
 
-    }
+      button
+      .classList
+      .toggle(
+        "active",
+        open
+      );
 
 
+      button.setAttribute(
 
-    /* ==========================================
-       تنظيف المسار
-    ========================================== */
+        "aria-expanded",
 
-    function cleanPath(path) {
-
-
-      return String(path || "")
-
-        .trim()
-
-        .replace(/^\/+|\/+$/g, "");
-
-
-    }
-
-
-
-    /* ==========================================
-       رابط صفحة القسم
-    ========================================== */
-
-    function createPageURL(path) {
-
-
-      return (
-
-        "library.html?path=" +
-
-        encodeURIComponent(path)
+        open
+        ? "true"
+        : "false"
 
       );
 
 
+      text.textContent =
+
+        open
+
+        ? "إخفاء الأقسام"
+
+        : "عرض الأقسام";
+
     }
+  );
 
 
+  return panel;
 
-    /* ==========================================
-       تحميل الأقسام
-    ========================================== */
-
-    async function loadCategories() {
+}
 
 
-      const grid =
+/* ==========================================
+   LOAD EVERYTHING
+========================================== */
 
-        document.getElementById(
-          "categories-grid"
+async function loadHome() {
+
+
+  const container =
+    document.getElementById(
+      "sections-container"
+    );
+
+
+  const sectionsCount =
+    document.getElementById(
+      "sections-count"
+    );
+
+
+  const librariesCount =
+    document.getElementById(
+      "libraries-count"
+    );
+
+
+  const statusText =
+    document.getElementById(
+      "status-text"
+    );
+
+
+  container.innerHTML = `
+
+    <div class="loading-spinner">
+
+      ⏳ جاري تحميل الأقسام والمكتبات...
+
+    </div>
+
+  `;
+
+
+  statusText.textContent =
+    "جاري الاتصال";
+
+
+  try {
+
+
+    /* ======================================
+       GET SECTIONS + LIBRARIES
+    ====================================== */
+
+    const [
+      sectionsData,
+      librariesData
+    ] = await Promise.all([
+
+      fetchFirebase(
+        SECTIONS_PATH
+      ),
+
+      fetchFirebase(
+        LIBRARIES_PATH
+      )
+
+    ]);
+
+
+    const sections =
+      sectionsData &&
+      typeof sectionsData === "object"
+
+      ? sectionsData
+
+      : {};
+
+
+    const libraries =
+      librariesData &&
+      typeof librariesData === "object"
+
+      ? librariesData
+
+      : {};
+
+
+    /* ======================================
+       NORMALIZE LIBRARIES
+    ====================================== */
+
+    const libraryList =
+      Object.entries(
+        libraries
+      )
+
+      .map(
+        ([key,item]) => {
+
+
+          if(
+            !item ||
+            typeof item !== "object"
+          ) {
+
+            return null;
+
+          }
+
+
+          const path =
+            cleanPath(
+
+              item.path ||
+
+              key
+
+            );
+
+
+          if(!path) {
+
+            return null;
+
+          }
+
+
+          return {
+
+            ...item,
+
+            firebaseKey:key,
+
+            path:path,
+
+            nameAr:
+              item.nameAr ||
+
+              path,
+
+            section:
+              String(
+                item.section ||
+
+                ""
+              )
+              .trim()
+
+          };
+
+        }
+      )
+
+      .filter(Boolean);
+
+
+    /* ======================================
+       NORMALIZE SECTIONS
+    ====================================== */
+
+    const sectionList =
+      Object.entries(
+        sections
+      )
+
+      .map(
+        ([id,item]) => {
+
+
+          if(
+            !item ||
+            typeof item !== "object"
+          ) {
+
+            return null;
+
+          }
+
+
+          return {
+
+            id:id,
+
+            ...item,
+
+            order:
+              Number(
+                item.order
+              ) || 999
+
+          };
+
+        }
+      )
+
+      .filter(Boolean);
+
+
+    /* ======================================
+       SORT SECTIONS
+    ====================================== */
+
+    sectionList.sort(
+      (a,b) => {
+
+
+        if(
+          a.order !==
+          b.order
+        ) {
+
+          return (
+            a.order -
+            b.order
+          );
+
+        }
+
+
+        return String(
+
+          a.nameAr ||
+
+          a.id
+
+        )
+        .localeCompare(
+
+          String(
+
+            b.nameAr ||
+
+            b.id
+
+          ),
+
+          "ar"
+
         );
 
-
-      const countEl =
-
-        document.getElementById(
-          "categories-count"
-        );
+      }
+    );
 
 
-      const statusEl =
+    /* ======================================
+       COUNTERS
+    ====================================== */
 
-        document.getElementById(
-          "status-text"
-        );
+    sectionsCount.textContent =
+      sectionList.length;
 
 
+    librariesCount.textContent =
+      libraryList.length;
 
-      grid.innerHTML = `
 
-        <div class="loading-spinner">
+    statusText.textContent =
+      "متصل";
 
-          ⏳ جاري تحميل الأقسام...
+
+    container.innerHTML =
+      "";
+
+
+    /* ======================================
+       EMPTY
+    ====================================== */
+
+    if(
+      sectionList.length === 0
+    ) {
+
+      container.innerHTML = `
+
+        <div class="empty-results">
+
+          لا توجد أقسام رئيسية داخل Firebase.
+
+          <br><br>
+
+          أنشئ الأقسام داخل
+
+          <strong>
+
+            __sections
+
+          </strong>
 
         </div>
 
       `;
 
 
+      return;
 
-      statusEl.textContent =
-
-        "جاري الاتصال";
-
+    }
 
 
-      try {
+    /* ======================================
+       RENDER EACH MAIN SECTION
+    ====================================== */
+
+    sectionList.forEach(
+      section => {
 
 
+        const sectionLibraries =
+          libraryList
+          .filter(
+            library =>
 
-        /* ======================================
-           قراءة بيانات أسماء المسارات
-        ====================================== */
+              library.section ===
 
-        const response =
-
-          await fetch(
-
-            `${FIREBASE_URL}/${META_PATH}.json`
-
+              section.id
           );
 
 
-
-        if (!response.ok) {
-
-
-          throw new Error(
-
-            "HTTP " + response.status
-
-          );
-
-
-        }
-
-
-
-        const data =
-
-          await response.json();
-
-
-
-        grid.innerHTML = "";
-
-
-
-        /* ======================================
-           لا توجد بيانات
-        ====================================== */
-
-        if (!data) {
-
-
-          grid.innerHTML = `
-
-            <div class="empty-results">
-
-              لا توجد أقسام مسجلة حالياً.
-
-            </div>
-
-          `;
-
-
-          countEl.textContent =
-
-            "0";
-
-
-          statusEl.textContent =
-
-            "متصل";
-
-
-          return;
-
-
-        }
-
-
-
-        /* ======================================
-           تحويل البيانات إلى قائمة
-        ====================================== */
-
-        const sections =
-
-          Object
-
-          .entries(data)
-
-          .map(([firebaseKey, item]) => {
-
-
-
-            if (
-
-              !item ||
-
-              typeof item !== "object"
-
-            ) {
-
-
-              return null;
-
-
-            }
-
-
-
-            const path =
-
-              cleanPath(
-
-                item.path ||
-
-                firebaseKey
-
-              );
-
-
-
-            const nameAr =
-
-              String(
-
-                item.nameAr || ""
-
-              )
-
-              .trim();
-
-
-
-            if (
-
-              !path ||
-
-              !nameAr
-
-            ) {
-
-
-              return null;
-
-
-            }
-
-
-
-            return {
-
-
-              firebaseKey,
-
-
-              path,
-
-
-              nameAr,
-
-
-              icon:
-
-                item.icon || "",
-
-
-              desc:
-
-                item.desc ||
-
-                item.description ||
-
-                ""
-
-
-            };
-
-
-          })
-
-
-          .filter(Boolean);
-
-
-
-        /* ======================================
-           ترتيب عربي
-        ====================================== */
-
-        sections.sort(
-
-
-          (a, b) =>
-
-
-            a.nameAr.localeCompare(
-
-              b.nameAr,
-
-              "ar"
-
+        sectionLibraries.sort(
+          (a,b) =>
+
+            String(
+              a.nameAr
             )
-
-
+            .localeCompare(
+              String(
+                b.nameAr
+              ),
+              "ar"
+            )
         );
 
 
+        container.appendChild(
 
-        /* ======================================
-           إذا لم توجد أقسام صالحة
-        ====================================== */
+          createMainSection(
 
-        if (
+            section.id,
 
-          sections.length === 0
+            section,
 
-        ) {
+            sectionLibraries
 
+          )
 
-          grid.innerHTML = `
-
-            <div class="empty-results">
-
-              لا توجد أقسام تحتوي على اسم عربي.
-
-            </div>
-
-          `;
-
-
-          countEl.textContent =
-
-            "0";
-
-
-          statusEl.textContent =
-
-            "متصل";
-
-
-          return;
-
-
-        }
-
-
-
-        /* ======================================
-           إنشاء البطاقات
-        ====================================== */
-
-        sections.forEach(item => {
-
-
-
-          const path =
-
-            item.path;
-
-
-
-          const nameAr =
-
-            item.nameAr;
-
-
-
-          const predefined =
-
-            predefinedMeta[path] || {};
-
-
-
-          const icon =
-
-            item.icon ||
-
-            predefined.icon ||
-
-            "📁";
-
-
-
-          const description =
-
-            item.desc ||
-
-            predefined.desc ||
-
-            `مجموعة من الأوامر والأكواد الذكية الخاصة بقسم ${nameAr}.`;
-
-
-
-          const page =
-
-            createPageURL(path);
-
-
-
-          const card =
-
-            document.createElement(
-
-              "article"
-
-            );
-
-
-
-          card.className =
-
-            "command-card library-card";
-
-
-
-          card.innerHTML = `
-
-
-            <div>
-
-
-              <div class="icon-box">
-
-                ${escapeHTML(icon)}
-
-              </div>
-
-
-              <h3>
-
-                ${escapeHTML(nameAr)}
-
-              </h3>
-
-
-              <div class="path-badge">
-
-                /${escapeHTML(path)}
-
-              </div>
-
-
-              <p class="command-desc">
-
-                ${escapeHTML(description)}
-
-              </p>
-
-
-            </div>
-
-
-
-            <a
-
-              href="${page}"
-
-              class="library-link"
-
-            >
-
-
-              <span>
-
-                فتح مكتبة
-
-                ${escapeHTML(nameAr)}
-
-              </span>
-
-
-              <span>
-
-                ←
-
-              </span>
-
-
-            </a>
-
-
-          `;
-
-
-
-          grid.appendChild(
-
-            card
-
-          );
-
-
-        });
-
-
-
-        /* ======================================
-           العداد
-        ====================================== */
-
-        countEl.textContent =
-
-          sections.length;
-
-
-
-        statusEl.textContent =
-
-          "متصل";
-
+        );
 
       }
-
-
-
-      catch (error) {
-
-
-
-        console.error(
-
-          "Firebase Error:",
-
-          error
-
-        );
-
-
-
-        countEl.textContent =
-
-          "0";
-
-
-
-        statusEl.textContent =
-
-          "خطأ";
-
-
-
-        grid.innerHTML = `
-
-
-          <div class="firebase-error">
-
-
-            ❌ تعذر تحميل الأقسام من Firebase.
-
-
-            <br><br>
-
-
-            تأكد من صلاحيات قاعدة البيانات
-
-            ومن وجود المسار
-
-
-            <strong>
-
-              __paths
-
-            </strong>
-
-
-          </div>
-
-
-        `;
-
-
-      }
-
-
-    }
-
-
-
-    /* ==========================================
-       فتح وإغلاق قائمة الأقسام
-    ========================================== */
-
-    function setupCategoriesToggle() {
-
-
-      const toggleButton =
-
-        document.getElementById(
-          "categories-toggle"
-        );
-
-
-      const wrapper =
-
-        document.getElementById(
-          "categories-wrapper"
-        );
-
-
-      const toggleText =
-
-        document.getElementById(
-          "categories-toggle-text"
-        );
-
-
-
-      if (
-
-        !toggleButton ||
-
-        !wrapper ||
-
-        !toggleText
-
-      ) {
-
-
-        return;
-
-
-      }
-
-
-
-      toggleButton.addEventListener(
-
-        "click",
-
-        function () {
-
-
-
-          const isOpen =
-
-            wrapper.classList.toggle(
-
-              "open"
-
-            );
-
-
-
-          toggleButton.classList.toggle(
-
-            "active",
-
-            isOpen
-
-          );
-
-
-
-          toggleButton.setAttribute(
-
-            "aria-expanded",
-
-            isOpen
-
-              ? "true"
-
-              : "false"
-
-          );
-
-
-
-          toggleText.textContent =
-
-            isOpen
-
-              ? "إخفاء الأقسام"
-
-              : "عرض الأقسام";
-
-
-        }
-
-      );
-
-
-    }
-
-
-
-    /* ==========================================
-       تشغيل الصفحة
-    ========================================== */
-
-    document.addEventListener(
-
-      "DOMContentLoaded",
-
-      function () {
-
-
-        loadCategories();
-
-
-        setupCategoriesToggle();
-
-
-      }
-
     );
 
 
-  </script>
+  }
+
+  catch(error) {
+
+
+    console.error(
+      "Firebase Error:",
+      error
+    );
+
+
+    sectionsCount.textContent =
+      "0";
+
+
+    librariesCount.textContent =
+      "0";
+
+
+    statusText.textContent =
+      "خطأ";
+
+
+    container.innerHTML = `
+
+      <div class="firebase-error">
+
+        ❌ تعذر تحميل البيانات من Firebase.
+
+        <br><br>
+
+        تأكد من وجود:
+
+        <br>
+
+        <strong>
+
+          __sections
+
+        </strong>
+
+        <br>
+
+        و
+
+        <br>
+
+        <strong>
+
+          __paths
+
+        </strong>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  loadHome
+);
+
+</script>
 
 
 </body>
-
-</html>
+</html> 
