@@ -2,1842 +2,875 @@
 <html lang="ar" dir="rtl">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+  <title>مكتبة الأوامر الذكية</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>مكتبة الأوامر والأكواد والخدمات</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link
-    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;600;700;800;900&display=swap"
+  <!-- خط Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet"
->
+  >
 
-<link
-    rel="stylesheet"
-    href="styles.css"
->
+  <!-- ملف التنسيقات الرئيسي -->
+  <link rel="stylesheet" href="style.css">
 
+  <style>
+
+    .brand-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-image {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 800;
+      background: linear-gradient(
+        45deg,
+        var(--primary),
+        #ffffff,
+        var(--secondary)
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 15px;
+      margin-bottom: 12px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.20);
+    }
+
+    .info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+      font-size: 1.35rem;
+      margin-bottom: 5px;
+    }
+
+    .section-head p {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+
+    .library-card {
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .library-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--primary),
+        var(--secondary),
+        transparent
+      );
+    }
+
+    .icon-box {
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+      border-radius: 15px;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 242, 254, 0.14),
+        rgba(127, 0, 255, 0.15)
+      );
+      border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .library-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .command-desc {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .path-badge {
+      display: inline-block;
+      direction: ltr;
+      margin-bottom: 15px;
+      padding: 4px 9px;
+      border-radius: 7px;
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: var(--primary);
+      background: rgba(0, 242, 254, 0.06);
+      border: 1px solid rgba(0, 242, 254, 0.12);
+    }
+
+    .library-link {
+      width: 100%;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #000;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary-dark)
+      );
+      transition: var(--transition);
+      margin-top: auto;
+    }
+
+    .library-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 20px rgba(0, 242, 254, 0.20);
+    }
+
+    .loading-spinner,
+    .empty-results,
+    .firebase-error {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 35px 15px;
+      border-radius: 14px;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .firebase-error {
+      color: #f87171;
+    }
+
+    .site-footer {
+      width: calc(100% - 24px);
+      max-width: 1000px;
+      margin: 35px auto 0;
+      padding: 20px 12px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .site-footer strong {
+      color: var(--primary);
+    }
+
+  </style>
 </head>
-
 
 <body>
 
+  <div class="container">
 
-<!-- =========================================
-     NAVBAR
-========================================= -->
+    <!-- =========================
+         NAVBAR
+    ========================== -->
 
-<nav class="site-nav">
+    <nav class="site-nav">
 
-    <div class="container nav-inner">
+      <a href="index.html" class="brand-wrapper">
 
-        <a
-            href="index.html"
-            class="brand-wrapper"
+        <img
+          src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
+          alt="شعار مكتبة الأوامر"
+          class="brand-image"
         >
 
-            <img
-                class="brand-image"
-                src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
-                alt="شعار المكتبة"
-            >
+        <div class="brand-name">
+          مكتبة الأوامر
+        </div>
 
-            <div class="brand-info">
+      </a>
 
-                <strong>
-                    مكتبة الأوامر والأكواد
-                </strong>
+      <a
+        href="https://alnoaif2026.github.io"
+        class="external-link"
+      >
+        🌐 الرئيسية
+      </a>
 
-                <span>
-                    AI • Code • Cyber
-                </span>
-
-            </div>
-
-        </a>
+    </nav>
 
 
-        <div class="nav-status">
+    <!-- =========================
+         HERO
+    ========================== -->
 
-            <span
-                class="status-dot"
-                id="statusDot"
-            ></span>
+    <header class="hero">
 
-            <span id="firebaseStatus">
-                جاري تحميل المحتوى
-            </span>
+      <div class="hero-badge">
+        ✦ مكتبة ذكية لتنظيم أوامرك
+      </div>
+
+      <h1>
+        كل أوامرك
+        <span>في مكان واحد</span>
+      </h1>
+
+      <p>
+        مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
+        لمختلف المجالات. اختر القسم المناسب وابدأ مباشرة.
+      </p>
+
+      <div class="info-bar">
+
+        <div class="info-item">
+          ⚡ وصول سريع للأوامر
+        </div>
+
+        <div class="info-item">
+          •
+        </div>
+
+        <div class="info-item">
+          📋 نسخ واستخدام بسهولة
+        </div>
+
+        <div class="info-item">
+          •
+        </div>
+
+        <div class="info-item">
+          📱 متوافق مع الجوال
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =========================
+         STATS
+    ========================== -->
+
+    <div class="stats-container">
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          📚
+        </div>
+
+        <div class="stat-content">
+
+          <span
+            class="stat-number"
+            id="categories-count"
+          >
+            0
+          </span>
+
+          <span class="stat-label">
+            الأقسام المتاحة
+          </span>
 
         </div>
 
-    </div>
-
-</nav>
+      </div>
 
 
+      <div class="stat-card">
 
-<!-- =========================================
-     HERO
-========================================= -->
+        <div class="stat-icon">
+          ⚡
+        </div>
 
-<header class="hero">
+        <div class="stat-content">
 
-    <div class="container">
+          <span
+            class="stat-number"
+            id="status-text"
+          >
+            جاري الاتصال
+          </span>
 
-        <div class="hero-card">
-
-            <div class="hero-badge">
-                ✦ مكتبة رقمية متجددة باستمرار
-            </div>
-
-
-            <h1>
-                مكتبة الأوامر والأكواد والخدمات
-            </h1>
-
-
-            <p>
-
-                تصفح أوامر الذكاء الاصطناعي والأكواد البرمجية
-                والخدمات السيبرانية من مكان واحد.
-
-                يتم تحديث المكتبات والأقسام والخدمات الجديدة تلقائيًا
-                لتظهر لك مباشرة،
-                بإشراف وبرمجة علي المالكي.
-
-            </p>
-
-
-            <div class="search-area">
-
-
-                <div class="search-box">
-
-                    <span class="search-icon">
-                        🔍
-                    </span>
-
-                    <input
-                        type="search"
-                        id="searchInput"
-                        placeholder="ابحث عن مكتبة أو قسم أو خدمة..."
-                        autocomplete="off"
-                    >
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="refresh-button"
-                    onclick="loadPage()"
-                >
-                    🔄 تحديث
-                </button>
-
-            </div>
-
-
-            <div class="hero-stats">
-
-
-                <div class="hero-stat">
-
-                    <strong id="librariesCount">
-                        0
-                    </strong>
-
-                    <span>
-                        المكتبات والخدمات
-                    </span>
-
-                </div>
-
-
-                <div class="hero-stat">
-
-                    <strong id="sectionsCount">
-                        0
-                    </strong>
-
-                    <span>
-                        الأقسام
-                    </span>
-
-                </div>
-
-
-            </div>
+          <span class="stat-label">
+            حالة المكتبة
+          </span>
 
         </div>
 
+      </div>
+
     </div>
 
-</header>
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main>
+
+      <div class="glass-panel">
+
+        <div class="section-head">
+
+          <h2>
+            الأقسام الرئيسية
+          </h2>
+
+          <p>
+            اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.
+          </p>
+
+        </div>
 
 
-
-<!-- =========================================
-     MAIN
-========================================= -->
-
-<main class="main-content">
-
-    <div class="container">
-
-
-        <!-- =================================
-             AI LIBRARY
-        ================================== -->
-
-        <section
-            class="main-library-section"
-            id="aiMainSection"
+        <div
+          class="commands-grid"
+          id="categories-grid"
         >
 
-            <div class="section-header">
+          <div class="loading-spinner">
+            ⏳ جاري تحميل الأقسام...
+          </div>
 
-                <div>
+        </div>
 
-                    <h2>
-                        🤖 أوامر الذكاء الاصطناعي
-                    </h2>
+      </div>
 
-                    <p>
-                        مكتبة الأوامر والبرومبتات الذكية.
-                    </p>
+    </main>
 
-                </div>
+  </div>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer class="site-footer">
+
+    جميع الحقوق محفوظة © 2026
+
+    <strong>
+      مكتبة الأوامر الذكية | علي المالكي
+    </strong>
+
+  </footer>
+
+
+  <!-- =========================
+       SCRIPT
+  ========================== -->
+
+  <script>
+
+    /* ==========================================
+       Firebase
+    ========================================== */
+
+    const FIREBASE_URL =
+      "https://alnoaif-default-rtdb.firebaseio.com";
+
+    const META_PATH =
+      "__paths";
+
+
+    /* ==========================================
+       بيانات افتراضية لبعض الأقسام
+    ========================================== */
+
+    const predefinedMeta = {
+
+      brmjh: {
+        icon: "💻",
+        desc: "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، وإصلاح الأخطاء."
+      },
+
+      astath: {
+        icon: "👨‍🏫",
+        desc: "أوامر المعلمين والطلاب وتحضير الدروس وإنشاء الاختبارات."
+      },
+
+      talim: {
+        icon: "👨‍🏫",
+        desc: "أوامر التعليم وإعداد الدروس والاختبارات وشرح المواد."
+      },
+
+      biot: {
+        icon: "🏠",
+        desc: "أوامر الطبخ والوصفات وتنظيم المنزل والتنظيف وخطط الوجبات."
+      },
+
+      cars: {
+        icon: "🚘",
+        desc: "أوامر السيارات والتشخيص والصيانة والتصوير الاحترافي."
+      },
+
+      photography: {
+        icon: "📸",
+        desc: "أوامر التصوير والكاميرات والعدسات والإضاءة السينمائية."
+      },
+
+      engineering: {
+        icon: "⚙️",
+        desc: "أوامر المخططات الهندسية والتصاميم التقنية والعرض التفكيكي."
+      },
+
+      mechanical: {
+        icon: "🔩",
+        desc: "أوامر الهندسة الميكانيكية وتصميم الآلات وتحليل الحركة."
+      },
+
+      architecture: {
+        icon: "🏛️",
+        desc: "أوامر التصميم الداخلي والخارجي وتوزيع الأثاث والإضاءة."
+      }
+
+    };
+
+
+    /* ==========================================
+       تنظيف النص
+    ========================================== */
+
+    function escapeHTML(value) {
+
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* ==========================================
+       تنظيف المسار
+    ========================================== */
+
+    function cleanPath(path) {
+
+      return String(path || "")
+        .trim()
+        .replace(/^\/+|\/+$/g, "");
+
+    }
+
+
+    /* ==========================================
+       رابط صفحة القسم
+
+       كل الأقسام تفتح library.html
+    ========================================== */
+
+    function createPageURL(path) {
+
+      return (
+        "library.html?path=" +
+        encodeURIComponent(path)
+      );
+
+    }
+
+
+    /* ==========================================
+       تحميل الأقسام
+    ========================================== */
+
+    async function loadCategories() {
+
+      const grid =
+        document.getElementById(
+          "categories-grid"
+        );
+
+      const countEl =
+        document.getElementById(
+          "categories-count"
+        );
+
+      const statusEl =
+        document.getElementById(
+          "status-text"
+        );
+
+
+      grid.innerHTML = `
+        <div class="loading-spinner">
+          ⏳ جاري تحميل الأقسام...
+        </div>
+      `;
+
+      statusEl.textContent =
+        "جاري الاتصال";
+
+
+      try {
+
+        /* ======================================
+           قراءة بيانات أسماء المسارات
+        ====================================== */
+
+        const response =
+          await fetch(
+            `${FIREBASE_URL}/${META_PATH}.json`
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            "HTTP " + response.status
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        grid.innerHTML = "";
+
+
+        /* ======================================
+           لا توجد بيانات
+        ====================================== */
+
+        if (!data) {
+
+          grid.innerHTML = `
+            <div class="empty-results">
+              لا توجد أقسام مسجلة حالياً.
+            </div>
+          `;
+
+          countEl.textContent =
+            "0";
+
+          statusEl.textContent =
+            "متصل";
+
+          return;
+
+        }
+
+
+        /* ======================================
+           تحويل البيانات إلى قائمة
+        ====================================== */
+
+        const sections =
+          Object
+          .entries(data)
+          .map(([firebaseKey, item]) => {
+
+            if (
+              !item ||
+              typeof item !== "object"
+            ) {
+
+              return null;
+
+            }
+
+
+            const path =
+              cleanPath(
+                item.path ||
+                firebaseKey
+              );
+
+
+            const nameAr =
+              String(
+                item.nameAr || ""
+              )
+              .trim();
+
+
+            if (
+              !path ||
+              !nameAr
+            ) {
+
+              return null;
+
+            }
+
+
+            return {
+
+              firebaseKey,
+
+              path,
+
+              nameAr,
+
+              icon:
+                item.icon || "",
+
+              desc:
+                item.desc ||
+                item.description ||
+                ""
+
+            };
+
+          })
+
+          .filter(Boolean);
+
+
+        /* ======================================
+           ترتيب عربي
+        ====================================== */
+
+        sections.sort(
+
+          (a, b) =>
+
+            a.nameAr.localeCompare(
+              b.nameAr,
+              "ar"
+            )
+
+        );
+
+
+        /* ======================================
+           إذا لم توجد أقسام صالحة
+        ====================================== */
+
+        if (
+          sections.length === 0
+        ) {
+
+          grid.innerHTML = `
+            <div class="empty-results">
+              لا توجد أقسام تحتوي على اسم عربي.
+            </div>
+          `;
+
+          countEl.textContent =
+            "0";
+
+          statusEl.textContent =
+            "متصل";
+
+          return;
+
+        }
+
+
+        /* ======================================
+           إنشاء البطاقات
+        ====================================== */
+
+        sections.forEach(item => {
+
+          const path =
+            item.path;
+
+          const nameAr =
+            item.nameAr;
+
+
+          const predefined =
+            predefinedMeta[path] || {};
+
+
+          const icon =
+            item.icon ||
+            predefined.icon ||
+            "📁";
+
+
+          const description =
+            item.desc ||
+            predefined.desc ||
+            `مجموعة من الأوامر والأكواد الذكية الخاصة بقسم ${nameAr}.`;
+
+
+          const page =
+            createPageURL(path);
+
+
+          const card =
+            document.createElement(
+              "article"
+            );
+
+
+          card.className =
+            "command-card library-card";
+
+
+          card.innerHTML = `
+
+            <div>
+
+              <div class="icon-box">
+                ${escapeHTML(icon)}
+              </div>
+
+              <h3>
+                ${escapeHTML(nameAr)}
+              </h3>
+
+              <div class="path-badge">
+                /${escapeHTML(path)}
+              </div>
+
+              <p class="command-desc">
+                ${escapeHTML(description)}
+              </p>
 
             </div>
 
 
             <a
-                href="home.html"
-                class="ai-library-card"
-                id="aiLibraryCard"
+              href="${page}"
+              class="library-link"
             >
 
+              <span>
+                فتح مكتبة
+                ${escapeHTML(nameAr)}
+              </span>
 
-                <div
-                    class="ai-icon"
-                    id="aiLibraryIcon"
-                >
-                    🤖
-                </div>
-
-
-                <div class="ai-info">
-
-                    <div class="library-type-badge command-badge">
-                        أوامر AI
-                    </div>
-
-
-                    <h3 id="aiLibraryName">
-                        أوامر الذكاء الاصطناعي
-                    </h3>
-
-
-                    <p id="aiLibraryDescription">
-
-                        افتح مكتبة الذكاء الاصطناعي
-                        لعرض جميع الأقسام والأوامر المصنفة.
-
-                    </p>
-
-                </div>
-
-
-                <div class="open-library">
-                    فتح المكتبة ←
-                </div>
+              <span>
+                ←
+              </span>
 
             </a>
 
-        </section>
+          `;
 
 
+          grid.appendChild(
+            card
+          );
 
-        <!-- =================================
-             DYNAMIC LIBRARIES
-        ================================== -->
+        });
 
-        <section class="libraries-area">
 
-            <div class="section-header">
+        /* ======================================
+           العداد
+        ====================================== */
 
-                <div>
+        countEl.textContent =
+          sections.length;
 
-                    <h2>
-                        📚 المكتبات والخدمات
-                    </h2>
 
-                    <p>
-                        مكتبات برمجية وخدمات سيبرانية وأدوات متنوعة
-                        في مكان واحد.
-                    </p>
+        statusEl.textContent =
+          "متصل";
 
-                </div>
+      }
 
-            </div>
-
-
-            <div
-                id="librariesContainer"
-                class="libraries-container"
-            >
-
-                <div class="loading-card">
-                    ⏳ جاري تحميل المكتبات والخدمات...
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================
-             NO RESULTS
-        ================================== -->
-
-        <div
-            id="noResults"
-            class="no-results"
-        >
-
-            🔍 لا توجد نتائج مطابقة للبحث.
-
-        </div>
-
-
-    </div>
-
-</main>
-
-
-
-<!-- =========================================
-     FOOTER
-========================================= -->
-
-<footer class="site-footer">
-
-    مكتبة الأوامر والأكواد والخدمات
-
-    <span>
-        •
-    </span>
-
-    <strong>
-        علي المالكي
-    </strong>
-
-</footer>
-
-
-
-<script>
-
-/* =========================================================
-   DATABASE
-========================================================= */
-
-const FIREBASE_URL =
-    "https://alnoaif-default-rtdb.firebaseio.com";
-
-
-const LIBRARIES_META_ROOT =
-    "__libraries";
-
-
-let libraries = {};
-
-let allSearchItems = [];
-
-
-
-/* =========================================================
-   DEFAULT LIBRARIES
-========================================================= */
-
-const DEFAULT_LIBRARIES = {
-
-    ai:{
-
-        key:"ai",
-
-        nameAr:
-            "أوامر الذكاء الاصطناعي",
-
-        icon:"🤖",
-
-        type:"commands",
-
-        legacyRoot:true
-
-    },
-
-
-    sketchware:{
-
-        key:"sketchware",
-
-        nameAr:
-            "أكواد Sketchware",
-
-        icon:"📱",
-
-        type:"codes"
-
-    },
-
-
-    androidstudio:{
-
-        key:"androidstudio",
-
-        nameAr:
-            "أكواد Android Studio",
-
-        icon:"🤖",
-
-        type:"codes"
-
-    },
-
-
-    html:{
-
-        key:"html",
-
-        nameAr:
-            "أكواد HTML",
-
-        icon:"🌐",
-
-        type:"codes"
-
-    }
-
-};
-
-
-
-/* =========================================================
-   DATABASE PATH
-========================================================= */
-
-function firebasePath(
-    path = ""
-){
-
-    path =
-        String(
-            path || ""
-        )
-        .trim()
-        .replace(
-            /^\/+|\/+$/g,
-            ""
-        );
-
-
-    if(!path){
-
-        return (
-            FIREBASE_URL +
-            "/.json"
-        );
-    }
-
-
-    const encoded =
-        path
-        .split("/")
-        .map(
-            part =>
-                encodeURIComponent(
-                    part
-                )
-        )
-        .join("/");
-
-
-    return (
-        FIREBASE_URL +
-        "/" +
-        encoded +
-        ".json"
-    );
-}
-
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(value){
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-}
-
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-function setStatus(
-    type,
-    text
-){
-
-    const dot =
-        document.getElementById(
-            "statusDot"
-        );
-
-
-    const status =
-        document.getElementById(
-            "firebaseStatus"
-        );
-
-
-    dot.className =
-        "status-dot " +
-        type;
-
-
-    status.textContent =
-        text;
-}
-
-
-
-/* =========================================================
-   LOAD LIBRARIES
-========================================================= */
-
-async function loadLibraries(){
-
-    let savedLibraries =
-        {};
-
-
-    try{
-
-        const response =
-            await fetch(
-                firebasePath(
-                    LIBRARIES_META_ROOT
-                )
-            );
-
-
-        if(response.ok){
-
-            savedLibraries =
-                await response.json()
-                ||
-                {};
-        }
-
-    }
-
-    catch(error){
+      catch (error) {
 
         console.error(
-            "تعذر قراءة بيانات المكتبات:",
-            error
-        );
-    }
-
-
-    libraries =
-        JSON.parse(
-            JSON.stringify(
-                DEFAULT_LIBRARIES
-            )
+          "Firebase Error:",
+          error
         );
 
 
-    Object.entries(
-        savedLibraries
-    )
-    .forEach(
-        ([key,item])=>{
+        countEl.textContent =
+          "0";
 
 
-            if(
-                !item ||
-                typeof item !==
-                "object"
-            ){
+        statusEl.textContent =
+          "خطأ";
 
-                return;
-            }
-
-
-            libraries[key] = {
-
-                ...(libraries[key] || {}),
-
-                ...item,
-
-                key:key
-
-            };
-
-        }
-    );
-
-
-    return libraries;
-}
-
-
-
-/* =========================================================
-   LOAD LIBRARY SECTIONS
-========================================================= */
-
-async function loadLibrarySections(
-    libraryKey,
-    libraryData
-){
-
-    if(
-        libraryKey === "ai" ||
-        libraryData?.type === "commands"
-    ){
-
-        return [];
-    }
-
-
-    try{
-
-
-        /* =====================================
-           المسارات الفعلية
-        ===================================== */
-
-        let actualPaths =
-            [];
-
-
-        try{
-
-            const response =
-                await fetch(
-
-                    firebasePath(
-                        libraryKey
-                    )
-
-                    +
-
-                    "?shallow=true"
-
-                );
-
-
-            if(response.ok){
-
-                const data =
-                    await response.json();
-
-
-                actualPaths =
-                    data
-                    ? Object.keys(
-                        data
-                    )
-                    : [];
-
-
-                actualPaths =
-                    actualPaths.filter(
-                        path =>
-                            path !==
-                            "__paths"
-                    );
-
-            }
-
-        }
-
-        catch(error){
-
-            console.error(
-                "تعذر قراءة الأقسام:",
-                libraryKey,
-                error
-            );
-        }
-
-
-
-        /* =====================================
-           بيانات الأقسام
-        ===================================== */
-
-        let metadata =
-            {};
-
-
-        try{
-
-            const metaResponse =
-                await fetch(
-
-                    firebasePath(
-
-                        libraryKey +
-                        "/__paths"
-
-                    )
-
-                );
-
-
-            if(metaResponse.ok){
-
-                metadata =
-                    await metaResponse.json()
-                    ||
-                    {};
-            }
-
-        }
-
-        catch(error){
-
-            console.error(
-                "تعذر قراءة بيانات الأقسام:",
-                libraryKey,
-                error
-            );
-        }
-
-
-
-        /* =====================================
-           MAP
-        ===================================== */
-
-        const metaMap =
-            {};
-
-
-        const metadataPaths =
-            [];
-
-
-        Object.values(
-            metadata ||
-            {}
-        )
-        .forEach(
-            item => {
-
-
-                if(
-                    !item ||
-                    typeof item !==
-                    "object" ||
-                    !item.path
-                ){
-
-                    return;
-                }
-
-
-                const cleanPath =
-                    String(
-                        item.path
-                    )
-                    .trim()
-                    .replace(
-                        /^\/+|\/+$/g,
-                        ""
-                    );
-
-
-                if(!cleanPath){
-
-                    return;
-                }
-
-
-                metaMap[
-                    cleanPath
-                ] =
-                    item;
-
-
-                metadataPaths.push(
-                    cleanPath
-                );
-
-            }
-        );
-
-
-
-        /* =====================================
-           MERGE
-        ===================================== */
-
-        const paths =
-            [
-
-                ...new Set([
-
-                    ...actualPaths,
-
-                    ...metadataPaths
-
-                ])
-
-            ];
-
-
-
-        /* =====================================
-           CREATE SECTIONS
-        ===================================== */
-
-        return paths
-        .map(
-            path => {
-
-
-                const meta =
-                    metaMap[path]
-                    ||
-                    {};
-
-
-                return {
-
-                    root:
-                        libraryKey,
-
-                    path:
-                        path,
-
-                    libraryName:
-                        libraryData.nameAr
-                        ||
-                        libraryKey,
-
-                    libraryIcon:
-                        libraryData.icon
-                        ||
-                        "📚",
-
-                    name:
-                        meta.nameAr
-                        ||
-                        "قسم جديد",
-
-                    icon:
-                        meta.icon
-                        ||
-                        libraryData.icon
-                        ||
-                        "📂",
-
-                    desc:
-                        meta.desc
-                        ||
-                        meta.description
-                        ||
-                        (
-                            "مجموعة محتويات وأدوات ضمن " +
-
-                            (
-                                libraryData.nameAr
-                                ||
-                                "المكتبة"
-                            )
-
-                            +
-
-                            "."
-                        )
-
-                };
-
-            }
-        )
-        .sort(
-            (a,b)=>
-
-                a.name.localeCompare(
-                    b.name,
-                    "ar"
-                )
-        );
-
-    }
-
-    catch(error){
-
-        console.error(
-            "خطأ أثناء تحميل المكتبة:",
-            error
-        );
-
-
-        return [];
-    }
-}
-
-
-
-/* =========================================================
-   CREATE LIBRARY BLOCK
-========================================================= */
-
-function createLibraryBlock(
-    libraryKey,
-    libraryData,
-    sections
-){
-
-    const wrapper =
-        document.createElement(
-            "section"
-        );
-
-
-    wrapper.className =
-        "dynamic-library";
-
-
-    wrapper.dataset.search =
-        (
-
-            (
-                libraryData.nameAr
-                ||
-                ""
-            )
-
-            +
-
-            " "
-
-            +
-
-            sections
-            .map(
-                item =>
-                    item.name +
-                    " " +
-                    item.desc
-            )
-            .join(" ")
-
-        )
-        .toLowerCase();
-
-
-
-    wrapper.innerHTML = `
-
-        <div class="dynamic-library-header">
-
-
-            <div class="library-heading">
-
-
-                <div class="library-main-icon">
-
-                    ${escapeHTML(
-                        libraryData.icon
-                        ||
-                        "📚"
-                    )}
-
-                </div>
-
-
-                <div>
-
-
-                    <div class="library-type-badge code-badge">
-
-                        ${
-                            libraryData.type === "service"
-                            ||
-                            libraryData.type === "services"
-
-                            ? "خدمات"
-
-                            : "مكتبة"
-                        }
-
-                    </div>
-
-
-                    <h2>
-
-                        ${escapeHTML(
-                            libraryData.nameAr
-                            ||
-                            "مكتبة"
-                        )}
-
-                    </h2>
-
-
-                    <p>
-
-                        ${sections.length}
-
-                        ${
-                            sections.length === 1
-                            ? "قسم"
-                            : "أقسام"
-                        }
-
-                    </p>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        <div class="sections-grid"></div>
-
-    `;
-
-
-
-    const grid =
-        wrapper.querySelector(
-            ".sections-grid"
-        );
-
-
-
-    /* =====================================
-       EMPTY
-    ===================================== */
-
-    if(
-        sections.length === 0
-    ){
 
         grid.innerHTML = `
 
-            <div class="empty-library-sections">
+          <div class="firebase-error">
 
+            ❌ تعذر تحميل الأقسام من Firebase.
 
-                <div class="empty-library-icon">
+            <br><br>
 
-                    ${escapeHTML(
-                        libraryData.icon
-                        ||
-                        "📚"
-                    )}
+            تأكد من صلاحيات قاعدة البيانات
+            ومن وجود المسار
 
-                </div>
+            <strong>
+              __paths
+            </strong>
 
-
-                <strong>
-                    لا توجد أقسام بعد
-                </strong>
-
-
-                <p>
-
-                    سيتم إظهار الأقسام الجديدة هنا
-                    فور إضافتها وتحديثها.
-
-                </p>
-
-
-            </div>
+          </div>
 
         `;
 
+      }
 
-        return wrapper;
     }
 
 
-
-    /* =====================================
-       SECTIONS
-    ===================================== */
-
-    sections.forEach(
-        section => {
-
-
-            const card =
-                document.createElement(
-                    "a"
-                );
-
-
-            card.className =
-                "section-card";
-
-
-            card.href =
-
-                "library.html"
-
-                +
-
-                "?root="
-
-                +
-
-                encodeURIComponent(
-                    section.root
-                )
-
-                +
-
-                "&path="
-
-                +
-
-                encodeURIComponent(
-                    section.path
-                );
-
-
-
-            card.dataset.search =
-                (
-
-                    section.name
-
-                    +
-
-                    " "
-
-                    +
-
-                    section.desc
-
-                    +
-
-                    " "
-
-                    +
-
-                    section.libraryName
-
-                )
-                .toLowerCase();
-
-
-
-            card.innerHTML = `
-
-
-                <div class="section-card-top">
-
-
-                    <div class="section-icon">
-
-                        ${escapeHTML(
-                            section.icon
-                        )}
-
-                    </div>
-
-
-                </div>
-
-
-
-                <h3>
-
-                    ${escapeHTML(
-                        section.name
-                    )}
-
-                </h3>
-
-
-
-                <p>
-
-                    ${escapeHTML(
-                        section.desc
-                    )}
-
-                </p>
-
-
-
-                <div class="section-card-footer">
-
-
-                    <span>
-
-                        ${escapeHTML(
-                            section.libraryIcon
-                        )}
-
-                        ${escapeHTML(
-                            section.libraryName
-                        )}
-
-                    </span>
-
-
-                    <strong>
-
-                        عرض المحتوى ←
-
-                    </strong>
-
-
-                </div>
-
-
-            `;
-
-
-            grid.appendChild(
-                card
-            );
-
-
-            allSearchItems.push(
-                card
-            );
-
-        }
+    /* ==========================================
+       تشغيل
+    ========================================== */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      loadCategories
     );
 
-
-    return wrapper;
-}
-
-
-
-/* =========================================================
-   RENDER LIBRARIES
-========================================================= */
-
-async function renderLibraries(){
-
-    const container =
-        document.getElementById(
-            "librariesContainer"
-        );
-
-
-    container.innerHTML =
-        "";
-
-
-    allSearchItems =
-        [];
-
-
-    const entries =
-        Object.entries(
-            libraries
-        )
-        .filter(
-            ([key,data]) => {
-
-
-                if(
-                    key === "ai"
-                ){
-
-                    return false;
-                }
-
-
-                return (
-
-                    (
-                        data?.type
-                        ||
-                        "codes"
-                    )
-
-                    !==
-
-                    "commands"
-
-                );
-
-            }
-        )
-        .sort(
-            (a,b)=>
-
-                String(
-                    a[1]?.nameAr
-                    ||
-                    a[0]
-                )
-                .localeCompare(
-                    String(
-                        b[1]?.nameAr
-                        ||
-                        b[0]
-                    ),
-                    "ar"
-                )
-        );
-
-
-    let totalSections =
-        0;
-
-
-    let totalLibraries =
-        0;
-
-
-
-    for(
-        const [
-            key,
-            data
-        ]
-        of entries
-    ){
-
-        const sections =
-            await loadLibrarySections(
-                key,
-                data
-            );
-
-
-        const block =
-            createLibraryBlock(
-                key,
-                data,
-                sections
-            );
-
-
-        container.appendChild(
-            block
-        );
-
-
-        totalSections +=
-            sections.length;
-
-
-        totalLibraries++;
-
-    }
-
-
-
-    const hasAI =
-        Boolean(
-            libraries.ai
-        );
-
-
-    document
-    .getElementById(
-        "librariesCount"
-    )
-    .textContent =
-
-        totalLibraries
-
-        +
-
-        (
-            hasAI
-            ? 1
-            : 0
-        );
-
-
-
-    document
-    .getElementById(
-        "sectionsCount"
-    )
-    .textContent =
-        totalSections;
-
-
-
-    if(
-        totalLibraries === 0
-    ){
-
-        container.innerHTML = `
-
-            <div class="empty-card">
-
-                📚 لا توجد مكتبات أو خدمات متاحة حاليًا.
-
-            </div>
-
-        `;
-    }
-}
-
-
-
-/* =========================================================
-   UPDATE AI
-========================================================= */
-
-function updateAIInformation(){
-
-    const ai =
-        libraries.ai;
-
-
-    const aiSection =
-        document.getElementById(
-            "aiMainSection"
-        );
-
-
-    if(!ai){
-
-        aiSection.style.display =
-            "none";
-
-        return;
-    }
-
-
-    aiSection.style.display =
-        "";
-
-
-    document
-    .getElementById(
-        "aiLibraryName"
-    )
-    .textContent =
-
-        ai.nameAr
-        ||
-        "أوامر الذكاء الاصطناعي";
-
-
-    document
-    .getElementById(
-        "aiLibraryIcon"
-    )
-    .textContent =
-
-        ai.icon
-        ||
-        "🤖";
-}
-
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-function filterSearch(){
-
-    const query =
-        document
-        .getElementById(
-            "searchInput"
-        )
-        .value
-        .trim()
-        .toLowerCase();
-
-
-    let visibleResults =
-        0;
-
-
-
-    /* =====================================
-       AI
-    ===================================== */
-
-    const aiSection =
-        document.getElementById(
-            "aiMainSection"
-        );
-
-
-    if(
-        libraries.ai
-    ){
-
-        const aiText =
-            (
-
-                libraries.ai.nameAr
-                ||
-                ""
-
-            )
-
-            +
-
-            " "
-
-            +
-
-            "ai ذكاء اصطناعي اوامر prompts";
-
-
-        const showAI =
-            !query
-            ||
-            aiText
-            .toLowerCase()
-            .includes(
-                query
-            );
-
-
-        aiSection.style.display =
-            showAI
-            ? ""
-            : "none";
-
-
-        if(showAI){
-
-            visibleResults++;
-        }
-    }
-
-
-
-    /* =====================================
-       LIBRARIES
-    ===================================== */
-
-    document
-    .querySelectorAll(
-        ".dynamic-library"
-    )
-    .forEach(
-        library => {
-
-
-            const cards =
-                [
-
-                    ...library
-                    .querySelectorAll(
-                        ".section-card"
-                    )
-
-                ];
-
-
-            const librarySearch =
-                library.dataset.search
-                ||
-                "";
-
-
-            const libraryMatches =
-                !query
-                ||
-                librarySearch.includes(
-                    query
-                );
-
-
-
-            if(
-                cards.length === 0
-            ){
-
-                library.style.display =
-
-                    libraryMatches
-
-                    ? ""
-
-                    : "none";
-
-
-                if(
-                    libraryMatches
-                ){
-
-                    visibleResults++;
-                }
-
-
-                return;
-            }
-
-
-
-            if(
-                query &&
-                librarySearch.includes(
-                    query
-                )
-            ){
-
-                cards.forEach(
-                    card => {
-
-                        card.style.display =
-                            "";
-
-                    }
-                );
-
-
-                library.style.display =
-                    "";
-
-
-                visibleResults +=
-                    cards.length;
-
-
-                return;
-            }
-
-
-
-            let visibleCards =
-                0;
-
-
-            cards.forEach(
-                card => {
-
-
-                    const text =
-                        card.dataset.search
-                        ||
-                        "";
-
-
-                    const visible =
-                        !query
-                        ||
-                        text.includes(
-                            query
-                        );
-
-
-                    card.style.display =
-
-                        visible
-
-                        ? ""
-
-                        : "none";
-
-
-                    if(
-                        visible
-                    ){
-
-                        visibleCards++;
-                    }
-
-                }
-            );
-
-
-            library.style.display =
-
-                visibleCards
-
-                ? ""
-
-                : "none";
-
-
-            visibleResults +=
-                visibleCards;
-
-        }
-    );
-
-
-
-    document
-    .getElementById(
-        "noResults"
-    )
-    .style.display =
-
-        visibleResults
-
-        ? "none"
-
-        : "block";
-}
-
-
-
-/* =========================================================
-   LOAD PAGE
-========================================================= */
-
-async function loadPage(){
-
-    setStatus(
-        "loading",
-        "جاري تحديث المحتوى..."
-    );
-
-
-    const container =
-        document.getElementById(
-            "librariesContainer"
-        );
-
-
-    container.innerHTML = `
-
-        <div class="loading-card">
-
-            ⏳ جاري تحميل المكتبات والخدمات...
-
-        </div>
-
-    `;
-
-
-    try{
-
-        await loadLibraries();
-
-
-        updateAIInformation();
-
-
-        await renderLibraries();
-
-
-        filterSearch();
-
-
-        setStatus(
-            "success",
-            "المحتوى محدث"
-        );
-
-    }
-
-    catch(error){
-
-        console.error(
-            error
-        );
-
-
-        setStatus(
-            "error",
-            "تعذر التحديث"
-        );
-
-
-        container.innerHTML = `
-
-            <div class="error-card">
-
-                ❌ تعذر تحميل المحتوى حاليًا.
-
-            </div>
-
-        `;
-    }
-}
-
-
-
-/* =========================================================
-   SEARCH EVENT
-========================================================= */
-
-document
-.getElementById(
-    "searchInput"
-)
-.addEventListener(
-    "input",
-    filterSearch
-);
-
-
-
-/* =========================================================
-   START
-========================================================= */
-
-window.addEventListener(
-    "DOMContentLoaded",
-    loadPage
-);
-
-</script>
-
+  </script>
 
 </body>
-
-</html> 
+</html>
+  
