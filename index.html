@@ -10,6 +10,7 @@
   <!-- خط Tajawal -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet"
@@ -215,12 +216,191 @@
       color: var(--primary);
     }
 
+
+    /* ==========================================
+       زر عرض الأقسام
+    ========================================== */
+
+    .categories-toggle {
+
+      width: 100%;
+      min-height: 58px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      padding: 12px 16px;
+
+      border: 1px solid rgba(0, 242, 254, 0.20);
+
+      border-radius: 15px;
+
+      font-family: "Tajawal", sans-serif;
+
+      font-size: 0.95rem;
+
+      font-weight: 800;
+
+      color: #ffffff;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0, 242, 254, 0.10),
+          rgba(127, 0, 255, 0.12)
+        );
+
+      cursor: pointer;
+
+      transition: all 0.3s ease;
+    }
+
+
+    .categories-toggle:hover {
+
+      border-color: rgba(0, 242, 254, 0.40);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0, 242, 254, 0.16),
+          rgba(127, 0, 255, 0.18)
+        );
+
+      transform: translateY(-1px);
+    }
+
+
+    .categories-toggle:active {
+      transform: scale(0.99);
+    }
+
+
+    .toggle-icon {
+
+      width: 40px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      flex-shrink: 0;
+
+      border-radius: 11px;
+
+      font-size: 1.2rem;
+
+      background: rgba(255, 255, 255, 0.07);
+
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+
+    .toggle-text {
+
+      flex: 1;
+
+      text-align: right;
+    }
+
+
+    .toggle-arrow {
+
+      font-size: 0.75rem;
+
+      color: var(--primary);
+
+      transition: transform 0.35s ease;
+    }
+
+
+    .categories-toggle.active .toggle-arrow {
+
+      transform: rotate(180deg);
+
+    }
+
+
+    /* ==========================================
+       حاوية الأقسام
+    ========================================== */
+
+    .categories-wrapper {
+
+      max-height: 0;
+
+      overflow: hidden;
+
+      opacity: 0;
+
+      margin-top: 0;
+
+      transform: translateY(-8px);
+
+      transition:
+        max-height 0.6s ease,
+        opacity 0.35s ease,
+        margin-top 0.35s ease,
+        transform 0.35s ease;
+
+    }
+
+
+    .categories-wrapper.open {
+
+      max-height: 10000px;
+
+      opacity: 1;
+
+      margin-top: 20px;
+
+      transform: translateY(0);
+
+    }
+
+
+    /* ==========================================
+       تحسين للجوال
+    ========================================== */
+
+    @media (max-width: 600px) {
+
+      .categories-toggle {
+
+        min-height: 54px;
+
+        padding: 10px 12px;
+
+        border-radius: 13px;
+
+        font-size: 0.9rem;
+
+      }
+
+      .toggle-icon {
+
+        width: 36px;
+        height: 36px;
+
+        font-size: 1.05rem;
+
+      }
+
+    }
+
   </style>
 </head>
 
+
 <body>
 
+
   <div class="container">
+
 
     <!-- =========================
          NAVBAR
@@ -228,7 +408,12 @@
 
     <nav class="site-nav">
 
-      <a href="index.html" class="brand-wrapper">
+
+      <a
+        href="index.html"
+        class="brand-wrapper"
+      >
+
 
         <img
           src="https://github.com/alnoaif2026/alnoaif2026.github.io/blob/main/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A8%D9%A2%D9%A8_%D9%A1%D9%A4%D9%A0%D9%A5%D9%A1%D9%A1.png?raw=true"
@@ -236,20 +421,29 @@
           class="brand-image"
         >
 
+
         <div class="brand-name">
+
           مكتبة الأوامر
+
         </div>
 
+
       </a>
+
 
       <a
         href="https://alnoaif2026.github.io"
         class="external-link"
       >
+
         🌐 الرئيسية
+
       </a>
 
+
     </nav>
+
 
 
     <!-- =========================
@@ -258,45 +452,78 @@
 
     <header class="hero">
 
+
       <div class="hero-badge">
+
         ✦ مكتبة ذكية لتنظيم أوامرك
+
       </div>
 
+
       <h1>
+
         كل أوامرك
-        <span>في مكان واحد</span>
+
+        <span>
+
+          في مكان واحد
+
+        </span>
+
       </h1>
 
+
       <p>
+
         مكتبة منظمة تضم مجموعة من الأوامر والأكواد الذكية
         لمختلف المجالات. اختر القسم المناسب وابدأ مباشرة.
+
       </p>
+
 
       <div class="info-bar">
 
+
         <div class="info-item">
+
           ⚡ وصول سريع للأوامر
+
         </div>
 
+
         <div class="info-item">
+
           •
+
         </div>
 
+
         <div class="info-item">
+
           📋 نسخ واستخدام بسهولة
+
         </div>
 
+
         <div class="info-item">
+
           •
+
         </div>
 
+
         <div class="info-item">
+
           📱 متوافق مع الجوال
+
         </div>
+
 
       </div>
 
+
     </header>
+
 
 
     <!-- =========================
@@ -305,54 +532,82 @@
 
     <div class="stats-container">
 
+
       <div class="stat-card">
 
+
         <div class="stat-icon">
+
           📚
+
         </div>
 
+
         <div class="stat-content">
+
 
           <span
             class="stat-number"
             id="categories-count"
           >
+
             0
+
           </span>
+
 
           <span class="stat-label">
+
             الأقسام المتاحة
+
           </span>
 
+
         </div>
+
 
       </div>
 
 
+
       <div class="stat-card">
 
+
         <div class="stat-icon">
+
           ⚡
+
         </div>
 
+
         <div class="stat-content">
+
 
           <span
             class="stat-number"
             id="status-text"
           >
+
             جاري الاتصال
+
           </span>
 
+
           <span class="stat-label">
+
             حالة المكتبة
+
           </span>
+
 
         </div>
 
+
       </div>
 
+
     </div>
+
 
 
     <!-- =========================
@@ -361,37 +616,112 @@
 
     <main>
 
+
       <div class="glass-panel">
+
 
         <div class="section-head">
 
+
           <h2>
+
             الأقسام الرئيسية
+
           </h2>
 
+
           <p>
-            اختر أحد الأقسام للوصول إلى مجموعة الأوامر الخاصة به.
+
+            اضغط على الزر لعرض جميع أقسام المكتبة.
+
           </p>
 
+
         </div>
 
 
-        <div
-          class="commands-grid"
-          id="categories-grid"
+
+        <!-- =========================
+             زر فتح الأقسام
+        ========================== -->
+
+        <button
+          type="button"
+          class="categories-toggle"
+          id="categories-toggle"
+          aria-expanded="false"
+          aria-controls="categories-wrapper"
         >
 
-          <div class="loading-spinner">
-            ⏳ جاري تحميل الأقسام...
+
+          <span class="toggle-icon">
+
+            📚
+
+          </span>
+
+
+          <span
+            class="toggle-text"
+            id="categories-toggle-text"
+          >
+
+            عرض الأقسام
+
+          </span>
+
+
+          <span
+            class="toggle-arrow"
+            id="categories-toggle-arrow"
+          >
+
+            ▼
+
+          </span>
+
+
+        </button>
+
+
+
+        <!-- =========================
+             قائمة الأقسام المخفية
+        ========================== -->
+
+        <div
+          class="categories-wrapper"
+          id="categories-wrapper"
+        >
+
+
+          <div
+            class="commands-grid"
+            id="categories-grid"
+          >
+
+
+            <div class="loading-spinner">
+
+              ⏳ جاري تحميل الأقسام...
+
+            </div>
+
+
           </div>
 
+
         </div>
+
 
       </div>
 
+
     </main>
 
+
   </div>
+
 
 
   <!-- =========================
@@ -400,13 +730,19 @@
 
   <footer class="site-footer">
 
+
     جميع الحقوق محفوظة © 2026
 
+
     <strong>
+
       مكتبة الأوامر الذكية | علي المالكي
+
     </strong>
 
+
   </footer>
+
 
 
   <!-- =========================
@@ -415,6 +751,7 @@
 
   <script>
 
+
     /* ==========================================
        Firebase
     ========================================== */
@@ -422,8 +759,10 @@
     const FIREBASE_URL =
       "https://alnoaif-default-rtdb.firebaseio.com";
 
+
     const META_PATH =
       "__paths";
+
 
 
     /* ==========================================
@@ -432,52 +771,99 @@
 
     const predefinedMeta = {
 
+
       brmjh: {
+
         icon: "💻",
-        desc: "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، وإصلاح الأخطاء."
+
+        desc:
+          "أوامر كتابة الأكواد، إنشاء المواقع والتطبيقات، وإصلاح الأخطاء."
+
       },
+
 
       astath: {
+
         icon: "👨‍🏫",
-        desc: "أوامر المعلمين والطلاب وتحضير الدروس وإنشاء الاختبارات."
+
+        desc:
+          "أوامر المعلمين والطلاب وتحضير الدروس وإنشاء الاختبارات."
+
       },
+
 
       talim: {
+
         icon: "👨‍🏫",
-        desc: "أوامر التعليم وإعداد الدروس والاختبارات وشرح المواد."
+
+        desc:
+          "أوامر التعليم وإعداد الدروس والاختبارات وشرح المواد."
+
       },
+
 
       biot: {
+
         icon: "🏠",
-        desc: "أوامر الطبخ والوصفات وتنظيم المنزل والتنظيف وخطط الوجبات."
+
+        desc:
+          "أوامر الطبخ والوصفات وتنظيم المنزل والتنظيف وخطط الوجبات."
+
       },
+
 
       cars: {
+
         icon: "🚘",
-        desc: "أوامر السيارات والتشخيص والصيانة والتصوير الاحترافي."
+
+        desc:
+          "أوامر السيارات والتشخيص والصيانة والتصوير الاحترافي."
+
       },
+
 
       photography: {
+
         icon: "📸",
-        desc: "أوامر التصوير والكاميرات والعدسات والإضاءة السينمائية."
+
+        desc:
+          "أوامر التصوير والكاميرات والعدسات والإضاءة السينمائية."
+
       },
+
 
       engineering: {
+
         icon: "⚙️",
-        desc: "أوامر المخططات الهندسية والتصاميم التقنية والعرض التفكيكي."
+
+        desc:
+          "أوامر المخططات الهندسية والتصاميم التقنية والعرض التفكيكي."
+
       },
+
 
       mechanical: {
+
         icon: "🔩",
-        desc: "أوامر الهندسة الميكانيكية وتصميم الآلات وتحليل الحركة."
+
+        desc:
+          "أوامر الهندسة الميكانيكية وتصميم الآلات وتحليل الحركة."
+
       },
 
+
       architecture: {
+
         icon: "🏛️",
-        desc: "أوامر التصميم الداخلي والخارجي وتوزيع الأثاث والإضاءة."
+
+        desc:
+          "أوامر التصميم الداخلي والخارجي وتوزيع الأثاث والإضاءة."
+
       }
 
+
     };
+
 
 
     /* ==========================================
@@ -486,14 +872,22 @@
 
     function escapeHTML(value) {
 
+
       return String(value ?? "")
+
         .replace(/&/g, "&amp;")
+
         .replace(/</g, "&lt;")
+
         .replace(/>/g, "&gt;")
+
         .replace(/"/g, "&quot;")
+
         .replace(/'/g, "&#039;");
 
+
     }
+
 
 
     /* ==========================================
@@ -502,27 +896,36 @@
 
     function cleanPath(path) {
 
+
       return String(path || "")
+
         .trim()
+
         .replace(/^\/+|\/+$/g, "");
 
+
     }
+
 
 
     /* ==========================================
        رابط صفحة القسم
-
-       كل الأقسام تفتح library.html
     ========================================== */
 
     function createPageURL(path) {
 
+
       return (
+
         "library.html?path=" +
+
         encodeURIComponent(path)
+
       );
 
+
     }
+
 
 
     /* ==========================================
@@ -531,58 +934,87 @@
 
     async function loadCategories() {
 
+
       const grid =
+
         document.getElementById(
           "categories-grid"
         );
 
+
       const countEl =
+
         document.getElementById(
           "categories-count"
         );
 
+
       const statusEl =
+
         document.getElementById(
           "status-text"
         );
 
 
+
       grid.innerHTML = `
+
         <div class="loading-spinner">
+
           ⏳ جاري تحميل الأقسام...
+
         </div>
+
       `;
 
+
+
       statusEl.textContent =
+
         "جاري الاتصال";
 
 
+
       try {
+
+
 
         /* ======================================
            قراءة بيانات أسماء المسارات
         ====================================== */
 
         const response =
+
           await fetch(
+
             `${FIREBASE_URL}/${META_PATH}.json`
+
           );
+
 
 
         if (!response.ok) {
 
+
           throw new Error(
+
             "HTTP " + response.status
+
           );
+
 
         }
 
 
+
         const data =
+
           await response.json();
 
 
+
         grid.innerHTML = "";
+
 
 
         /* ======================================
@@ -591,21 +1023,33 @@
 
         if (!data) {
 
+
           grid.innerHTML = `
+
             <div class="empty-results">
+
               لا توجد أقسام مسجلة حالياً.
+
             </div>
+
           `;
 
+
           countEl.textContent =
+
             "0";
 
+
           statusEl.textContent =
+
             "متصل";
+
 
           return;
 
+
         }
+
 
 
         /* ======================================
@@ -613,65 +1057,105 @@
         ====================================== */
 
         const sections =
+
           Object
+
           .entries(data)
+
           .map(([firebaseKey, item]) => {
 
+
+
             if (
+
               !item ||
+
               typeof item !== "object"
+
             ) {
+
 
               return null;
 
+
             }
+
 
 
             const path =
+
               cleanPath(
+
                 item.path ||
+
                 firebaseKey
+
               );
 
 
+
             const nameAr =
+
               String(
+
                 item.nameAr || ""
+
               )
+
               .trim();
 
 
+
             if (
+
               !path ||
+
               !nameAr
+
             ) {
+
 
               return null;
 
+
             }
+
 
 
             return {
 
+
               firebaseKey,
+
 
               path,
 
+
               nameAr,
 
+
               icon:
+
                 item.icon || "",
 
+
               desc:
+
                 item.desc ||
+
                 item.description ||
+
                 ""
+
 
             };
 
+
           })
 
+
           .filter(Boolean);
+
 
 
         /* ======================================
@@ -680,14 +1164,21 @@
 
         sections.sort(
 
+
           (a, b) =>
 
+
             a.nameAr.localeCompare(
+
               b.nameAr,
+
               "ar"
+
             )
 
+
         );
+
 
 
         /* ======================================
@@ -695,24 +1186,38 @@
         ====================================== */
 
         if (
+
           sections.length === 0
+
         ) {
 
+
           grid.innerHTML = `
+
             <div class="empty-results">
+
               لا توجد أقسام تحتوي على اسم عربي.
+
             </div>
+
           `;
 
+
           countEl.textContent =
+
             "0";
 
+
           statusEl.textContent =
+
             "متصل";
+
 
           return;
 
+
         }
+
 
 
         /* ======================================
@@ -721,90 +1226,147 @@
 
         sections.forEach(item => {
 
+
+
           const path =
+
             item.path;
 
+
+
           const nameAr =
+
             item.nameAr;
 
 
+
           const predefined =
+
             predefinedMeta[path] || {};
 
 
+
           const icon =
+
             item.icon ||
+
             predefined.icon ||
+
             "📁";
 
 
+
           const description =
+
             item.desc ||
+
             predefined.desc ||
+
             `مجموعة من الأوامر والأكواد الذكية الخاصة بقسم ${nameAr}.`;
 
 
+
           const page =
+
             createPageURL(path);
 
 
+
           const card =
+
             document.createElement(
+
               "article"
+
             );
 
 
+
           card.className =
+
             "command-card library-card";
+
 
 
           card.innerHTML = `
 
+
             <div>
 
+
               <div class="icon-box">
+
                 ${escapeHTML(icon)}
+
               </div>
+
 
               <h3>
+
                 ${escapeHTML(nameAr)}
+
               </h3>
 
+
               <div class="path-badge">
+
                 /${escapeHTML(path)}
+
               </div>
 
+
               <p class="command-desc">
+
                 ${escapeHTML(description)}
+
               </p>
+
 
             </div>
 
 
+
             <a
+
               href="${page}"
+
               class="library-link"
+
             >
 
-              <span>
-                فتح مكتبة
-                ${escapeHTML(nameAr)}
-              </span>
 
               <span>
-                ←
+
+                فتح مكتبة
+
+                ${escapeHTML(nameAr)}
+
               </span>
+
+
+              <span>
+
+                ←
+
+              </span>
+
 
             </a>
+
 
           `;
 
 
+
           grid.appendChild(
+
             card
+
           );
 
+
         });
+
 
 
         /* ======================================
@@ -812,65 +1374,215 @@
         ====================================== */
 
         countEl.textContent =
+
           sections.length;
 
 
+
         statusEl.textContent =
+
           "متصل";
+
 
       }
 
+
+
       catch (error) {
 
+
+
         console.error(
+
           "Firebase Error:",
+
           error
+
         );
 
 
+
         countEl.textContent =
+
           "0";
 
 
+
         statusEl.textContent =
+
           "خطأ";
+
 
 
         grid.innerHTML = `
 
+
           <div class="firebase-error">
+
 
             ❌ تعذر تحميل الأقسام من Firebase.
 
+
             <br><br>
 
+
             تأكد من صلاحيات قاعدة البيانات
+
             ومن وجود المسار
 
+
             <strong>
+
               __paths
+
             </strong>
+
 
           </div>
 
+
         `;
 
+
       }
+
 
     }
 
 
+
     /* ==========================================
-       تشغيل
+       فتح وإغلاق قائمة الأقسام
+    ========================================== */
+
+    function setupCategoriesToggle() {
+
+
+      const toggleButton =
+
+        document.getElementById(
+          "categories-toggle"
+        );
+
+
+      const wrapper =
+
+        document.getElementById(
+          "categories-wrapper"
+        );
+
+
+      const toggleText =
+
+        document.getElementById(
+          "categories-toggle-text"
+        );
+
+
+
+      if (
+
+        !toggleButton ||
+
+        !wrapper ||
+
+        !toggleText
+
+      ) {
+
+
+        return;
+
+
+      }
+
+
+
+      toggleButton.addEventListener(
+
+        "click",
+
+        function () {
+
+
+
+          const isOpen =
+
+            wrapper.classList.toggle(
+
+              "open"
+
+            );
+
+
+
+          toggleButton.classList.toggle(
+
+            "active",
+
+            isOpen
+
+          );
+
+
+
+          toggleButton.setAttribute(
+
+            "aria-expanded",
+
+            isOpen
+
+              ? "true"
+
+              : "false"
+
+          );
+
+
+
+          toggleText.textContent =
+
+            isOpen
+
+              ? "إخفاء الأقسام"
+
+              : "عرض الأقسام";
+
+
+        }
+
+      );
+
+
+    }
+
+
+
+    /* ==========================================
+       تشغيل الصفحة
     ========================================== */
 
     document.addEventListener(
+
       "DOMContentLoaded",
-      loadCategories
+
+      function () {
+
+
+        loadCategories();
+
+
+        setupCategoriesToggle();
+
+
+      }
+
     );
+
 
   </script>
 
+
 </body>
+
 </html>
-  
