@@ -1,1 +1,693 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محرر الأكواد المباشر | Live Code Editor</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: {
+    colors: { brand: { panel: '#1e293b' } },
+    fontFamily: { sans: ['Tajawal', 'sans-serif'], mono: ['Fira Code', 'monospace'] }
+  } }
+}
+</script>
+<style>
+html, body { height: 100%; }
+body { font-family: 'Tajawal', sans-serif; background: #0b0f19; color: #f3f4f6; overflow: hidden; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* المحرر دائماً من اليسار لليمين حتى تظهر الأكواد بشكل صحيح */
+.editor-container { display: flex; direction: ltr; background: #0d1117; height: 100%; overflow: hidden; }
+.line-numbers {
+  width: 3.5rem; padding: 1rem 0 3rem; text-align: center; background: #161b22; color: #485164;
+  user-select: none; font: 0.875rem/1.5rem 'Fira Code', monospace;
+  border-right: 1px solid #21262d; overflow: hidden; flex-shrink: 0;
+}
+.code-textarea {
+  flex: 1; min-width: 0; background: transparent; color: #e6edf3;
+  font: 0.875rem/1.5rem 'Fira Code', monospace; padding: 1rem; border: none; outline: none;
+  resize: none; white-space: pre; overflow: auto; tab-size: 2; direction: ltr; text-align: left;
+}
+.tab-btn.active { border-bottom: 2px solid #6366f1; color: #818cf8; background: rgba(99,102,241,.1); }
+
+.tooltip { position: relative; }
+.tooltip .tooltip-text {
+  visibility: hidden; width: max-content; background: #1e293b; color: #fff; text-align: center;
+  border-radius: 6px; padding: 4px 8px; position: absolute; z-index: 50; top: 125%; left: 50%;
+  transform: translateX(-50%); opacity: 0; transition: opacity .2s; font-size: .75rem;
+  border: 1px solid #334155; pointer-events: none;
+}
+.tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+#previewPanel:fullscreen { background: #0f172a; height: 100%; width: 100%; }
+
+.ac-box { position: fixed; z-index: 100; direction: ltr; min-width: 180px; max-height: 240px; overflow-y: auto;
+  background: #1e293b; border: 1px solid #475569; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,.5);
+  font: 0.8rem 'Fira Code', monospace; padding: 4px; }
+.ac-box.hidden { display: none; }
+.ac-item { padding: 4px 10px; border-radius: 5px; color: #cbd5e1; cursor: pointer; white-space: nowrap; }
+.ac-item b { color: #818cf8; font-weight: 600; }
+.ac-item.sel { background: #4f46e5; color: #fff; }
+.ac-item.sel b { color: #fff; }
+</style>
+</head>
+<body class="flex flex-col">
+
+<header class="bg-brand-panel border-b border-slate-800 px-4 py-2.5 flex items-center justify-between z-20 flex-shrink-0">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-mono text-white">&lt;/&gt;</div>
+    <div>
+      <h1 class="font-bold text-lg leading-none text-white">محرر الأكواد المباشر</h1>
+      <span class="text-xs text-slate-400">Live Web Code Editor</span>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <button onclick="loadTemplate(true)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center gap-2 border border-slate-700 transition">
+      <span class="text-indigo-400">⚡</span><span class="hidden sm:inline">تحميل نموذج تجريبي</span>
+    </button>
+    <button id="autoRefreshBtn" onclick="toggleAutoRefresh()" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 border transition">
+      <i class="fa-solid fa-sync text-xs"></i>
+      <span class="hidden sm:inline">تحديث تلقائي:</span>
+      <span id="autoRefreshStatus" class="font-bold"></span>
+    </button>
+    <button onclick="updatePreview()" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-2 shadow-md shadow-indigo-600/30 transition active:scale-95">
+      <i class="fa-solid fa-play text-xs"></i><span>تشغيل</span>
+    </button>
+    <button onclick="resetEditor()" class="tooltip p-2 rounded-lg bg-slate-800 hover:bg-rose-950/50 hover:text-rose-400 text-slate-400 border border-slate-700 transition">
+      <i class="fa-solid fa-trash-can text-sm"></i><span class="tooltip-text">مسح الكل</span>
+    </button>
+    <button onclick="openProjects()" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-md shadow-sky-600/20 transition">
+      <i class="fa-solid fa-cloud text-xs"></i><span class="hidden sm:inline">مشاريعي</span>
+    </button>
+    <button onclick="downloadHTML()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition">
+      <i class="fa-solid fa-download text-xs"></i><span class="hidden sm:inline">تنزيل .html</span>
+    </button>
+  </div>
+</header>
+
+<main class="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+  <div id="editorPanel" class="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-l border-slate-800 bg-slate-900/50 h-1/2 md:h-full min-h-0">
+    <div class="flex items-center justify-between bg-brand-panel border-b border-slate-800 px-2 pt-2 flex-shrink-0">
+      <div class="flex gap-1">
+        <button onclick="switchTab('html')" id="tab-html" class="tab-btn px-4 py-2 rounded-t-lg text-xs font-semibold text-slate-400 flex items-center gap-2 transition">
+          <i class="fa-brands fa-html5 text-orange-500 text-sm"></i><span>HTML</span></button>
+        <button onclick="switchTab('css')" id="tab-css" class="tab-btn px-4 py-2 rounded-t-lg text-xs font-semibold text-slate-400 flex items-center gap-2 transition">
+          <i class="fa-brands fa-css3-alt text-blue-500 text-sm"></i><span>CSS</span></button>
+        <button onclick="switchTab('js')" id="tab-js" class="tab-btn px-4 py-2 rounded-t-lg text-xs font-semibold text-slate-400 flex items-center gap-2 transition">
+          <i class="fa-brands fa-js text-yellow-400 text-sm"></i><span>JavaScript</span></button>
+      </div>
+      <button onclick="copyCurrentTabCode()" class="px-2.5 py-1 mb-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center gap-1.5 border border-slate-700 transition">
+        <i class="fa-regular fa-copy text-xs"></i><span class="hidden sm:inline">نسخ الكود</span>
+      </button>
+    </div>
+
+    <div class="flex-1 relative overflow-hidden min-h-0">
+      <div id="content-html" class="editor-container w-full"><div id="lines-html" class="line-numbers">1</div>
+        <textarea id="code-html" class="code-textarea" spellcheck="false" placeholder="اكتب كود HTML هنا..."></textarea></div>
+      <div id="content-css" class="editor-container w-full hidden"><div id="lines-css" class="line-numbers">1</div>
+        <textarea id="code-css" class="code-textarea" spellcheck="false" placeholder="اكتب كود CSS هنا..."></textarea></div>
+      <div id="content-js" class="editor-container w-full hidden"><div id="lines-js" class="line-numbers">1</div>
+        <textarea id="code-js" class="code-textarea" spellcheck="false" placeholder="اكتب كود JavaScript هنا..."></textarea></div>
+    </div>
+  </div>
+
+  <div id="previewPanel" class="w-full md:w-1/2 flex flex-col bg-slate-950 h-1/2 md:h-full relative min-h-0">
+    <div class="bg-brand-panel border-b border-slate-800 px-4 py-2 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-xs font-medium text-slate-300">المعاينة الحية</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="reloadPreview()" class="tooltip p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-arrows-rotate text-xs"></i><span class="tooltip-text">إعادة تحديث</span></button>
+        <button onclick="toggleFullscreen()" class="tooltip p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-expand text-xs"></i><span class="tooltip-text">ملء الشاشة</span></button>
+      </div>
+    </div>
+    <div class="flex-1 bg-white relative min-h-0">
+      <iframe id="previewFrame" class="w-full h-full border-0" sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-brand-panel border-t border-slate-800 px-4 py-1.5 text-xs text-slate-400 flex items-center justify-between z-10 flex-shrink-0">
+  <div class="flex items-center gap-4">
+    <span id="charCount">الحجم الإجمالي: 0 بايت</span>
+    <span class="hidden sm:inline text-slate-600">|</span>
+    <span id="saveStatus" class="hidden sm:inline">الحفظ التلقائي: مفعل</span>
+  </div>
+  <span class="text-indigo-400 font-mono">Live Editor</span>
+</footer>
+
+<div id="projModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/60 p-4" onclick="if(event.target===this)closeProjects()">
+  <div class="w-full max-w-md bg-brand-panel border border-slate-700 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700">
+      <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-cloud text-sky-400"></i>المشاريع السحابية (Firebase)</h3>
+      <button onclick="closeProjects()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="p-4 border-b border-slate-700 flex gap-2">
+      <input id="projName" type="text" maxlength="100" placeholder="اسم المشروع" class="flex-1 min-w-0 bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter')saveProject()">
+      <button id="projSaveBtn" onclick="saveProject()" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 flex-shrink-0 disabled:opacity-50">
+        <i class="fa-solid fa-floppy-disk"></i><span>حفظ</span></button>
+    </div>
+    <div id="projList" class="p-2 overflow-y-auto flex-1 min-h-[80px]"></div>
+  </div>
+</div>
+
+<div id="acBox" class="ac-box hidden"></div>
+
+<div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-4 py-2 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 translate-y-20 opacity-0 pointer-events-none transition-all duration-300 z-50">
+  <i id="toastIcon" class="fa-solid fa-circle-check"></i><span id="toastMsg"></span>
+</div>
+
+<script>
+const STORE_KEY = 'liveCodeEditor:v1';
+const TYPES = ['html', 'css', 'js'];
+let currentTab = 'html', autoRefresh = true, debounceTimer = null, saveTimer = null, toastTimer = null;
+
+const sampleTemplate = {
+html: `<div class="card">
+  <div class="badge">🔥 معاينة حية</div>
+  <h2>مرحباً بك في محرر الأكواد</h2>
+  <p>اكتب أكواد HTML, CSS, JavaScript وشاهد النتيجة تتحدث فورياً!</p>
+  <button id="interactiveBtn">اضغط هنا للتفاعل</button>
+  <p id="resultText" class="result"></p>
+</div>`,
+css: `body {
+  font-family: 'Tajawal', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; margin: 0; color: #fff;
+}
+.card {
+  background: rgba(255,255,255,.05); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.1); padding: 2rem; border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,.4); max-width: 380px; text-align: center;
+}
+.badge {
+  display: inline-block; background: rgba(99,102,241,.2); color: #818cf8;
+  padding: 4px 12px; border-radius: 99px; font-size: .8rem; margin-bottom: 1rem;
+}
+h2 { margin: 0 0 .75rem; font-size: 1.4rem; }
+p { line-height: 1.6; color: #cbd5e1; }
+button {
+  background: #6366f1; color: #fff; border: none; padding: 10px 20px; font-size: .9rem;
+  border-radius: 10px; cursor: pointer; transition: transform .2s, background .2s; margin-top: 1rem;
+}
+button:hover { background: #4f46e5; transform: translateY(-2px); }
+.result { margin-top: 15px; font-weight: bold; color: #10b981; }`,
+js: `document.getElementById('interactiveBtn').addEventListener('click', () => {
+  document.getElementById('resultText').innerText = '✨ تم تنفيذ كود الجافاسكربت بنجاح!';
+});`
+};
+
+const $ = id => document.getElementById(id);
+const getCode = t => $('code-' + t).value;
+
+/* ---------- الحفظ والاسترجاع (localStorage) ---------- */
+function saveState() {
+  try {
+    const data = { html: getCode('html'), css: getCode('css'), js: getCode('js'), tab: currentTab, auto: autoRefresh };
+    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    $('saveStatus').textContent = 'تم الحفظ ✓';
+  } catch (e) {
+    $('saveStatus').textContent = 'تعذر الحفظ (التخزين غير متاح)';
+  }
+}
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 300);
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+/* ---------- التهيئة ---------- */
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = loadState();
+  if (saved) {
+    TYPES.forEach(t => $('code-' + t).value = saved[t] || '');
+    autoRefresh = saved.auto !== false;
+    currentTab = TYPES.includes(saved.tab) ? saved.tab : 'html';
+  } else {
+    TYPES.forEach(t => $('code-' + t).value = sampleTemplate[t]);
+  }
+
+  TYPES.forEach(type => {
+    const ta = $('code-' + type);
+    ta.addEventListener('input', () => onCodeInput(type));
+    ta.addEventListener('scroll', () => syncScroll(type));
+    ta.addEventListener('keydown', e => {
+      if (acKey(e)) return;
+      if (e.key !== 'Tab') return;
+      e.preventDefault();
+      // insertText يحافظ على التراجع (Ctrl+Z)
+      if (!document.execCommand || !document.execCommand('insertText', false, '  ')) {
+        const s = ta.selectionStart;
+        ta.value = ta.value.slice(0, s) + '  ' + ta.value.slice(ta.selectionEnd);
+        ta.selectionStart = ta.selectionEnd = s + 2;
+        onCodeInput(type);
+      }
+    });
+    updateLineNumbers(type);
+  });
+
+  window.addEventListener('resize', () => TYPES.forEach(syncScroll));
+  document.addEventListener('fullscreenchange', () => setTimeout(() => TYPES.forEach(syncScroll), 100));
+  window.addEventListener('beforeunload', saveState);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) saveState(); });
+
+  renderAutoRefresh();
+  switchTab(currentTab);
+  updateCharCount();
+  updatePreview();
+});
+
+function switchTab(tab) {
+  currentTab = tab;
+  acHide();
+  TYPES.forEach(t => {
+    $('tab-' + t).classList.toggle('active', t === tab);
+    $('content-' + t).classList.toggle('hidden', t !== tab);
+  });
+  setTimeout(() => syncScroll(tab), 0);
+  scheduleSave();
+}
+
+function onCodeInput(type) {
+  updateLineNumbers(type);
+  acUpdate(type);
+  updateCharCount();
+  scheduleSave();
+  if (autoRefresh) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(updatePreview, 400);
+  }
+}
+
+function updateLineNumbers(type) {
+  const n = getCode(type).split('\n').length;
+  let s = '';
+  for (let i = 1; i <= n; i++) s += i + '<br>';
+  $('lines-' + type).innerHTML = s;
+  syncScroll(type);
+}
+
+function syncScroll(type) {
+  const ta = $('code-' + type), ln = $('lines-' + type);
+  if (ta && ln) ln.scrollTop = ta.scrollTop;
+}
+
+/* ---------- المعاينة ---------- */
+// يمنع كسر الوسم إذا كتب المستخدم إغلاق وسم السكربت داخل كوده
+const safeScript = s => s.replace(/<\/script/gi, '<\\/script');
+
+function buildDocument(title) {
+  return `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+${getCode('css').replace(/<\/style/gi, '<\\/style')}
+</style>
+</head>
+<body>
+${getCode('html')}
+<script>
+${safeScript(getCode('js'))}
+<\/script>
+</body>
+</html>`;
+}
+
+function updatePreview() {
+  // سكربت يلتقط الأخطاء (بما فيها أخطاء الصياغة) ويعرضها في المعاينة
+  const errorCatcher = `<script>
+window.addEventListener('error', function (e) {
+  var pre = document.createElement('pre');
+  pre.style.cssText = 'color:#f87171;background:#1e1e1e;padding:10px;margin:10px;border-radius:8px;font-size:12px;white-space:pre-wrap;direction:ltr;text-align:left;position:relative;z-index:99999';
+  pre.textContent = '⚠️ JS Error: ' + e.message + (e.lineno ? ' (line ' + e.lineno + ')' : '');
+  (document.body || document.documentElement).appendChild(pre);
+});
+<\/script>`;
+  $('previewFrame').srcdoc = buildDocument('Preview').replace('<head>', '<head>' + errorCatcher);
+}
+
+function reloadPreview() { updatePreview(); showToast('تم تحديث المعاينة'); }
+
+/* ---------- التحديث التلقائي ---------- */
+function renderAutoRefresh() {
+  const st = $('autoRefreshStatus'), btn = $('autoRefreshBtn');
+  st.textContent = autoRefresh ? 'مفعل' : 'معطل';
+  st.className = 'font-bold ' + (autoRefresh ? 'text-emerald-400' : 'text-rose-400');
+  btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 border transition ' +
+    (autoRefresh ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60' : 'bg-slate-800 text-slate-400 border-slate-700');
+  btn.querySelector('i').classList.toggle('fa-spin', autoRefresh);
+}
+function toggleAutoRefresh() {
+  autoRefresh = !autoRefresh;
+  renderAutoRefresh();
+  if (autoRefresh) updatePreview();
+  saveState();
+  showToast(autoRefresh ? 'تم تفعيل التحديث التلقائي' : 'تم إيقاف التحديث التلقائي');
+}
+
+/* ---------- القالب والمسح ---------- */
+function loadTemplate(ask) {
+  const hasCode = TYPES.some(t => getCode(t).trim());
+  if (ask && hasCode && !confirm('سيتم استبدال الكود الحالي بالنموذج التجريبي. هل تريد المتابعة؟')) return;
+  TYPES.forEach(t => { $('code-' + t).value = sampleTemplate[t]; updateLineNumbers(t); });
+  updateCharCount(); updatePreview(); saveState();
+  showToast('تم تحميل النموذج التجريبي');
+}
+
+function resetEditor() {
+  if (!confirm('هل أنت متأكد من مسح كل الأكواد؟ لا يمكن التراجع عن ذلك.')) return;
+  TYPES.forEach(t => { $('code-' + t).value = ''; updateLineNumbers(t); });
+  updateCharCount(); updatePreview(); saveState();
+  showToast('تم مسح المحتوى');
+}
+
+/* ---------- النسخ والتنزيل ---------- */
+function copyCurrentTabCode() {
+  const code = getCode(currentTab);
+  if (!code.trim()) return showToast('لا يوجد كود للنسخ!', true);
+  const ok = () => showToast('تم نسخ كود ' + currentTab.toUpperCase());
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(ok).catch(() => fallbackCopy(code, ok));
+  } else fallbackCopy(code, ok);
+}
+function fallbackCopy(text, ok) {
+  const el = document.createElement('textarea');
+  el.value = text; el.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(el); el.select();
+  try { document.execCommand('copy') ? ok() : showToast('فشل النسخ', true); }
+  catch (e) { showToast('فشل النسخ', true); }
+  document.body.removeChild(el);
+}
+
+function downloadHTML() {
+  const blob = new Blob([buildDocument('مشروع مخصص')], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast('جاري تنزيل الملف index.html');
+}
+
+/* ---------- ملء الشاشة ---------- */
+function toggleFullscreen() {
+  const p = $('previewPanel');
+  if (!document.fullscreenElement) {
+    const req = p.requestFullscreen || p.webkitRequestFullscreen;
+    if (!req) return showToast('ملء الشاشة غير مدعوم', true);
+    const r = req.call(p);
+    if (r && r.catch) r.catch(() => showToast('لا يمكن تفعيل ملء الشاشة', true));
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  }
+}
+
+/* ---------- الحجم والإشعارات ---------- */
+function updateCharCount() {
+  const all = TYPES.map(getCode).join('');
+  $('charCount').textContent = `الحجم الإجمالي: ${new Blob([all]).size} بايت (${all.length} حرف)`;
+}
+
+function showToast(msg, isError = false) {
+  const t = $('toast');
+  $('toastMsg').textContent = msg;
+  t.classList.toggle('bg-rose-600', isError);
+  t.classList.toggle('bg-indigo-600', !isError);
+  $('toastIcon').className = isError ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-check';
+  t.classList.remove('translate-y-20', 'opacity-0');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+}
+
+/* ---------- الاقتراحات التلقائية (Autocomplete) ---------- */
+const VOID_TAGS = ['img', 'input', 'br', 'hr', 'meta', 'link'];
+const HTML_ITEMS = ('div span p a img h1 h2 h3 h4 h5 h6 ul ol li button input form label section article header footer nav main aside ' +
+  'table thead tbody tr td th textarea select option video audio canvas script style link meta title body head br hr i b strong em small pre code iframe svg details summary')
+  .split(' ').map(t => ({ l: t, t: VOID_TAGS.includes(t) ? `<${t} |>` : `<${t}>|</${t}>` }));
+const HTML_SPECIAL = {
+  a: '<a href="|"></a>', img: '<img src="|" alt="">', input: '<input type="text" placeholder="|">',
+  link: '<link rel="stylesheet" href="|">', script: '<script>\n  |\n<\/script>', style: '<style>\n  |\n</style>',
+  button: '<button type="button">|</button>'
+};
+HTML_ITEMS.forEach(i => { if (HTML_SPECIAL[i.l]) i.t = HTML_SPECIAL[i.l]; });
+HTML_ITEMS.unshift({ l: '!', t: '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>|</title>\n</head>\n<body>\n  \n</body>\n</html>' });
+
+const CSS_ITEMS = ('display flex flex-direction flex-wrap flex-grow justify-content align-items align-content align-self gap grid grid-template-columns grid-template-rows ' +
+  'position top right bottom left z-index width height min-width max-width min-height max-height margin margin-top margin-right margin-bottom margin-left ' +
+  'padding padding-top padding-right padding-bottom padding-left border border-top border-bottom border-radius border-color box-shadow background background-color ' +
+  'background-image background-size background-position background-repeat color font-family font-size font-weight line-height text-align text-decoration text-transform ' +
+  'letter-spacing opacity overflow overflow-x overflow-y cursor transition transform animation filter backdrop-filter content visibility white-space outline ' +
+  'box-sizing object-fit list-style pointer-events user-select direction')
+  .split(' ').map(k => ({ l: k, t: `${k}: |;` }));
+
+const JS_ITEMS = [
+  ['log', 'console.log(|);'], ['fn', 'function |() {\n  \n}'], ['af', 'const | = () => {\n  \n};'],
+  ['for', 'for (let i = 0; i < |; i++) {\n  \n}'], ['foreach', 'forEach(|)'], ['if', 'if (|) {\n  \n}'], ['else', 'else {\n  |\n}'],
+  ['qs', "document.querySelector('|')"], ['qsa', "document.querySelectorAll('|')"], ['getElementById', "getElementById('|')"],
+  ['querySelector', "querySelector('|')"], ['querySelectorAll', "querySelectorAll('|')"],
+  ['ael', "addEventListener('click', () => {\n  |\n});"], ['addEventListener', "addEventListener('|', () => {\n  \n})"],
+  ['setTimeout', 'setTimeout(() => {\n  |\n}, 1000);'], ['setInterval', 'setInterval(() => {\n  |\n}, 1000);'],
+  ['const', 'const | = ;'], ['let', 'let | = ;'], ['return', 'return |;'], ['while', 'while (|) {\n  \n}'],
+  ['document', 'document'], ['window', 'window'], ['console', 'console'], ['classList', 'classList'], ['innerText', 'innerText'],
+  ['innerHTML', 'innerHTML'], ['textContent', 'textContent'], ['style', 'style'], ['value', 'value'], ['async', 'async'], ['await', 'await'],
+  ['class', 'class | {\n  \n}'], ['try', 'try {\n  |\n} catch (err) {\n  console.error(err);\n}'], ['Math', 'Math'], ['JSON', 'JSON'],
+  ['localStorage', 'localStorage'], ['true', 'true'], ['false', 'false'], ['null', 'null'], ['filter', 'filter(|)'], ['map', 'map(|)']
+].map(a => ({ l: a[0], t: a[1] }));
+
+const ac = { items: [], sel: 0, from: 0, ta: null, type: '', suppress: false };
+const acBox = () => $('acBox');
+
+function acHide() { ac.items = []; acBox().classList.add('hidden'); }
+
+function acUpdate(type) {
+  if (ac.suppress) return;
+  const ta = $('code-' + type);
+  if (document.activeElement !== ta || ta.selectionStart !== ta.selectionEnd) return acHide();
+  const pos = ta.selectionStart, before = ta.value.slice(0, pos);
+  let q, from, list, m;
+  if (type === 'html') {
+    if ((m = before.match(/<([\w-]*)$/))) { from = pos - m[0].length; q = m[1]; }
+    else if ((m = before.match(/(?:^|\n)[ \t]*(!|[A-Za-z][\w-]*)$/))) { q = m[1]; from = pos - q.length; }
+    else return acHide();
+    list = HTML_ITEMS;
+  } else if (type === 'css') {
+    const open = (before.match(/\{/g) || []).length, close = (before.match(/\}/g) || []).length;
+    if (open <= close || !(m = before.match(/(?:^|\n)[ \t]*([a-z-]+)$/))) return acHide();
+    q = m[1]; from = pos - q.length; list = CSS_ITEMS;
+  } else {
+    if (!(m = before.match(/[A-Za-z_$][\w$]*$/)) || m[0].length < 2) return acHide();
+    q = m[0]; from = pos - q.length; list = JS_ITEMS;
+  }
+  const lq = q.toLowerCase();
+  const items = list.filter(i => i.l.toLowerCase().startsWith(lq) && !(i.l === q && i.t === i.l)).slice(0, 8);
+  if (!items.length || q === '' && type !== 'html') return acHide();
+  Object.assign(ac, { items, sel: 0, from, ta, type, q });
+  acRender();
+}
+
+function acRender() {
+  const box = acBox();
+  box.innerHTML = '';
+  ac.items.forEach((it, i) => {
+    const d = document.createElement('div');
+    d.className = 'ac-item' + (i === ac.sel ? ' sel' : '');
+    const b = document.createElement('b');
+    b.textContent = it.l.slice(0, ac.q.length);
+    d.append(b, it.l.slice(ac.q.length));
+    d.addEventListener('mousedown', e => { e.preventDefault(); acAccept(i); });
+    box.appendChild(d);
+  });
+  box.classList.remove('hidden');
+  const xy = caretXY(ac.ta), r = box.getBoundingClientRect();
+  let x = Math.min(xy.x, window.innerWidth - r.width - 8), y = xy.y;
+  if (y + r.height > window.innerHeight - 8) y = xy.y - xy.lh - r.height;
+  box.style.left = Math.max(4, x) + 'px';
+  box.style.top = Math.max(4, y) + 'px';
+  const sel = box.querySelector('.sel'); if (sel) sel.scrollIntoView({ block: 'nearest' });
+}
+
+function caretXY(ta) {
+  const cs = getComputedStyle(ta), d = document.createElement('div');
+  ['fontFamily', 'fontSize', 'lineHeight', 'paddingTop', 'paddingLeft', 'paddingRight', 'paddingBottom', 'tabSize']
+    .forEach(k => d.style[k] = cs[k]);
+  d.style.cssText += ';position:absolute;left:0;top:0;visibility:hidden;white-space:pre;direction:ltr;';
+  d.textContent = ta.value.slice(0, ta.selectionStart);
+  const mark = document.createElement('span'); mark.textContent = '\u200b';
+  d.appendChild(mark); document.body.appendChild(d);
+  const r = ta.getBoundingClientRect(), lh = parseFloat(cs.lineHeight) || 24;
+  const out = { x: r.left + mark.offsetLeft - ta.scrollLeft, y: r.top + mark.offsetTop - ta.scrollTop + lh, lh };
+  document.body.removeChild(d);
+  return out;
+}
+
+function acAccept(i) {
+  const it = ac.items[i], ta = ac.ta;
+  if (!it || !ta) return;
+  const lineStart = ta.value.lastIndexOf('\n', ac.from - 1) + 1;
+  const indent = ta.value.slice(lineStart, ac.from).match(/^[ \t]*/)[0];
+  const t = it.t.replace(/\n/g, '\n' + indent);
+  const caret = t.indexOf('|'), text = t.replace('|', '');
+  ta.focus();
+  ta.setSelectionRange(ac.from, ta.selectionStart);
+  ac.suppress = true;
+  const done = document.execCommand && document.execCommand('insertText', false, text);
+  if (!done) {
+    ta.setRangeText(text, ac.from, ta.selectionEnd, 'end');
+    onCodeInput(ac.type);
+  }
+  ac.suppress = false;
+  const c = ac.from + (caret < 0 ? text.length : caret);
+  ta.setSelectionRange(c, c);
+  acHide();
+}
+
+function acKey(e) {
+  if (['ArrowLeft', 'ArrowRight', 'Home', 'End', 'Escape'].includes(e.key)) { const was = ac.items.length; acHide(); return e.key === 'Escape' && was > 0 && (e.preventDefault(), true); }
+  if (!ac.items.length) return false;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    ac.sel = (ac.sel + (e.key === 'ArrowDown' ? 1 : -1) + ac.items.length) % ac.items.length;
+    acRender(); return true;
+  }
+  if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); acAccept(ac.sel); return true; }
+  return false;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  TYPES.forEach(t => {
+    const ta = $('code-' + t);
+    ta.addEventListener('blur', () => setTimeout(acHide, 120));
+    ta.addEventListener('scroll', acHide);
+    ta.addEventListener('mousedown', acHide);
+  });
+});
+
+/* ---------- Firebase Realtime Database (REST) ---------- */
+const FB_URL = 'https://alnoaif-default-rtdb.firebaseio.com/codeweb';
+const NAME_KEY = 'liveCodeEditor:projectName';
+// Firebase لا يقبل هذه الرموز في المفاتيح: . $ # [ ] /
+const fbKey = n => n.trim().replace(/[.$#\[\]\/]/g, '_').slice(0, 200);
+const fbPath = k => `${FB_URL}/${encodeURIComponent(k)}.json`;
+
+async function fbFetch(url, opts) {
+  let res;
+  try { res = await fetch(url, opts); }
+  catch (e) { throw new Error('تعذر الاتصال بالإنترنت أو بـ Firebase'); }
+  if (!res.ok) {
+    throw new Error(res.status === 401 || res.status === 403
+      ? 'لا توجد صلاحية — عدّل قواعد Firebase (Rules) للسماح بالقراءة والكتابة'
+      : 'خطأ من Firebase: ' + res.status);
+  }
+  return res.json();
+}
+
+function openProjects() {
+  const m = $('projModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+  try { $('projName').value = localStorage.getItem(NAME_KEY) || ''; } catch (e) {}
+  refreshProjects();
+}
+function closeProjects() {
+  const m = $('projModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('projModal').classList.contains('hidden')) closeProjects();
+});
+
+function listMessage(text, isError) {
+  const d = document.createElement('div');
+  d.className = 'text-center text-xs py-6 ' + (isError ? 'text-rose-400' : 'text-slate-400');
+  d.textContent = text;
+  const box = $('projList'); box.innerHTML = ''; box.appendChild(d);
+}
+
+async function refreshProjects() {
+  listMessage('جاري التحميل...');
+  try {
+    const data = await fbFetch(FB_URL + '.json?shallow=true');
+    const keys = data ? Object.keys(data).sort((a, b) => a.localeCompare(b)) : [];
+    if (!keys.length) return listMessage('لا توجد مشاريع محفوظة بعد');
+    const box = $('projList'); box.innerHTML = '';
+    keys.forEach(k => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800';
+      const name = document.createElement('span');
+      name.className = 'flex-1 min-w-0 truncate text-sm'; name.textContent = k;
+      const open = document.createElement('button');
+      open.className = 'px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs';
+      open.textContent = 'جلب'; open.onclick = () => loadProject(k);
+      const del = document.createElement('button');
+      del.className = 'px-2 py-1 rounded-md bg-slate-700 hover:bg-rose-600 text-slate-200 text-xs';
+      del.innerHTML = '<i class="fa-solid fa-trash-can"></i>'; del.onclick = () => deleteProject(k);
+      row.append(name, open, del); box.appendChild(row);
+    });
+  } catch (e) { listMessage(e.message, true); }
+}
+
+async function saveProject() {
+  const raw = $('projName').value.trim();
+  if (!raw) return showToast('اكتب اسم المشروع أولاً', true);
+  const key = fbKey(raw), btn = $('projSaveBtn');
+  btn.disabled = true;
+  try {
+    const exists = await fbFetch(FB_URL + '/' + encodeURIComponent(key) + '/updatedAt.json');
+    if (exists && !confirm(`المشروع "${key}" موجود مسبقاً. هل تريد استبداله؟`)) return;
+    await fbFetch(fbPath(key), {
+      method: 'PUT',
+      body: JSON.stringify({ name: raw, html: getCode('html'), css: getCode('css'), js: getCode('js'), updatedAt: Date.now() })
+    });
+    try { localStorage.setItem(NAME_KEY, key); } catch (e) {}
+    $('projName').value = key;
+    showToast('تم حفظ المشروع في Firebase');
+    refreshProjects();
+  } catch (e) { showToast(e.message, true); }
+  finally { btn.disabled = false; }
+}
+
+async function loadProject(key) {
+  if (TYPES.some(t => getCode(t).trim()) && !confirm('سيتم استبدال الكود الحالي بالمشروع المحفوظ. هل تريد المتابعة؟')) return;
+  try {
+    const d = await fbFetch(fbPath(key));
+    if (!d) return showToast('المشروع غير موجود', true);
+    TYPES.forEach(t => { $('code-' + t).value = d[t] || ''; updateLineNumbers(t); });
+    updateCharCount(); updatePreview(); saveState();
+    try { localStorage.setItem(NAME_KEY, key); } catch (e) {}
+    closeProjects();
+    showToast(`تم جلب المشروع "${key}"`);
+  } catch (e) { showToast(e.message, true); }
+}
+
+async function deleteProject(key) {
+  if (!confirm(`حذف المشروع "${key}" من Firebase نهائياً؟`)) return;
+  try {
+    await fbFetch(fbPath(key), { method: 'DELETE' });
+    showToast('تم حذف المشروع');
+    refreshProjects();
+  } catch (e) { showToast(e.message, true); }
+}
+</script>
+</body>
+</html>
 
