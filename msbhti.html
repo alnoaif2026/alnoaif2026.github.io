@@ -94,12 +94,24 @@ button:focus-visible, select:focus-visible { outline: 3px solid rgba(var(--glow)
 .share input:focus-visible { outline: 3px solid rgba(var(--glow), .7); }
 .share .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .msg { margin: 0; min-height: 1.2em; text-align: center; color: var(--green); font-size: 14px; }
+.grand { position: fixed; top: 8px; left: 8px; z-index: 4; pointer-events: none; background: #202b28; color: #9fb3ab; font-size: 12px; padding: 5px 10px; border-radius: 10px;
+  box-shadow: inset 3px 3px 6px rgba(0,0,0,.6), inset -3px -3px 6px rgba(255,255,255,.1); }
+.grand b { margin-inline-start: 4px; color: #00ff66; font: 16px 'Courier New', monospace; text-shadow: 0 0 6px rgba(var(--glow), .6); }
+body { padding-top: 44px; }
+#button1 { touch-action: manipulation; padding: 12px; line-height: 1.25; overflow-wrap: anywhere; }
+body.moving #button1 { touch-action: none; cursor: grab; outline: 3px dashed rgba(var(--glow), .8); outline-offset: 12px; }
+.movebar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 6; max-width: 96vw; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 16px; background: var(--bg);
+  box-shadow: 6px 6px 12px rgba(163,177,198,.6), -6px -6px 12px rgba(255,255,255,.8); }
+.movebar label { display: flex; align-items: center; gap: 6px; color: #7a8494; font-size: 12px; font-weight: bold; }
+.movebar input { width: 80px; accent-color: var(--green); }
+#button1.free { position: fixed; z-index: 5; }
   </style>
 </head>
 <body>
+  <div class="grand">الإجمالي الكلي <b id="grand">0</b></div>
+  <button id="moveBtn" class="tool">تحريك الزر</button>
   <h1>مسبحتي الذكية📿</h1>
   <p class="total">المجموع: <b id="total">0</b></p>
-
   <p id="intent" class="intent" hidden></p>
 
   <main id="list" aria-label="الأذكار"></main>
@@ -112,7 +124,6 @@ button:focus-visible, select:focus-visible { outline: 3px solid rgba(var(--glow)
         <option value="three">الأذكار الثلاثة</option>
         <option value="four">الأذكار الأربعة</option>
         <option value="istighfar">استغفار</option>
-        <option value="custom">ذكر مخصص</option>
       </select>
     </label>
     <button id="mode" class="tool" aria-pressed="false">تدوير الأذكار</button>
@@ -126,6 +137,7 @@ button:focus-visible, select:focus-visible { outline: 3px solid rgba(var(--glow)
     <button id="vib" class="tool" aria-pressed="true">الاهتزاز</button>
     <button id="snd" class="tool" aria-pressed="false">الصوت</button>
     <button id="giftBtn" class="tool">صدقة ومشاركة</button>
+    <button id="delCustom" class="tool" hidden>حذف هذا التسبيح</button>
     <button id="undo" class="tool">تراجع</button>
     <button id="button2" class="tool">تصفير الكل</button>
   </div>
@@ -135,11 +147,18 @@ button:focus-visible, select:focus-visible { outline: 3px solid rgba(var(--glow)
     <input id="forWho" placeholder="صدقة عن (اسم المتوفى أو الشخص)" maxlength="40" autocomplete="off">
     <div class="row">
       <button id="shareTxt" class="tool">مشاركة نص</button>
+      <button id="clearNames" class="tool">مسح الأسماء</button>
       <button id="savePng" class="tool">حفظ صورة</button>
       <button id="sharePng" class="tool" hidden>مشاركة الصورة</button>
     </div>
     <p id="msg" class="msg" role="status"></p>
   </section>
+
+  <div id="movebar" class="movebar" hidden>
+    <label>الحجم <input type="range" id="size" min="90" max="260" step="5"></label>
+    <label>الشفافية <input type="range" id="opa" min="20" max="100" step="5"></label>
+    <button id="moveDone" class="tool">تم</button>
+  </div>
 
   <script>
 // منع القائمة الجانبية والنسخ وتحديد الكل
@@ -154,29 +173,33 @@ const KEY = 'masbahati-v2';
 const PRESETS = {
   three: ['سبحان الله', 'الحمد لله', 'لا إله إلا الله'],
   four: ['سبحان الله', 'الحمد لله', 'لا إله إلا الله', 'الله أكبر'],
-  istighfar: ['أستغفر الله'],
-  custom: ['سبحان الله وبحمده']
+  istighfar: ['أستغفر الله']
 };
 let st = {
   preset: 'three', cycle: false, target: 33, vib: true, snd: false,
-  custom: PRESETS.custom[0], active: 0,
+  customs: [], pos: null, size: 160, opa: 100, active: 0,
   me: '', forWho: '',
-  sets: { three: [0, 0, 0], four: [0, 0, 0, 0], istighfar: [0], custom: [0] }
+  sets: { three: [0, 0, 0], four: [0, 0, 0, 0], istighfar: [0] }
 };
 const history = [];
 
 try {
   const s = JSON.parse(localStorage.getItem(KEY));
-  if (s && PRESETS[s.preset]) {
+  if (s) {
     st = { ...st, ...s, sets: { ...st.sets, ...s.sets } };
-    st.custom = String(st.custom || PRESETS.custom[0]);
+    if (!Array.isArray(st.customs)) st.customs = [];
+    if (st.preset === 'custom') {   // ترحيل المسبحة المخصصة القديمة
+      st.customs.push({ id: 'old', text: String(st.custom || 'سبحان الله وبحمده') });
+      st.sets.c_old = st.sets.custom || [0]; st.preset = 'c_old';
+    }
+    if (!PRESETS[st.preset] && !st.customs.some(c => 'c_' + c.id === st.preset)) st.preset = 'three';
   }
 } catch (e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
 
 const $ = id => document.getElementById(id);
 const list = $('list');
-const dhikr = () => st.preset === 'custom' ? [st.custom] : PRESETS[st.preset];
+const dhikr = () => PRESETS[st.preset] || [(st.customs.find(c => 'c_' + c.id === st.preset) || { text: '' }).text];
 const counts = () => {
   const n = dhikr().length, a = st.sets[st.preset] || [];
   st.sets[st.preset] = Array.from({ length: n }, (_, i) => Math.max(0, parseInt(a[i]) || 0));
@@ -184,7 +207,17 @@ const counts = () => {
 };
 
 let cards = [];
+function buildPresets() {
+  const sel = $('preset');
+  sel.innerHTML = '';
+  const add = (v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); };
+  add('three', 'الأذكار الثلاثة'); add('four', 'الأذكار الأربعة'); add('istighfar', 'استغفار');
+  st.customs.forEach(c => add('c_' + c.id, c.text));
+  add('__add', '➕ إضافة تسبيح مخصص');
+  sel.value = st.preset;
+}
 function build() {
+  buildPresets();
   list.innerHTML = '';
   if (!(st.active in dhikr())) st.active = 0;
   cards = dhikr().map((text, i) => {
@@ -218,6 +251,9 @@ function render() {
   $('snd').setAttribute('aria-pressed', st.snd);
   $('mode').setAttribute('aria-pressed', st.cycle);
   $('mode').hidden = dhikr().length < 2;
+  $('delCustom').hidden = !st.customs.some(x => 'c_' + x.id === st.preset);
+  $('grand').textContent = Object.values(st.sets).flat().reduce((a, b) => a + (parseInt(b) || 0), 0);
+  applyBtn();
   const t = sentence();
   $('intent').textContent = t; $('intent').hidden = !t;
 }
@@ -236,6 +272,7 @@ function tick() {
 }
 
 $('button1').addEventListener('click', () => {
+  if (moved || moveMode) return;   // لا عدّ أثناء التحريك أو بعد السحب
   const c = counts(), n = c.length, i = st.active;
   c[i]++;
   history.push([st.preset, i]); if (history.length > 100) history.shift();
@@ -264,10 +301,12 @@ $('button2').addEventListener('click', () => {
 });
 
 $('preset').addEventListener('change', e => {
-  const v = e.target.value;
-  if (v === 'custom') {
-    const t = (prompt('اكتب الذكر:', st.custom) || '').trim();
-    if (t) { if (t !== st.custom) st.sets.custom = [0]; st.custom = t; }
+  let v = e.target.value;
+  if (v === '__add') {
+    const t = (prompt('اكتب التسبيح الجديد:') || '').trim().slice(0, 60);
+    if (!t) { $('preset').value = st.preset; return; }
+    const id = Date.now().toString(36);
+    st.customs.push({ id, text: t }); v = 'c_' + id;
   }
   st.preset = v; st.active = 0; history.length = 0;
   save(); build();
@@ -363,7 +402,78 @@ $('giftBtn').addEventListener('click', () => { $('share').hidden = !$('share').h
   $(id).addEventListener('input', e => { st[id] = e.target.value; save(); render(); });
 });
 
+$('delCustom').addEventListener('click', () => {
+  const c = st.customs.find(x => 'c_' + x.id === st.preset);
+  if (!c || !confirm(`حذف «${c.text}» وعدّاده؟`)) return;
+  st.customs = st.customs.filter(x => x !== c); delete st.sets[st.preset];
+  st.preset = 'three'; st.active = 0; history.length = 0; save(); build();
+});
+$('clearNames').addEventListener('click', () => {
+  st.me = st.forWho = ''; $('me').value = $('forWho').value = '';
+  save(); render(); msg('تم مسح الأسماء');
+});
+
+// ===== تحريك زر التسبيح =====
+const btn = $('button1');
+let drag = null, moved = false, moveMode = false;
+function placeBtn() {
+  if (!st.pos) { btn.classList.remove('free'); btn.style.left = btn.style.top = ''; return; }
+  btn.classList.add('free');
+  btn.style.left = Math.round(st.pos.x * Math.max(0, innerWidth - btn.offsetWidth)) + 'px';
+  btn.style.top = Math.round(st.pos.y * Math.max(0, innerHeight - btn.offsetHeight)) + 'px';
+}
+btn.addEventListener('pointerdown', e => {
+  if (!moveMode) return;
+  const r = btn.getBoundingClientRect();
+  drag = { sx: e.clientX, sy: e.clientY, ox: e.clientX - r.left, oy: e.clientY - r.top, on: false };
+});
+btn.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (!drag.on) {
+    if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 12) return;
+    drag.on = true; btn.setPointerCapture(e.pointerId);
+  }
+  const w = btn.offsetWidth, h = btn.offsetHeight;
+  const x = Math.min(Math.max(0, e.clientX - drag.ox), innerWidth - w);
+  const y = Math.min(Math.max(0, e.clientY - drag.oy), innerHeight - h);
+  st.pos = { x: x / Math.max(1, innerWidth - w), y: y / Math.max(1, innerHeight - h) };
+  placeBtn();
+});
+const endDrag = () => {
+  if (drag && drag.on) { moved = true; save(); setTimeout(() => { moved = false; }, 80); }
+  drag = null;
+};
+btn.addEventListener('pointerup', endDrag);
+btn.addEventListener('pointercancel', endDrag);
+// اسم الذكر على الزر + الحجم والشفافية
+function applyBtn() {
+  st.size = Math.min(260, Math.max(90, +st.size || 160));
+  st.opa = Math.min(100, Math.max(20, +st.opa || 100));
+  const t = dhikr()[st.active] || '', len = t.length;
+  btn.textContent = t; btn.setAttribute('aria-label', 'سبّح: ' + t);
+  btn.style.width = btn.style.height = st.size + 'px';
+  btn.style.fontSize = Math.round(st.size * 0.14 * (len <= 12 ? 1 : Math.max(0.5, 12 / len * 1.3))) + 'px';
+  btn.style.opacity = st.opa / 100;
+  $('size').value = st.size; $('opa').value = st.opa;
+  placeBtn();
+}
+function setMove(on) {
+  moveMode = on; drag = null;
+  document.body.classList.toggle('moving', on);
+  $('moveBtn').textContent = on ? 'إعادة موضع الزر' : 'تحريك الزر';
+  $('movebar').hidden = !on;
+}
+$('moveBtn').addEventListener('click', () => {
+  if (!moveMode) setMove(true);
+  else { st.pos = null; save(); placeBtn(); }
+});
+$('moveDone').addEventListener('click', () => setMove(false));
+$('size').addEventListener('input', e => { st.size = +e.target.value; save(); applyBtn(); });
+$('opa').addEventListener('input', e => { st.opa = +e.target.value; save(); applyBtn(); });
+addEventListener('resize', placeBtn);
+
 build();
+placeBtn();
   </script>
 </body>
 </html>
