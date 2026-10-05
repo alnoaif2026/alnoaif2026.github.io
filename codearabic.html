@@ -1,1 +1,1772 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محرر الأكواد المباشر | Live Code Editor</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: {
+    colors: { brand: { panel: '#1e293b' } },
+    fontFamily: { sans: ['Tajawal', 'sans-serif'], mono: ['Fira Code', 'monospace'] }
+  } }
+}
+</script>
+<style>
+html, body { height: 100%; }
+body { font-family: 'Tajawal', sans-serif; background: #0b0f19; color: #f3f4f6; overflow: hidden; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* المحرر دائماً من اليسار لليمين حتى تظهر الأكواد بشكل صحيح */
+.editor-container { display: flex; direction: ltr; background: #0d1117; height: 100%; overflow: hidden; }
+.line-numbers {
+  width: 3.5rem; padding: 1rem 0 3rem; text-align: center; background: #161b22; color: #485164;
+  user-select: none; font: 0.875rem/1.5rem 'Fira Code', monospace;
+  border-right: 1px solid #21262d; overflow: hidden; flex-shrink: 0;
+}
+.code-textarea {
+  flex: 1; min-width: 0; background: transparent; color: #e6edf3;
+  font: 0.875rem/1.5rem 'Fira Code', monospace; padding: 1rem; border: none; outline: none;
+  resize: none; white-space: pre; overflow: auto; tab-size: 2; direction: ltr; text-align: left;
+}
+.tab-btn.active { border-bottom: 2px solid #6366f1; color: #818cf8; background: rgba(99,102,241,.1); }
+
+.tooltip { position: relative; }
+.tooltip .tooltip-text {
+  visibility: hidden; width: max-content; background: #1e293b; color: #fff; text-align: center;
+  border-radius: 6px; padding: 4px 8px; position: absolute; z-index: 50; top: 125%; left: 50%;
+  transform: translateX(-50%); opacity: 0; transition: opacity .2s; font-size: .75rem;
+  border: 1px solid #334155; pointer-events: none;
+}
+.tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+#previewPanel:fullscreen { background: #0f172a; height: 100%; width: 100%; }
+
+.code-wrap { position: relative; flex: 1; min-width: 0; }
+.code-wrap .code-textarea { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hl { position: absolute; inset: 0; overflow: hidden; padding: 1rem; font: 0.875rem/1.5rem 'Fira Code', monospace;
+  white-space: pre; color: transparent; direction: ltr; text-align: left; tab-size: 2; pointer-events: none; }
+.hl mark { background: rgba(250,204,21,.35); color: transparent; border-radius: 2px; }
+.hl mark.cur { background: rgba(249,115,22,.75); }
+.srb { padding: .35rem .6rem; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #cbd5e1; flex-shrink: 0; }
+.srb:hover { background: #334155; }
+.srb.on { background: #4f46e5; color: #fff; border-color: #6366f1; }
+.ac-box { position: fixed; z-index: 100; direction: ltr; min-width: 270px; max-height: 240px; overflow-y: auto;
+  background: #1e293b; border: 1px solid #475569; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,.5);
+  font: 0.8rem 'Fira Code', monospace; padding: 4px; }
+.ac-box.hidden { display: none; }
+#printArea { display: none; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  html, body { height: auto !important; overflow: visible !important; display: block !important; background: #fff !important; color: #111 !important; }
+  body > *:not(#printArea) { display: none !important; }
+  #printArea { display: block; direction: rtl; font-family: 'Tajawal', sans-serif; color: #111; font-size: 12px; }
+  #printArea h1 { font-size: 22px; margin: 0 0 4px; }
+  #printArea h2 { font-size: 17px; margin: 18px 0 8px; padding-bottom: 4px; border-bottom: 2px solid #6366f1; break-after: avoid; }
+  #printArea .pa-sub { color: #555; margin: 0 0 6px; }
+  #printArea .pa-item { break-inside: avoid; page-break-inside: avoid; border: 1px solid #cbd5e1; border-radius: 6px; padding: 7px 9px; margin-bottom: 7px; }
+  #printArea .pa-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+  #printArea .pa-top b { color: #4338ca; font-size: 14px; }
+  #printArea .pa-top code { direction: ltr; font-family: 'Fira Code', monospace; color: #b45309; font-size: 12px; }
+  #printArea p { margin: 3px 0; }
+  #printArea .pa-more { color: #555; font-size: 11px; }
+  #printArea pre { direction: ltr; text-align: left; unicode-bidi: plaintext; font-family: 'Fira Code', monospace; font-size: 11px; background: #f1f5f9; border-radius: 4px; padding: 6px 8px; margin: 5px 0 0; white-space: pre-wrap; word-break: break-word; }
+}
+.ac-item { padding: 4px 10px; border-radius: 5px; color: #cbd5e1; cursor: pointer; white-space: nowrap; }
+.ac-item { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.ac-desc { font-family: 'Tajawal', sans-serif; font-size: .72rem; color: #94a3b8; }
+.ac-item.sel .ac-desc { color: #e0e7ff; }
+.ac-item b { color: #818cf8; font-weight: 600; }
+.ac-item.sel { background: #4f46e5; color: #fff; }
+.ac-item.sel b { color: #fff; }
+.code-textarea{color:transparent!important;caret-color:#e6edf3;padding:1rem 1rem 3rem!important;font-variant-ligatures:none}
+.code-textarea::placeholder{color:#485164}
+.hl,.syn{padding:1rem 1rem 3rem!important;font-variant-ligatures:none}
+.syn{position:absolute;inset:0;overflow:hidden;font:0.875rem/1.5rem 'Fira Code',monospace;white-space:pre;color:#e6edf3;direction:ltr;text-align:left;tab-size:2;pointer-events:none}
+.t-k{color:#ff7b72}.t-s{color:#a5d6ff}.t-n{color:#79c0ff}.t-c{color:#8b949e;font-style:italic}.t-f{color:#d2a8ff}.t-t{color:#7ee787}.t-a{color:#79c0ff}.t-p{color:#79c0ff}.t-v{color:#ffa657}
+.ln-err{color:#f87171;font-weight:700}
+.badge{background:#ef4444;color:#fff;border-radius:99px;padding:0 6px;font-size:10px}
+@media(max-width:767px){#previewPanel{order:-1;border-bottom:1px solid #334155}}
+</style>
+</head>
+<body class="flex flex-col">
+
+<header class="bg-brand-panel border-b border-slate-800 px-4 py-2.5 flex flex-wrap gap-2 items-center justify-between z-20 flex-shrink-0">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-mono text-white">&lt;/&gt;</div>
+    <div>
+      <h1 class="font-bold text-lg leading-none text-white">محرر الأكواد المباشر</h1>
+      <span class="text-xs text-slate-400">Live Web Code Editor</span>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <button onclick="loadTemplate(true)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center gap-2 border border-slate-700 transition">
+      <span class="text-indigo-400">⚡</span><span class="hidden sm:inline">تحميل نموذج تجريبي</span>
+    </button>
+    <button id="autoRefreshBtn" onclick="toggleAutoRefresh()" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 border transition">
+      <i class="fa-solid fa-sync text-xs"></i>
+      <span class="hidden sm:inline">تحديث تلقائي:</span>
+      <span id="autoRefreshStatus" class="font-bold"></span>
+    </button>
+    <button onclick="updatePreview()" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-2 shadow-md shadow-indigo-600/30 transition active:scale-95">
+      <i class="fa-solid fa-play text-xs"></i><span>تشغيل</span>
+    </button>
+    <button onclick="resetEditor()" class="tooltip p-2 rounded-lg bg-slate-800 hover:bg-rose-950/50 hover:text-rose-400 text-slate-400 border border-slate-700 transition">
+      <i class="fa-solid fa-trash-can text-sm"></i><span class="tooltip-text">مسح الكل</span>
+    </button>
+    <button onclick="openHelp()" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-md shadow-amber-600/20 transition">
+      <i class="fa-solid fa-book-open text-xs"></i><span class="hidden sm:inline">الاختصارات</span>
+    </button>
+    <button onclick="openProjects()" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-md shadow-sky-600/20 transition">
+      <i class="fa-solid fa-cloud text-xs"></i><span class="hidden sm:inline">مشاريعي</span>
+    </button>
+    <button onclick="downloadHTML()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition">
+      <i class="fa-solid fa-download text-xs"></i><span class="hidden sm:inline">تنزيل .html</span>
+    </button>
+  </div>
+</header>
+
+<main class="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+  <div id="editorPanel" class="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-l border-slate-800 bg-slate-900/50 h-1/2 md:h-full min-h-0">
+    <div class="flex flex-wrap gap-y-1 items-center justify-between bg-brand-panel border-b border-slate-800 px-2 pt-2 flex-shrink-0">
+      <div class="flex gap-1">
+        <button onclick="switchTab('html')" id="tab-html" class="tab-btn px-2.5 sm:px-4 py-2 rounded-t-lg text-xs font-semibold text-slate-400 flex items-center gap-2 transition">
+          <i class="fa-brands fa-html5 text-orange-500 text-sm"></i><span>HTML</span><b id="badge-html" class="badge hidden"></b></button>
+        <button onclick="switchTab('css')" id="tab-css" class="tab-btn px-2.5 sm:px-4 py-2 rounded-t-lg text-xs font-semibold text-slate-400 flex items-center gap-2 transition">
+          <i class="fa-brands fa-css3-alt text-blue-500 text-sm"></i><span>CSS</span><b id="badge-css" class="badge hidden"></b></button>
+        <button onclick="switchTab('js')" id="tab-js" class="tab-btn px-2.5 sm:px-4 py-2 rounded-t-lg text-xs font-semibold text-slate-400 flex items-center gap-2 transition">
+          <i class="fa-brands fa-js text-yellow-400 text-sm"></i><span>JavaScript</span><b id="badge-js" class="badge hidden"></b></button>
+      </div>
+      <div class="flex items-center gap-1 mb-1">
+        <button id="undoBtn" onmousedown="event.preventDefault()" onclick="undo()" class="tooltip p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 disabled:opacity-40 transition"><i class="fa-solid fa-rotate-left text-xs"></i><span class="tooltip-text">تراجع (Ctrl+Z)</span></button>
+        <button id="redoBtn" onmousedown="event.preventDefault()" onclick="redo()" class="tooltip p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 disabled:opacity-40 transition"><i class="fa-solid fa-rotate-right text-xs"></i><span class="tooltip-text">إعادة (Ctrl+Y)</span></button>
+        <button onmousedown="event.preventDefault()" onclick="toggleSearch()" class="tooltip p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"><i class="fa-solid fa-magnifying-glass text-xs"></i><span class="tooltip-text">بحث (Ctrl+F)</span></button>
+        <button onclick="copyCurrentTabCode()" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center gap-1.5 border border-slate-700 transition">
+        <i class="fa-regular fa-copy text-xs"></i><span class="hidden sm:inline">نسخ الكود</span>
+      </button>
+      </div>
+    </div>
+
+    <div id="searchBar" class="hidden flex-shrink-0 flex-col gap-1.5 bg-slate-900 border-b border-slate-800 px-2 py-2 text-xs">
+      <div class="flex items-center gap-1.5">
+        <input id="srFind" type="text" dir="auto" placeholder="بحث..." class="flex-1 min-w-0 bg-slate-950 border border-slate-700 rounded-md px-2 py-1.5 outline-none focus:border-indigo-500">
+        <span id="srCount" class="text-slate-400 w-14 text-center flex-shrink-0">0/0</span>
+        <button class="srb" onmousedown="event.preventDefault()" onclick="srGo(-1)"><i class="fa-solid fa-chevron-up"></i></button>
+        <button class="srb" onmousedown="event.preventDefault()" onclick="srGo(1)"><i class="fa-solid fa-chevron-down"></i></button>
+        <button id="srCase" class="srb font-mono" onclick="srToggleCase()">Aa</button>
+        <button class="srb" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <input id="srRep" type="text" dir="auto" placeholder="استبدال بـ..." class="flex-1 min-w-0 bg-slate-950 border border-slate-700 rounded-md px-2 py-1.5 outline-none focus:border-indigo-500">
+        <button class="srb" onclick="srReplace()">استبدال</button>
+        <button class="srb" onclick="srReplaceAll()">الكل</button>
+      </div>
+    </div>
+
+    <div class="flex-1 relative overflow-hidden min-h-0">
+      <div id="content-html" class="editor-container w-full"><div id="lines-html" class="line-numbers">1</div>
+        <textarea id="code-html" class="code-textarea" spellcheck="false" placeholder="اكتب كود HTML هنا..."></textarea></div>
+      <div id="content-css" class="editor-container w-full hidden"><div id="lines-css" class="line-numbers">1</div>
+        <textarea id="code-css" class="code-textarea" spellcheck="false" placeholder="اكتب كود CSS هنا..."></textarea></div>
+      <div id="content-js" class="editor-container w-full hidden"><div id="lines-js" class="line-numbers">1</div>
+        <textarea id="code-js" class="code-textarea" spellcheck="false" placeholder="اكتب كود JavaScript هنا..."></textarea></div>
+    </div>
+    <div id="diagPanel" class="flex-shrink-0 border-t border-slate-800 bg-slate-900 text-xs">
+      <button onclick="setDiag(!dgOpen.v)" class="w-full px-3 py-1.5 flex items-center justify-between"><span id="diagSummary" class="text-emerald-400">✓ لا توجد أخطاء</span><i class="fa-solid fa-chevron-up text-[10px] text-slate-400"></i></button>
+      <div id="diagList" class="hidden max-h-32 overflow-y-auto px-2 pb-2 flex-col gap-1.5"></div>
+    </div>
+  </div>
+
+  <div id="previewPanel" class="w-full md:w-1/2 flex flex-col bg-slate-950 h-1/2 md:h-full relative min-h-0">
+    <div class="bg-brand-panel border-b border-slate-800 px-4 py-2 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-xs font-medium text-slate-300">المعاينة الحية</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="reloadPreview()" class="tooltip p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-arrows-rotate text-xs"></i><span class="tooltip-text">إعادة تحديث</span></button>
+        <button onclick="toggleFullscreen()" class="tooltip p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-expand text-xs"></i><span class="tooltip-text">ملء الشاشة</span></button>
+      </div>
+    </div>
+    <div class="flex-1 bg-white relative min-h-0">
+      <iframe id="previewFrame" class="w-full h-full border-0" sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-brand-panel border-t border-slate-800 px-4 py-1.5 text-xs text-slate-400 flex items-center justify-between z-10 flex-shrink-0">
+  <div class="flex items-center gap-4">
+    <span id="charCount">الحجم الإجمالي: 0 بايت</span>
+    <span class="hidden sm:inline text-slate-600">|</span>
+    <span id="saveStatus" class="hidden sm:inline">الحفظ التلقائي: مفعل</span>
+  </div>
+  <span class="text-indigo-400 font-mono">Live Editor</span>
+</footer>
+
+<div id="printArea"></div>
+
+<div id="helpModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/60 p-2 sm:p-4" onclick="if(event.target===this)closeHelp()">
+  <div class="w-full max-w-3xl bg-brand-panel border border-slate-700 rounded-2xl shadow-2xl flex flex-col h-[92vh]">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700 flex-shrink-0">
+      <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-book-open text-amber-400"></i>دليل الاختصارات</h3>
+      <button onclick="closeHelp()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="px-3 pt-3 flex flex-col gap-2 flex-shrink-0">
+      <div id="hpTabs" class="flex gap-1 overflow-x-auto"></div>
+      <input id="hpSearch" type="text" dir="auto" placeholder="ابحث عن اختصار أو كلمة..." class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-xs outline-none focus:border-indigo-500">
+    </div>
+    <div id="hpList" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2 min-h-0"></div>
+    <div class="px-3 py-3 border-t border-slate-700 flex gap-2 flex-shrink-0 text-xs">
+      <button onclick="printHelp()" class="flex-1 px-2 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold flex items-center justify-center gap-1.5"><i class="fa-solid fa-file-pdf"></i><span>طباعة / PDF</span></button>
+      <button onclick="shareHelp()" class="flex-1 px-2 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold flex items-center justify-center gap-1.5"><i class="fa-solid fa-share-nodes"></i><span>مشاركة نص</span></button>
+      <button onclick="savePng()" class="flex-1 px-2 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold flex items-center justify-center gap-1.5"><i class="fa-solid fa-image"></i><span>حفظ PNG</span></button>
+    </div>
+  </div>
+</div>
+
+<div id="projModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/60 p-4" onclick="if(event.target===this)closeProjects()">
+  <div class="w-full max-w-md bg-brand-panel border border-slate-700 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700">
+      <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-cloud text-sky-400"></i>المشاريع السحابية (Firebase)</h3>
+      <button onclick="closeProjects()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="p-4 border-b border-slate-700 flex gap-2">
+      <input id="projName" type="text" maxlength="100" placeholder="اسم المشروع" class="flex-1 min-w-0 bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter')saveProject()">
+      <button id="projSaveBtn" onclick="saveProject()" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 flex-shrink-0 disabled:opacity-50">
+        <i class="fa-solid fa-floppy-disk"></i><span>حفظ</span></button>
+    </div>
+    <div id="projList" class="p-2 overflow-y-auto flex-1 min-h-[80px]"></div>
+  </div>
+</div>
+
+<div id="acBox" class="ac-box hidden"></div>
+
+<div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-4 py-2 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 translate-y-20 opacity-0 pointer-events-none transition-all duration-300 z-50">
+  <i id="toastIcon" class="fa-solid fa-circle-check"></i><span id="toastMsg"></span>
+</div>
+
+<script>
+const STORE_KEY = 'liveCodeEditor:v1';
+const TYPES = ['html', 'css', 'js'];
+let currentTab = 'html', autoRefresh = true, debounceTimer = null, saveTimer = null, toastTimer = null;
+
+const sampleTemplate = {
+html: `<div class="card">
+  <div class="badge">🔥 معاينة حية</div>
+  <h2>مرحباً بك في محرر الأكواد</h2>
+  <p>اكتب أكواد HTML, CSS, JavaScript وشاهد النتيجة تتحدث فورياً!</p>
+  <button id="interactiveBtn">اضغط هنا للتفاعل</button>
+  <p id="resultText" class="result"></p>
+</div>`,
+css: `body {
+  font-family: 'Tajawal', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; margin: 0; color: #fff;
+}
+.card {
+  background: rgba(255,255,255,.05); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.1); padding: 2rem; border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,.4); max-width: 380px; text-align: center;
+}
+.badge {
+  display: inline-block; background: rgba(99,102,241,.2); color: #818cf8;
+  padding: 4px 12px; border-radius: 99px; font-size: .8rem; margin-bottom: 1rem;
+}
+h2 { margin: 0 0 .75rem; font-size: 1.4rem; }
+p { line-height: 1.6; color: #cbd5e1; }
+button {
+  background: #6366f1; color: #fff; border: none; padding: 10px 20px; font-size: .9rem;
+  border-radius: 10px; cursor: pointer; transition: transform .2s, background .2s; margin-top: 1rem;
+}
+button:hover { background: #4f46e5; transform: translateY(-2px); }
+.result { margin-top: 15px; font-weight: bold; color: #10b981; }`,
+js: `document.getElementById('interactiveBtn').addEventListener('click', () => {
+  document.getElementById('resultText').innerText = '✨ تم تنفيذ كود الجافاسكربت بنجاح!';
+});`
+};
+
+const $ = id => document.getElementById(id);
+const getCode = t => $('code-' + t).value;
+
+/* ---------- الحفظ والاسترجاع (localStorage) ---------- */
+function saveState() {
+  try {
+    const data = { html: getCode('html'), css: getCode('css'), js: getCode('js'), tab: currentTab, auto: autoRefresh };
+    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    $('saveStatus').textContent = 'تم الحفظ ✓';
+  } catch (e) {
+    $('saveStatus').textContent = 'تعذر الحفظ (التخزين غير متاح)';
+  }
+}
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 300);
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+/* ---------- التهيئة ---------- */
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = loadState();
+  if (saved) {
+    TYPES.forEach(t => $('code-' + t).value = saved[t] || '');
+    autoRefresh = saved.auto !== false;
+    currentTab = TYPES.includes(saved.tab) ? saved.tab : 'html';
+  } else {
+    TYPES.forEach(t => $('code-' + t).value = sampleTemplate[t]);
+  }
+
+  TYPES.forEach(type => {
+    const ta = $('code-' + type);
+    ta.addEventListener('input', e => { if (type === 'html') htmlAutoClose(e, ta); onCodeInput(type); });
+    ta.addEventListener('scroll', () => syncScroll(type));
+    ta.addEventListener('keydown', e => {
+      if (histKey(e)) return;
+      if (acKey(e)) return;
+      if (e.key !== 'Tab') return;
+      e.preventDefault();
+      // insertText يحافظ على التراجع (Ctrl+Z)
+      if (!document.execCommand || !document.execCommand('insertText', false, '  ')) {
+        const s = ta.selectionStart;
+        ta.value = ta.value.slice(0, s) + '  ' + ta.value.slice(ta.selectionEnd);
+        ta.selectionStart = ta.selectionEnd = s + 2;
+        onCodeInput(type);
+      }
+    });
+    updateLineNumbers(type);
+  });
+
+  window.addEventListener('resize', () => TYPES.forEach(syncScroll));
+  document.addEventListener('fullscreenchange', () => setTimeout(() => TYPES.forEach(syncScroll), 100));
+  window.addEventListener('beforeunload', saveState);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) saveState(); });
+
+  renderAutoRefresh();
+  switchTab(currentTab);
+  updateCharCount();
+  updatePreview();
+});
+
+function switchTab(tab) {
+  currentTab = tab;
+  acHide();
+  tabChanged();
+  TYPES.forEach(t => {
+    $('tab-' + t).classList.toggle('active', t === tab);
+    $('content-' + t).classList.toggle('hidden', t !== tab);
+  });
+  setTimeout(() => syncScroll(tab), 0);
+  scheduleSave();
+}
+
+function onCodeInput(type) {
+  updateLineNumbers(type);
+  acUpdate(type);
+  histSchedule(type);
+  srRefresh();
+  updateCharCount();
+  scheduleSave();
+  scheduleDiag();
+  if (autoRefresh) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(updatePreview, 400);
+  }
+}
+
+function updateLineNumbers(type) { renderGutter(type); updateSyntax(type); }
+
+function syncScroll(type) {
+  const ta = $('code-' + type), ln = $('lines-' + type);
+  if (ta && ln) ln.scrollTop = ta.scrollTop;
+  const sy = $('syn-' + type); if (sy && ta) { sy.scrollTop = ta.scrollTop; sy.scrollLeft = ta.scrollLeft; }
+}
+
+/* ---------- المعاينة ---------- */
+// يمنع كسر الوسم إذا كتب المستخدم إغلاق وسم السكربت داخل كوده
+const safeScript = s => s.replace(/<\/script/gi, '<\\/script');
+
+function buildDocument(title) {
+  return `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+${getCode('css').replace(/<\/style/gi, '<\\/style')}
+</style>
+</head>
+<body>
+${getCode('html')}
+<script>
+${safeScript(getCode('js'))}
+<\/script>
+</body>
+</html>`;
+}
+
+let jsOffset = 0, jsErrors = [];
+function updatePreview() {
+  const errorCatcher = `<script>
+function __r(m){try{parent.postMessage({__lce:1,message:String(m.message),line:m.line||0},'*')}catch(x){}}
+window.addEventListener('error', function (e) {
+  __r({message:e.message,line:e.lineno});
+  var pre = document.createElement('pre');
+  pre.style.cssText = 'color:#f87171;background:#1e1e1e;padding:10px;margin:10px;border-radius:8px;font-size:12px;white-space:pre-wrap;direction:ltr;text-align:left;position:relative;z-index:99999';
+  pre.textContent = '⚠️ JS Error: ' + e.message;
+  (document.body || document.documentElement).appendChild(pre);
+});
+window.addEventListener('unhandledrejection', function (e) { __r({message:(e.reason && e.reason.message) || e.reason}); });
+<\/script>`;
+  const doc = buildDocument('Preview'), i = doc.lastIndexOf('<script>\n') + 9;
+  jsOffset = (doc.slice(0, i).match(/\n/g) || []).length + (errorCatcher.match(/\n/g) || []).length;
+  jsErrors = [];
+  $('previewFrame').srcdoc = doc.replace('<head>', () => '<head>' + errorCatcher);
+  runDiagnostics();
+}
+
+function reloadPreview() { updatePreview(); showToast('تم تحديث المعاينة'); }
+
+/* ---------- التحديث التلقائي ---------- */
+function renderAutoRefresh() {
+  const st = $('autoRefreshStatus'), btn = $('autoRefreshBtn');
+  st.textContent = autoRefresh ? 'مفعل' : 'معطل';
+  st.className = 'font-bold ' + (autoRefresh ? 'text-emerald-400' : 'text-rose-400');
+  btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 border transition ' +
+    (autoRefresh ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60' : 'bg-slate-800 text-slate-400 border-slate-700');
+  btn.querySelector('i').classList.toggle('fa-spin', autoRefresh);
+}
+function toggleAutoRefresh() {
+  autoRefresh = !autoRefresh;
+  renderAutoRefresh();
+  if (autoRefresh) updatePreview();
+  saveState();
+  showToast(autoRefresh ? 'تم تفعيل التحديث التلقائي' : 'تم إيقاف التحديث التلقائي');
+}
+
+/* ---------- القالب والمسح ---------- */
+function loadTemplate(ask) {
+  const hasCode = TYPES.some(t => getCode(t).trim());
+  if (ask && hasCode && !confirm('سيتم استبدال الكود الحالي بالنموذج التجريبي. هل تريد المتابعة؟')) return;
+  TYPES.forEach(t => { $('code-' + t).value = sampleTemplate[t]; updateLineNumbers(t); });
+  updateCharCount(); updatePreview(); saveState(); histAll();
+  showToast('تم تحميل النموذج التجريبي');
+}
+
+function resetEditor() {
+  if (!confirm('هل أنت متأكد من مسح كل الأكواد؟ لا يمكن التراجع عن ذلك.')) return;
+  TYPES.forEach(t => { $('code-' + t).value = ''; updateLineNumbers(t); });
+  updateCharCount(); updatePreview(); saveState(); histAll();
+  showToast('تم مسح المحتوى');
+}
+
+/* ---------- النسخ والتنزيل ---------- */
+function copyCurrentTabCode() {
+  const code = getCode(currentTab);
+  if (!code.trim()) return showToast('لا يوجد كود للنسخ!', true);
+  const ok = () => showToast('تم نسخ كود ' + currentTab.toUpperCase());
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(ok).catch(() => fallbackCopy(code, ok));
+  } else fallbackCopy(code, ok);
+}
+function fallbackCopy(text, ok) {
+  const el = document.createElement('textarea');
+  el.value = text; el.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(el); el.select();
+  try { document.execCommand('copy') ? ok() : showToast('فشل النسخ', true); }
+  catch (e) { showToast('فشل النسخ', true); }
+  document.body.removeChild(el);
+}
+
+function downloadHTML() {
+  const blob = new Blob([buildDocument('مشروع مخصص')], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast('جاري تنزيل الملف index.html');
+}
+
+/* ---------- ملء الشاشة ---------- */
+function toggleFullscreen() {
+  const p = $('previewPanel');
+  if (!document.fullscreenElement) {
+    const req = p.requestFullscreen || p.webkitRequestFullscreen;
+    if (!req) return showToast('ملء الشاشة غير مدعوم', true);
+    const r = req.call(p);
+    if (r && r.catch) r.catch(() => showToast('لا يمكن تفعيل ملء الشاشة', true));
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  }
+}
+
+/* ---------- الحجم والإشعارات ---------- */
+function updateCharCount() {
+  const all = TYPES.map(getCode).join('');
+  $('charCount').textContent = `الحجم الإجمالي: ${new Blob([all]).size} بايت (${all.length} حرف)`;
+}
+
+function showToast(msg, isError = false) {
+  const t = $('toast');
+  $('toastMsg').textContent = msg;
+  t.classList.toggle('bg-rose-600', isError);
+  t.classList.toggle('bg-indigo-600', !isError);
+  $('toastIcon').className = isError ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-check';
+  t.classList.remove('translate-y-20', 'opacity-0');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+}
+
+/* ---------- الاقتراحات التلقائية (Autocomplete) ---------- */
+const VOID_TAGS = ['img', 'input', 'br', 'hr', 'meta', 'link'];
+const HTML_ITEMS = ('div span p a img h1 h2 h3 h4 h5 h6 ul ol li button input form label section article header footer nav main aside ' +
+  'table thead tbody tr td th textarea select option video audio canvas script style link meta title body head br hr i b strong em small pre code iframe svg details summary')
+  .split(' ').map(t => ({ l: t, t: VOID_TAGS.includes(t) ? `<${t} |>` : `<${t}>|</${t}>` }));
+const HTML_SPECIAL = {
+  a: '<a href="|"></a>', img: '<img src="|" alt="">', input: '<input type="text" placeholder="|">',
+  link: '<link rel="stylesheet" href="|">', script: '<script>\n  |\n<\/script>', style: '<style>\n  |\n</style>',
+  button: '<button type="button">|</button>'
+};
+HTML_ITEMS.forEach(i => { if (HTML_SPECIAL[i.l]) i.t = HTML_SPECIAL[i.l]; });
+HTML_ITEMS.unshift({ l: '!', t: '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>|</title>\n</head>\n<body>\n  \n</body>\n</html>' });
+
+const CSS_ITEMS = ('display flex flex-direction flex-wrap flex-grow justify-content align-items align-content align-self gap grid grid-template-columns grid-template-rows ' +
+  'position top right bottom left z-index width height min-width max-width min-height max-height margin margin-top margin-right margin-bottom margin-left ' +
+  'padding padding-top padding-right padding-bottom padding-left border border-top border-bottom border-radius border-color box-shadow background background-color ' +
+  'background-image background-size background-position background-repeat color font-family font-size font-weight line-height text-align text-decoration text-transform ' +
+  'letter-spacing opacity overflow overflow-x overflow-y cursor transition transform animation filter backdrop-filter content visibility white-space outline ' +
+  'box-sizing object-fit list-style pointer-events user-select direction')
+  .split(' ').map(k => ({ l: k, t: `${k}: |;` }));
+
+const JS_ITEMS = [
+  ['log', 'console.log(|);'], ['fn', 'function |() {\n  \n}'], ['af', 'const | = () => {\n  \n};'],
+  ['for', 'for (let i = 0; i < |; i++) {\n  \n}'], ['foreach', 'forEach(|)'], ['if', 'if (|) {\n  \n}'], ['else', 'else {\n  |\n}'],
+  ['qs', "document.querySelector('|')"], ['qsa', "document.querySelectorAll('|')"], ['getElementById', "getElementById('|')"],
+  ['querySelector', "querySelector('|')"], ['querySelectorAll', "querySelectorAll('|')"],
+  ['ael', "addEventListener('click', () => {\n  |\n});"], ['addEventListener', "addEventListener('|', () => {\n  \n})"],
+  ['setTimeout', 'setTimeout(() => {\n  |\n}, 1000);'], ['setInterval', 'setInterval(() => {\n  |\n}, 1000);'],
+  ['const', 'const | = ;'], ['let', 'let | = ;'], ['return', 'return |;'], ['while', 'while (|) {\n  \n}'],
+  ['document', 'document'], ['window', 'window'], ['console', 'console'], ['classList', 'classList'], ['innerText', 'innerText'],
+  ['innerHTML', 'innerHTML'], ['textContent', 'textContent'], ['style', 'style'], ['value', 'value'], ['async', 'async'], ['await', 'await'],
+  ['class', 'class | {\n  \n}'], ['try', 'try {\n  |\n} catch (err) {\n  console.error(err);\n}'], ['Math', 'Math'], ['JSON', 'JSON'],
+  ['localStorage', 'localStorage'], ['true', 'true'], ['false', 'false'], ['null', 'null'], ['filter', 'filter(|)'], ['map', 'map(|)']
+].map(a => ({ l: a[0], t: a[1] }));
+
+
+/* ---------- كلمات عربية + شرح لكل اقتراح ---------- */
+JS_ITEMS.push({ l: 'alert', t: "alert('|');" },
+  { l: 'fetch', t: "fetch('|')\n  .then(r => r.json())\n  .then(data => {\n    console.log(data);\n  });" });
+
+const AR_HTML = `
+!|هيكل,صفحة,قالب,بداية|هيكل صفحة HTML كامل
+div|قسم,حاوية,صندوق|حاوية عامة لتجميع العناصر
+span|نص,سطر|نص داخل السطر
+p|فقرة,نص|فقرة نصية
+a|رابط,وصلة|رابط لصفحة أو موقع
+img|صورة|عرض صورة
+h1|عنوان,رئيسي|عنوان رئيسي (الأكبر)
+h2|عنوان,فرعي|عنوان فرعي
+h3|عنوان|عنوان أصغر
+button|زر|زر قابل للضغط
+input|حقل,مدخل,ادخال|حقل إدخال
+form|نموذج,استمارة|نموذج لإرسال البيانات
+label|تسمية,وسم|تسمية لحقل إدخال
+ul|قائمة,نقطية|قائمة نقطية
+ol|قائمة,مرقمة|قائمة مرقمة
+li|عنصر,بند|عنصر داخل قائمة
+section|قسم,جزء|قسم من الصفحة
+article|مقال|مقال مستقل
+header|رأس,هيدر,ترويسة|رأس الصفحة أو القسم
+footer|تذييل,فوتر|ذيل الصفحة
+nav|تنقل,قائمة,ناف|قائمة روابط التنقل
+main|رئيسي,المحتوى|المحتوى الرئيسي
+aside|جانب,شريط|محتوى جانبي
+table|جدول|جدول بيانات
+tr|صف|صف في الجدول
+td|خلية|خلية في الجدول
+th|عمود,رأس|خلية عنوان في الجدول
+textarea|مربع,نص|مربع نص متعدد الأسطر
+select|اختيار,قائمة|قائمة منسدلة
+option|خيار|خيار داخل القائمة
+video|فيديو|مقطع فيديو
+audio|صوت|مقطع صوتي
+canvas|لوحة,رسم|لوحة رسم برمجية
+script|سكربت,جافاسكربت,برمجة|كود جافاسكربت
+style|ستايل,تنسيق|كود CSS داخل الصفحة
+link|ربط,ملف|ربط ملف خارجي مثل CSS
+meta|ميتا|معلومات وصفية عن الصفحة
+title|عنوان|عنوان الصفحة في التبويب
+body|جسم,محتوى|محتوى الصفحة المرئي
+head|رأس|معلومات الصفحة غير المرئية
+br|سطر,فاصل|سطر جديد
+hr|خط,فاصل|خط أفقي فاصل
+b|عريض,غامق|نص عريض
+i|مائل|نص مائل
+strong|مهم,عريض|نص مهم
+em|تأكيد|نص مؤكد
+small|صغير|نص صغير
+pre|منسق|نص بتنسيقه كما كُتب
+code|كود|عرض كود برمجي
+iframe|إطار,تضمين|تضمين صفحة داخل صفحة
+svg|رسم|رسم متجه
+details|تفاصيل|محتوى قابل للطي
+summary|ملخص|عنوان المحتوى القابل للطي`;
+
+const AR_CSS = `
+display|عرض,اظهار|نوع عرض العنصر (block, flex, grid...)
+flex|مرن|توزيع مرن للعناصر
+flex-direction|اتجاه|اتجاه العناصر المرنة
+justify-content|محاذاة,توزيع|توزيع العناصر أفقياً
+align-items|محاذاة,توسيط|محاذاة العناصر عمودياً
+gap|مسافة,فراغ|المسافة بين العناصر
+grid|شبكة|تخطيط شبكي
+grid-template-columns|أعمدة,شبكة|تحديد أعمدة الشبكة
+position|موضع,مكان|طريقة تحديد المكان
+top|أعلى,فوق|المسافة من الأعلى
+bottom|أسفل,تحت|المسافة من الأسفل
+left|يسار|المسافة من اليسار
+right|يمين|المسافة من اليمين
+z-index|طبقة,ترتيب|ترتيب الظهور فوق/تحت
+width|عرض|عرض العنصر
+height|ارتفاع,طول|ارتفاع العنصر
+min-width|أقل|أقل عرض
+max-width|أقصى|أقصى عرض
+min-height|أقل|أقل ارتفاع
+max-height|أقصى|أقصى ارتفاع
+margin|هامش|مسافة خارج العنصر
+margin-top|هامش|هامش علوي
+margin-bottom|هامش|هامش سفلي
+margin-left|هامش|هامش أيسر
+margin-right|هامش|هامش أيمن
+padding|حشو,تباعد|مسافة داخل العنصر
+padding-top|حشو|حشو علوي
+padding-bottom|حشو|حشو سفلي
+padding-left|حشو|حشو أيسر
+padding-right|حشو|حشو أيمن
+border|حدود,إطار,حد|حدود حول العنصر
+border-radius|تدوير,حواف,انحناء|تدوير زوايا العنصر
+box-shadow|ظل|ظل للعنصر
+background|خلفية|خلفية العنصر
+background-color|لون|لون الخلفية
+background-image|صورة|صورة الخلفية
+color|لون|لون النص
+font-family|خط|نوع الخط
+font-size|حجم|حجم الخط
+font-weight|سماكة,عريض|سماكة الخط
+line-height|ارتفاع,تباعد|ارتفاع السطر
+text-align|محاذاة,نص|محاذاة النص
+text-decoration|زخرفة,خط|خط تحت أو فوق النص
+text-transform|تحويل|تحويل حالة الأحرف
+letter-spacing|تباعد|المسافة بين الحروف
+opacity|شفافية|درجة الشفافية (0 إلى 1)
+overflow|تجاوز,تمرير,فيض|التعامل مع المحتوى الزائد
+cursor|مؤشر,ماوس|شكل مؤشر الماوس
+transition|انتقال,حركة|حركة ناعمة عند التغيير
+transform|تحويل,تدوير,تكبير|تدوير أو تكبير أو تحريك
+animation|حركة,انيميشن|تشغيل حركة متحركة
+filter|فلتر,تأثير|تأثيرات مثل التغبيش
+backdrop-filter|تغبيش|تغبيش ما خلف العنصر
+content|محتوى|محتوى العناصر الوهمية
+visibility|رؤية,إخفاء|إظهار أو إخفاء العنصر
+white-space|مسافات,التفاف|التحكم بالتفاف النص
+outline|مخطط,حدود|حد خارجي
+box-sizing|حجم|طريقة حساب الأبعاد
+object-fit|ملاءمة|ملاءمة الصورة داخل إطارها
+list-style|نمط,قائمة|شكل نقاط القائمة
+pointer-events|أحداث|السماح بالنقر أو منعه
+user-select|تحديد|السماح بتحديد النص
+direction|اتجاه|اتجاه الكتابة`;
+
+const AR_JS = `
+log|اطبع,طباعة,سجل|يطبع قيمة في وحدة التحكم (Console)
+alert|تنبيه|يعرض نافذة تنبيه
+fn|دالة,وظيفة|تعريف دالة
+af|دالة,سهمية|دالة سهمية
+for|كرر,حلقة,تكرار|حلقة تكرار
+foreach|لكل|تكرار على عناصر مصفوفة
+if|اذا,شرط|تنفيذ كود عند تحقق شرط
+else|والا,غير|ما يُنفَّذ إذا لم يتحقق الشرط
+qs|عنصر,اختر|اختيار عنصر من الصفحة
+qsa|عناصر,اختر|اختيار عدة عناصر
+getElementById|عنصر,معرف|جلب عنصر عن طريق id
+querySelector|عنصر,اختر|اختيار أول عنصر مطابق
+querySelectorAll|عناصر|اختيار كل العناصر المطابقة
+ael|حدث,عند|تنفيذ كود عند حدوث حدث مثل الضغط
+addEventListener|حدث,استمع|ربط حدث بعنصر
+setTimeout|مؤقت,انتظر,تأخير|تنفيذ كود بعد مدة
+setInterval|تكرار,كل|تنفيذ كود كل فترة
+const|ثابت|متغير لا يتغير
+let|متغير|متغير قابل للتغيير
+return|ارجع,إرجاع|إرجاع قيمة من الدالة
+while|بينما|حلقة تعمل ما دام الشرط صحيحاً
+document|مستند,صفحة|كائن الصفحة
+window|نافذة|كائن نافذة المتصفح
+console|وحدة,كونسول|وحدة تحكم المطور
+classList|كلاس,أصناف|إضافة أو إزالة كلاسات CSS
+innerText|نص|نص العنصر
+innerHTML|محتوى|محتوى HTML للعنصر
+textContent|نص|نص العنصر
+style|ستايل,تنسيق|تغيير تنسيق العنصر
+value|قيمة|قيمة حقل الإدخال
+async|متزامن,غير|دالة غير متزامنة
+await|انتظر|انتظار نتيجة عملية غير متزامنة
+class|صنف,كلاس|تعريف صنف
+try|جرب,حاول|تجربة كود مع معالجة الأخطاء
+Math|رياضيات|دوال رياضية
+JSON|جيسون|تحويل البيانات إلى/من JSON
+localStorage|تخزين,حفظ|حفظ بيانات في المتصفح
+true|صحيح|قيمة صحيحة
+false|خطأ,خاطئ|قيمة خاطئة
+null|فارغ,لاشيء|قيمة فارغة
+filter|تصفية,فلتر|تصفية عناصر مصفوفة
+map|تحويل,خريطة|تحويل عناصر مصفوفة
+fetch|اجلب,طلب|جلب بيانات من الإنترنت`;
+
+function annotate(list, table) {
+  table.trim().split('\n').forEach(line => {
+    const [l, ar, d] = line.split('|');
+    const it = list.find(x => x.l === l);
+    if (it) { it.ar = ar.split(','); it.d = d; }
+  });
+}
+annotate(HTML_ITEMS, AR_HTML); annotate(CSS_ITEMS, AR_CSS); annotate(JS_ITEMS, AR_JS);
+
+// توحيد الحروف العربية للمطابقة (همزات، تاء مربوطة، تشكيل...)
+const norm = x => x.toLowerCase().replace(/[\u064B-\u0652\u0640]/g, '')
+  .replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+
+const ac = { items: [], sel: 0, from: 0, ta: null, type: '', suppress: false };
+const acBox = () => $('acBox');
+
+function acHide() { ac.items = []; acBox().classList.add('hidden'); }
+
+function acUpdate(type) {
+  if (ac.suppress) return;
+  const ta = $('code-' + type);
+  if (document.activeElement !== ta || ta.selectionStart !== ta.selectionEnd) return acHide();
+  const pos = ta.selectionStart, before = ta.value.slice(0, pos);
+  let q, from, list, m;
+  if (type === 'html') {
+    if ((m = before.match(/<([\w\u0600-\u06FF-]*)$/))) { from = pos - m[0].length; q = m[1]; }
+    else if ((m = before.match(/(?:^|\n)[ \t]*(!|[A-Za-z\u0600-\u06FF][\w\u0600-\u06FF-]*)$/))) { q = m[1]; from = pos - q.length; }
+    else return acHide();
+    list = HTML_ITEMS;
+  } else if (type === 'css') {
+    const open = (before.match(/\{/g) || []).length, close = (before.match(/\}/g) || []).length;
+    if (open <= close || !(m = before.match(/(?:^|\n)[ \t]*([a-z\u0600-\u06FF-]+)$/))) return acHide();
+    q = m[1]; from = pos - q.length; list = CSS_ITEMS;
+  } else {
+    if (!(m = before.match(/[A-Za-z_$\u0600-\u06FF][\w$\u0600-\u06FF]*$/)) || m[0].length < 2) return acHide();
+    q = m[0]; from = pos - q.length; list = JS_ITEMS;
+  }
+  if (/[\u0600-\u06FF]/.test(q) && q.length < 2) return acHide();
+  const nq = norm(q), items = [];
+  for (const i of list) {
+    let hit = null;
+    if (norm(i.l).startsWith(nq)) hit = '';
+    else { const a = (i.ar || []).find(x => norm(x).startsWith(nq)); if (a) hit = a; }
+    if (hit === null || (i.l === q && i.t === i.l)) continue;
+    items.push(Object.assign({}, i, { hit }));
+    if (items.length >= 8) break;
+  }
+  if (!items.length || q === '' && type !== 'html') return acHide();
+  Object.assign(ac, { items, sel: 0, from, ta, type, q });
+  acRender();
+}
+
+function acRender() {
+  const box = acBox();
+  box.innerHTML = '';
+  ac.items.forEach((it, i) => {
+    const d = document.createElement('div');
+    d.className = 'ac-item' + (i === ac.sel ? ' sel' : '');
+    const pre = it.l.slice(0, ac.q.length), isPre = norm(pre) === norm(ac.q);
+    const lab = document.createElement('span');
+    if (isPre) { const b = document.createElement('b'); b.textContent = pre; lab.append(b, it.l.slice(ac.q.length)); }
+    else lab.textContent = it.l;
+    d.appendChild(lab);
+    if (it.d) {
+      const ds = document.createElement('span');
+      ds.className = 'ac-desc'; ds.dir = 'rtl';
+      ds.textContent = (it.hit && !isPre ? it.hit + ' — ' : '') + it.d;
+      d.appendChild(ds);
+    }
+    d.addEventListener('mousedown', e => { e.preventDefault(); acAccept(i); });
+    box.appendChild(d);
+  });
+  box.classList.remove('hidden');
+  const xy = caretXY(ac.ta), r = box.getBoundingClientRect();
+  let x = Math.min(xy.x, window.innerWidth - r.width - 8), y = xy.y;
+  if (y + r.height > window.innerHeight - 8) y = xy.y - xy.lh - r.height;
+  box.style.left = Math.max(4, x) + 'px';
+  box.style.top = Math.max(4, y) + 'px';
+  const sel = box.querySelector('.sel'); if (sel) sel.scrollIntoView({ block: 'nearest' });
+}
+
+function caretXY(ta) {
+  const cs = getComputedStyle(ta), d = document.createElement('div');
+  ['fontFamily', 'fontSize', 'lineHeight', 'paddingTop', 'paddingLeft', 'paddingRight', 'paddingBottom', 'tabSize']
+    .forEach(k => d.style[k] = cs[k]);
+  d.style.cssText += ';position:absolute;left:0;top:0;visibility:hidden;white-space:pre;direction:ltr;';
+  d.textContent = ta.value.slice(0, ta.selectionStart);
+  const mark = document.createElement('span'); mark.textContent = '\u200b';
+  d.appendChild(mark); document.body.appendChild(d);
+  const r = ta.getBoundingClientRect(), lh = parseFloat(cs.lineHeight) || 24;
+  const out = { x: r.left + mark.offsetLeft - ta.scrollLeft, y: r.top + mark.offsetTop - ta.scrollTop + lh, lh };
+  document.body.removeChild(d);
+  return out;
+}
+
+function acAccept(i) {
+  const it = ac.items[i], ta = ac.ta;
+  if (!it || !ta) return;
+  const lineStart = ta.value.lastIndexOf('\n', ac.from - 1) + 1;
+  const indent = ta.value.slice(lineStart, ac.from).match(/^[ \t]*/)[0];
+  const t = it.t.replace(/\n/g, '\n' + indent);
+  const caret = t.indexOf('|'), text = t.replace('|', '');
+  ta.focus();
+  ta.setSelectionRange(ac.from, ta.selectionStart);
+  ac.suppress = true;
+  const done = document.execCommand && document.execCommand('insertText', false, text);
+  if (!done) {
+    ta.setRangeText(text, ac.from, ta.selectionEnd, 'end');
+    onCodeInput(ac.type);
+  }
+  ac.suppress = false;
+  const c = ac.from + (caret < 0 ? text.length : caret);
+  ta.setSelectionRange(c, c);
+  acHide();
+}
+
+function acKey(e) {
+  if (['ArrowLeft', 'ArrowRight', 'Home', 'End', 'Escape'].includes(e.key)) { const was = ac.items.length; acHide(); return e.key === 'Escape' && was > 0 && (e.preventDefault(), true); }
+  if (!ac.items.length) return false;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    ac.sel = (ac.sel + (e.key === 'ArrowDown' ? 1 : -1) + ac.items.length) % ac.items.length;
+    acRender(); return true;
+  }
+  if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); acAccept(ac.sel); return true; }
+  return false;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  TYPES.forEach(t => {
+    const ta = $('code-' + t);
+    ta.addEventListener('blur', () => setTimeout(acHide, 120));
+    ta.addEventListener('scroll', acHide);
+    ta.addEventListener('mousedown', acHide);
+  });
+});
+
+/* ---------- Firebase Realtime Database (REST) ---------- */
+const FB_URL = 'https://alnoaif-default-rtdb.firebaseio.com/codeweb';
+const NAME_KEY = 'liveCodeEditor:projectName';
+// Firebase لا يقبل هذه الرموز في المفاتيح: . $ # [ ] /
+const fbKey = n => n.trim().replace(/[.$#\[\]\/]/g, '_').slice(0, 200);
+const fbPath = k => `${FB_URL}/${encodeURIComponent(k)}.json`;
+
+async function fbFetch(url, opts) {
+  let res;
+  try { res = await fetch(url, opts); }
+  catch (e) { throw new Error('تعذر الاتصال بالإنترنت أو بـ Firebase'); }
+  if (!res.ok) {
+    throw new Error(res.status === 401 || res.status === 403
+      ? 'لا توجد صلاحية — عدّل قواعد Firebase (Rules) للسماح بالقراءة والكتابة'
+      : 'خطأ من Firebase: ' + res.status);
+  }
+  return res.json();
+}
+
+function openProjects() {
+  const m = $('projModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+  try { $('projName').value = localStorage.getItem(NAME_KEY) || ''; } catch (e) {}
+  refreshProjects();
+}
+function closeProjects() {
+  const m = $('projModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('projModal').classList.contains('hidden')) closeProjects();
+});
+
+function listMessage(text, isError) {
+  const d = document.createElement('div');
+  d.className = 'text-center text-xs py-6 ' + (isError ? 'text-rose-400' : 'text-slate-400');
+  d.textContent = text;
+  const box = $('projList'); box.innerHTML = ''; box.appendChild(d);
+}
+
+async function refreshProjects() {
+  listMessage('جاري التحميل...');
+  try {
+    const data = await fbFetch(FB_URL + '.json?shallow=true');
+    const keys = data ? Object.keys(data).sort((a, b) => a.localeCompare(b)) : [];
+    if (!keys.length) return listMessage('لا توجد مشاريع محفوظة بعد');
+    const box = $('projList'); box.innerHTML = '';
+    keys.forEach(k => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800';
+      const name = document.createElement('span');
+      name.className = 'flex-1 min-w-0 truncate text-sm'; name.textContent = k;
+      const open = document.createElement('button');
+      open.className = 'px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs';
+      open.textContent = 'جلب'; open.onclick = () => loadProject(k);
+      const del = document.createElement('button');
+      del.className = 'px-2 py-1 rounded-md bg-slate-700 hover:bg-rose-600 text-slate-200 text-xs';
+      del.innerHTML = '<i class="fa-solid fa-trash-can"></i>'; del.onclick = () => deleteProject(k);
+      row.append(name, open, del); box.appendChild(row);
+    });
+  } catch (e) { listMessage(e.message, true); }
+}
+
+async function saveProject() {
+  const raw = $('projName').value.trim();
+  if (!raw) return showToast('اكتب اسم المشروع أولاً', true);
+  const key = fbKey(raw), btn = $('projSaveBtn');
+  btn.disabled = true;
+  try {
+    const exists = await fbFetch(FB_URL + '/' + encodeURIComponent(key) + '/updatedAt.json');
+    if (exists && !confirm(`المشروع "${key}" موجود مسبقاً. هل تريد استبداله؟`)) return;
+    await fbFetch(fbPath(key), {
+      method: 'PUT',
+      body: JSON.stringify({ name: raw, html: getCode('html'), css: getCode('css'), js: getCode('js'), updatedAt: Date.now() })
+    });
+    try { localStorage.setItem(NAME_KEY, key); } catch (e) {}
+    $('projName').value = key;
+    showToast('تم حفظ المشروع في Firebase');
+    refreshProjects();
+  } catch (e) { showToast(e.message, true); }
+  finally { btn.disabled = false; }
+}
+
+async function loadProject(key) {
+  if (TYPES.some(t => getCode(t).trim()) && !confirm('سيتم استبدال الكود الحالي بالمشروع المحفوظ. هل تريد المتابعة؟')) return;
+  try {
+    const d = await fbFetch(fbPath(key));
+    if (!d) return showToast('المشروع غير موجود', true);
+    TYPES.forEach(t => { $('code-' + t).value = d[t] || ''; updateLineNumbers(t); });
+    updateCharCount(); updatePreview(); saveState(); histAll();
+    try { localStorage.setItem(NAME_KEY, key); } catch (e) {}
+    closeProjects();
+    showToast(`تم جلب المشروع "${key}"`);
+  } catch (e) { showToast(e.message, true); }
+}
+
+async function deleteProject(key) {
+  if (!confirm(`حذف المشروع "${key}" من Firebase نهائياً؟`)) return;
+  try {
+    await fbFetch(fbPath(key), { method: 'DELETE' });
+    showToast('تم حذف المشروع');
+    refreshProjects();
+  } catch (e) { showToast(e.message, true); }
+}
+
+/* ---------- التراجع والإعادة (لكل تبويب) ---------- */
+const hist = {};
+TYPES.forEach(t => hist[t] = { st: [], i: -1, timer: null });
+let histBusy = false;
+
+function histCommit(t) {
+  const h = hist[t];
+  clearTimeout(h.timer); h.timer = null;
+  const v = getCode(t);
+  if (h.i >= 0 && h.st[h.i].v === v) return histBtns();
+  h.st = h.st.slice(0, h.i + 1);
+  h.st.push({ v, c: $('code-' + t).selectionStart });
+  if (h.st.length > 300) h.st.shift();
+  h.i = h.st.length - 1;
+  histBtns();
+}
+function histSchedule(t) {
+  if (histBusy) return;
+  const h = hist[t];
+  clearTimeout(h.timer);
+  h.timer = setTimeout(() => histCommit(t), 500);
+  histBtns();
+}
+function histAll() { TYPES.forEach(histCommit); }
+function histBtns() {
+  const h = hist[currentTab];
+  if (!$('undoBtn')) return;
+  $('undoBtn').disabled = !(h.i > 0 || h.timer);
+  $('redoBtn').disabled = h.timer ? true : h.i >= h.st.length - 1;
+}
+function histApply(t, snap) {
+  const ta = $('code-' + t), top = ta.scrollTop, left = ta.scrollLeft;
+  histBusy = true;
+  ta.value = snap.v;
+  ta.setSelectionRange(snap.c, snap.c);
+  ta.scrollTop = top; ta.scrollLeft = left;
+  histBusy = false;
+  updateLineNumbers(t); updateCharCount(); scheduleSave(); acHide(); srRefresh();
+  if (autoRefresh) updatePreview();
+  histBtns();
+}
+function undo() {
+  const t = currentTab, h = hist[t];
+  if (h.timer) histCommit(t);
+  if (h.i <= 0) return;
+  h.i--; histApply(t, h.st[h.i]);
+}
+function redo() {
+  const t = currentTab, h = hist[t];
+  if (h.timer) histCommit(t);
+  if (h.i >= h.st.length - 1) return;
+  h.i++; histApply(t, h.st[h.i]);
+}
+function histKey(e) {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return false;
+  const k = e.key.toLowerCase();
+  if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return true; }
+  if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); redo(); return true; }
+  return false;
+}
+
+/* ---------- البحث والاستبدال ---------- */
+const sr = { idx: -1, matches: [], cs: false };
+const srIsOpen = () => !$('searchBar').classList.contains('hidden');
+const escHtml = x => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function tabChanged() { histBtns(); srRefresh(true); }
+
+function toggleSearch() { srIsOpen() ? closeSearch() : openSearch(); }
+function openSearch() {
+  const bar = $('searchBar');
+  bar.classList.remove('hidden'); bar.classList.add('flex');
+  const ta = $('code-' + currentTab), sel = ta.value.slice(ta.selectionStart, ta.selectionEnd);
+  if (sel && !sel.includes('\n')) $('srFind').value = sel;
+  $('srFind').focus(); $('srFind').select();
+  srRefresh(true);
+}
+function closeSearch() {
+  const bar = $('searchBar');
+  bar.classList.add('hidden'); bar.classList.remove('flex');
+  TYPES.forEach(t => { const h = $('hl-' + t); if (h) h.innerHTML = ''; });
+  $('code-' + currentTab).focus();
+}
+function srToggleCase() {
+  sr.cs = !sr.cs;
+  $('srCase').classList.toggle('on', sr.cs);
+  srRefresh(true);
+}
+
+function srCompute() {
+  const q = $('srFind').value, ta = $('code-' + currentTab);
+  sr.matches = [];
+  if (!q) return;
+  const hay = sr.cs ? ta.value : ta.value.toLowerCase(), nd = sr.cs ? q : q.toLowerCase();
+  let i = 0;
+  while ((i = hay.indexOf(nd, i)) !== -1 && sr.matches.length < 5000) { sr.matches.push(i); i += nd.length; }
+}
+
+function srRefresh(jump) {
+  if (!srIsOpen()) return;
+  srCompute();
+  const n = sr.matches.length, ta = $('code-' + currentTab);
+  if (!n) sr.idx = -1;
+  else if (jump === true) {
+    const at = sr.matches.findIndex(m => m >= ta.selectionStart);
+    sr.idx = at === -1 ? 0 : at;
+  } else sr.idx = Math.min(Math.max(sr.idx, 0), n - 1);
+  srRender();
+  if (jump === true && sr.idx >= 0) srReveal();
+}
+
+function srRender() {
+  const n = sr.matches.length, q = $('srFind').value;
+  $('srCount').textContent = !q ? '0/0' : n ? `${sr.idx + 1}/${n}` : 'لا نتائج';
+  TYPES.forEach(t => { if (t !== currentTab) { const h = $('hl-' + t); if (h) h.innerHTML = ''; } });
+  const hl = $('hl-' + currentTab);
+  if (!hl) return;
+  const text = $('code-' + currentTab).value, len = q.length;
+  let out = '', last = 0;
+  sr.matches.forEach((m, i) => {
+    out += escHtml(text.slice(last, m)) + `<mark${i === sr.idx ? ' class="cur"' : ''}>` + escHtml(text.slice(m, m + len)) + '</mark>';
+    last = m + len;
+  });
+  hl.innerHTML = out + escHtml(text.slice(last)) + '\n';
+  const ta = $('code-' + currentTab);
+  hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft;
+}
+
+function srReveal() {
+  const ta = $('code-' + currentTab), m = sr.matches[sr.idx], len = $('srFind').value.length;
+  ta.setSelectionRange(m, m + len);
+  const lh = parseFloat(getComputedStyle(ta).lineHeight) || 24;
+  const line = ta.value.slice(0, m).split('\n').length - 1, y = line * lh;
+  if (y < ta.scrollTop + lh || y > ta.scrollTop + ta.clientHeight - 2 * lh) ta.scrollTop = Math.max(0, y - ta.clientHeight / 2);
+  const col = m - (ta.value.lastIndexOf('\n', m - 1) + 1), x = col * 8.4 + 16;
+  if (x < ta.scrollLeft || x > ta.scrollLeft + ta.clientWidth - 60) ta.scrollLeft = Math.max(0, x - ta.clientWidth / 3);
+}
+
+function srGo(dir) {
+  if (!sr.matches.length) return;
+  sr.idx = (sr.idx + dir + sr.matches.length) % sr.matches.length;
+  srRender(); srReveal();
+}
+
+function srReplace() {
+  if (sr.idx < 0) return showToast('لا توجد نتائج', true);
+  const t = currentTab, ta = $('code-' + t), m = sr.matches[sr.idx];
+  const len = $('srFind').value.length, r = $('srRep').value;
+  histCommit(t);
+  ta.setRangeText(r, m, m + len, 'end');
+  onCodeInput(t);
+  histCommit(t);
+  srRefresh(true);
+}
+
+function srReplaceAll() {
+  srCompute();
+  const n = sr.matches.length;
+  if (!n) return showToast('لا توجد نتائج', true);
+  const t = currentTab, ta = $('code-' + t), len = $('srFind').value.length, r = $('srRep').value;
+  let v = ta.value;
+  for (let i = n - 1; i >= 0; i--) v = v.slice(0, sr.matches[i]) + r + v.slice(sr.matches[i] + len);
+  histCommit(t);
+  ta.value = v;
+  onCodeInput(t);
+  histCommit(t);
+  srRefresh(true);
+  showToast(`تم استبدال ${n} نتيجة`);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // طبقة التظليل خلف مربع النص
+  TYPES.forEach(t => {
+    const ta = $('code-' + t), wrap = document.createElement('div'), hl = document.createElement('div');
+    wrap.className = 'code-wrap'; hl.className = 'hl'; hl.id = 'hl-' + t;
+    ta.parentNode.insertBefore(wrap, ta);
+    wrap.append(hl, ta);
+    ta.addEventListener('scroll', () => { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; });
+  });
+  histAll();
+
+  $('srFind').addEventListener('input', () => srRefresh(true));
+  $('srFind').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); srGo(e.shiftKey ? -1 : 1); }
+    else if (e.key === 'Escape') closeSearch();
+  });
+  $('srRep').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); srReplace(); }
+    else if (e.key === 'Escape') closeSearch();
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+      const a = document.activeElement;
+      if (a && (a.classList.contains('code-textarea') || a.id === 'srFind' || a.id === 'srRep')) { e.preventDefault(); openSearch(); }
+    }
+  });
+});
+
+/* ---------- دليل الاختصارات ---------- */
+const HELP_TABS = { html: 'وسوم HTML', css: 'خصائص CSS', js: 'جافاسكربت', keys: 'لوحة المفاتيح' };
+const HELP_ORDER = ['html', 'css', 'js', 'keys'];
+const help = { tab: 'html', q: '' };
+
+const HTML_EX = {
+  a: '<a href="https://example.com">زيارة الموقع</a>',
+  img: '<img src="photo.jpg" alt="وصف الصورة">',
+  input: '<input type="text" placeholder="اكتب اسمك">',
+  link: '<link rel="stylesheet" href="style.css">',
+  script: "<script>\n  alert('مرحباً');\n<\/script>",
+  style: '<style>\n  p { color: red; }\n</style>',
+  button: '<button type="button">اضغط هنا</button>',
+  ul: '<ul>\n  <li>العنصر الأول</li>\n  <li>العنصر الثاني</li>\n</ul>',
+  ol: '<ol>\n  <li>الخطوة الأولى</li>\n  <li>الخطوة الثانية</li>\n</ol>',
+  table: '<table>\n  <tr>\n    <th>الاسم</th>\n  </tr>\n  <tr>\n    <td>أحمد</td>\n  </tr>\n</table>',
+  tr: '<tr>\n  <td>خلية</td>\n</tr>',
+  select: '<select>\n  <option>الخيار 1</option>\n  <option>الخيار 2</option>\n</select>',
+  form: '<form>\n  <input type="text">\n  <button>إرسال</button>\n</form>',
+  details: '<details>\n  <summary>اضغط للمزيد</summary>\n  هذا النص مخفي\n</details>',
+  video: '<video src="movie.mp4" controls></video>',
+  audio: '<audio src="sound.mp3" controls></audio>',
+  iframe: '<iframe src="https://example.com"></iframe>',
+  canvas: '<canvas id="board" width="300" height="150"></canvas>',
+  label: '<label for="name">الاسم</label>',
+  hr: '<hr>', br: 'سطر أول<br>سطر ثانٍ'
+};
+
+const CSS_TABLE = `
+display|flex|block, inline-block, flex, grid, none
+flex|1|1 (يملأ المساحة المتاحة)، 0 0 auto
+flex-direction|column|row (أفقي)، column (عمودي)
+justify-content|center|center, space-between, space-around, flex-end
+align-items|center|center, flex-start, flex-end, stretch
+gap|16px|8px، 1rem، 20px 10px
+grid|auto-flow / 1fr 1fr|الأفضل استخدام display: grid مع grid-template-columns
+grid-template-columns|repeat(3, 1fr)|1fr 1fr، 200px auto
+position|absolute|static, relative, absolute, fixed, sticky
+top|20px|0، 10%، 2rem
+bottom|0|0، 20px
+left|0|0، 50%
+right|0|0، 10px
+z-index|10|1، 10، 999 (الأكبر يظهر فوق)
+width|300px|100%، 50vw، auto
+height|200px|100vh، auto، 50%
+min-width|200px|0، 100px
+max-width|600px|100%، 1200px
+min-height|100vh|100px، 100vh
+max-height|400px|100%، 80vh
+margin|10px auto|0، 10px 20px، auto (توسيط أفقي)
+margin-top|20px|10px، 2rem
+margin-bottom|20px|10px، 2rem
+margin-left|10px|0، auto
+margin-right|10px|0، auto
+padding|16px|8px 16px، 1rem
+padding-top|10px|0، 1rem
+padding-bottom|10px|0، 1rem
+padding-left|10px|0، 1rem
+padding-right|10px|0، 1rem
+border|1px solid #ccc|none، 2px dashed red
+border-radius|12px|8px، 50% (دائرة)
+box-shadow|0 4px 12px rgba(0,0,0,.3)|none، 0 0 10px #6366f1
+background|linear-gradient(135deg, #6366f1, #8b5cf6)|#fff، url(img.jpg)
+background-color|#1e293b|red، rgb(0,0,0)، transparent
+background-image|url('photo.jpg')|linear-gradient(...)
+color|#ffffff|red، rgb(255,0,0)، #333
+font-family|'Tajawal', sans-serif|Arial, monospace
+font-size|18px|1rem، 1.2em
+font-weight|700|400 (عادي)، 700 (عريض)
+line-height|1.6|1.5، 24px
+text-align|center|right, left, center, justify
+text-decoration|underline|none، line-through
+text-transform|uppercase|lowercase، capitalize
+letter-spacing|1px|0.05em
+opacity|0.5|0 (مخفي)، 1 (ظاهر)
+overflow|hidden|auto، scroll، visible
+cursor|pointer|default, pointer, not-allowed
+transition|all 0.3s ease|opacity 0.2s
+transform|rotate(45deg)|scale(1.2)، translateX(20px)
+animation|spin 2s linear infinite|يحتاج تعريف @keyframes
+filter|blur(4px)|grayscale(1)، brightness(1.2)
+backdrop-filter|blur(10px)|saturate(150%)
+content|'★'|يعمل مع ::before و ::after
+visibility|hidden|visible, hidden
+white-space|nowrap|normal, pre, pre-wrap
+outline|2px solid #6366f1|none
+box-sizing|border-box|content-box
+object-fit|cover|contain, fill
+list-style|none|disc, decimal
+pointer-events|none|auto
+user-select|none|text, all
+direction|rtl|ltr`;
+const CSS_EX = {};
+CSS_TABLE.trim().split('\n').forEach(l => { const a = l.split('|'); CSS_EX[a[0]] = [a[1], a[2]]; });
+
+const JS_EX = {
+  log: "console.log('مرحباً بالعالم');",
+  alert: "alert('تم الحفظ بنجاح');",
+  fn: "function greet(name) {\n  return 'أهلاً ' + name;\n}",
+  af: "const add = (a, b) => {\n  return a + b;\n};",
+  for: "for (let i = 0; i < 5; i++) {\n  console.log(i);\n}",
+  foreach: "[1, 2, 3].forEach(n => console.log(n));",
+  if: "if (age >= 18) {\n  console.log('بالغ');\n}",
+  else: "if (ok) {\n  console.log('نعم');\n} else {\n  console.log('لا');\n}",
+  qs: "const btn = document.querySelector('#myBtn');",
+  qsa: "const items = document.querySelectorAll('.item');",
+  getElementById: "const box = document.getElementById('box');",
+  querySelector: "const title = document.querySelector('h1');",
+  querySelectorAll: "document.querySelectorAll('p').forEach(p => {\n  p.style.color = 'red';\n});",
+  ael: "btn.addEventListener('click', () => {\n  alert('تم الضغط');\n});",
+  addEventListener: "window.addEventListener('resize', () => {\n  console.log('تغيّر الحجم');\n});",
+  setTimeout: "setTimeout(() => {\n  alert('بعد ثانيتين');\n}, 2000);",
+  setInterval: "setInterval(() => {\n  console.log('كل ثانية');\n}, 1000);",
+  const: "const name = 'أحمد';",
+  let: "let count = 0;\ncount = count + 1;",
+  return: "function double(n) {\n  return n * 2;\n}",
+  while: "let i = 0;\nwhile (i < 3) {\n  i++;\n}",
+  document: "document.title = 'عنوان جديد';",
+  window: "window.location.href = 'https://example.com';",
+  console: "console.error('حدث خطأ');",
+  classList: "box.classList.add('active');\nbox.classList.toggle('hidden');",
+  innerText: "title.innerText = 'مرحباً';",
+  innerHTML: "box.innerHTML = '<b>نص عريض</b>';",
+  textContent: "title.textContent = 'مرحباً';",
+  style: "box.style.backgroundColor = 'tomato';",
+  value: "const name = input.value;",
+  async: "async function load() {\n  // ...\n}",
+  await: "const res = await fetch('https://example.com');",
+  class: "class Car {\n  constructor(name) {\n    this.name = name;\n  }\n}",
+  try: "try {\n  JSON.parse(text);\n} catch (err) {\n  console.error(err);\n}",
+  Math: "Math.round(4.6); // 5\nMath.random(); // رقم عشوائي",
+  JSON: "const obj = JSON.parse('{\"a\":1}');\nconst txt = JSON.stringify(obj);",
+  localStorage: "localStorage.setItem('name', 'أحمد');\nconst n = localStorage.getItem('name');",
+  true: "let isOn = true;",
+  false: "let isOn = false;",
+  null: "let user = null;",
+  filter: "const even = [1, 2, 3, 4].filter(n => n % 2 === 0);",
+  map: "const doubled = [1, 2, 3].map(n => n * 2);",
+  fetch: "fetch('https://api.example.com/data')\n  .then(r => r.json())\n  .then(data => console.log(data));"
+};
+
+const HELP_KEYS = [
+  { w: 'Ctrl + Z', l: '', d: 'التراجع عن آخر تعديل في التبويب الحالي. لكل تبويب سجل مستقل، ويوجد أيضاً زر ↶ في شريط التبويبات.', more: '', ex: 'اكتب كلمة ثم اضغط Ctrl+Z لإلغائها' },
+  { w: 'Ctrl + Y', l: '', d: 'إعادة ما تم التراجع عنه. يعمل أيضاً Ctrl+Shift+Z، ويوجد زر ↷.', more: '', ex: 'تراجع بـ Ctrl+Z ثم Ctrl+Y لإعادة الكلمة' },
+  { w: 'Ctrl + F', l: '', d: 'فتح شريط البحث والاستبدال. إذا حددت كلمة قبلها توضع تلقائياً في خانة البحث.', more: '', ex: 'حدد كلمة ثم اضغط Ctrl+F' },
+  { w: 'Enter / Shift + Enter', l: '', d: 'داخل خانة البحث: Enter ينتقل للنتيجة التالية، و Shift+Enter للسابقة.', more: '', ex: 'اكتب كلمة في البحث ثم Enter عدة مرات' },
+  { w: '↑  ↓', l: '', d: 'التنقل بين الاقتراحات عندما تكون قائمة الاقتراحات ظاهرة.', more: '', ex: 'اكتب: زر ← ثم استخدم الأسهم' },
+  { w: 'Enter / Tab', l: '', d: 'قبول الاقتراح المحدد في القائمة وكتابة الكود كاملاً مع وضع المؤشر في المكان المناسب.', more: '', ex: 'اكتب: اطبع ← ثم Enter فيظهر console.log()' },
+  { w: 'Esc', l: '', d: 'إغلاق قائمة الاقتراحات أو شريط البحث أو النوافذ المنبثقة.', more: '', ex: 'مفيد إذا ظهرت اقتراحات أثناء كتابة نص عادي' },
+  { w: 'Tab', l: '', d: 'عندما لا توجد اقتراحات يضيف مسافتين بدل الانتقال خارج المحرر.', more: '', ex: 'اضغط Tab لتنسيق الكود بمسافات' }
+];
+
+function helpEntries(k) {
+  if (k === 'keys') return HELP_KEYS;
+  const list = k === 'html' ? HTML_ITEMS : k === 'css' ? CSS_ITEMS : JS_ITEMS;
+  return list.filter(i => i.d).map(i => {
+    const e = { w: (i.ar || []).join(' • '), l: i.l, d: i.d, more: '', ex: '' };
+    if (k === 'html') {
+      e.l = i.l === '!' ? '!' : `<${i.l}>`;
+      e.ex = HTML_EX[i.l] || i.t.replace(' |>', '>').replace('|', 'نص');
+    } else if (k === 'css') {
+      const c = CSS_EX[i.l];
+      e.ex = `${i.l}: ${c ? c[0] : '...'};`;
+      if (c && c[1]) e.more = 'قيم شائعة: ' + c[1];
+    } else e.ex = JS_EX[i.l] || i.t.replace('|', '');
+    return e;
+  });
+}
+
+function helpAsText() {
+  let out = 'دليل اختصارات محرر الأكواد المباشر\nاكتب أول حرفين من الكلمة العربية ثم اضغط Enter أو Tab\n';
+  HELP_ORDER.forEach(k => {
+    out += `\n═══ ${HELP_TABS[k]} ═══\n`;
+    helpEntries(k).forEach(e => {
+      out += `\n▪ ${e.w}${e.l ? '  →  ' + e.l : ''}\n  ${e.d}\n`;
+      if (e.more) out += `  ${e.more}\n`;
+      out += '  مثال:\n' + e.ex.split('\n').map(l => '    ' + l).join('\n') + '\n';
+    });
+  });
+  return out;
+}
+
+/* ----- النافذة ----- */
+function openHelp() {
+  const m = $('helpModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+  helpRender();
+}
+function closeHelp() {
+  const m = $('helpModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+function helpTab(k) { help.tab = k; helpRender(); $('hpList').scrollTop = 0; }
+
+function helpRender() {
+  const tabs = $('hpTabs'); tabs.innerHTML = '';
+  HELP_ORDER.forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ' +
+      (k === help.tab ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700');
+    b.textContent = HELP_TABS[k]; b.onclick = () => helpTab(k);
+    tabs.appendChild(b);
+  });
+  const nq = norm(help.q.trim());
+  const list = helpEntries(help.tab).filter(e => !nq || norm(e.w + ' ' + e.l + ' ' + e.d).includes(nq));
+  const box = $('hpList'); box.innerHTML = '';
+  if (!list.length) {
+    const d = document.createElement('div');
+    d.className = 'text-center text-xs text-slate-400 py-8'; d.textContent = 'لا توجد نتائج';
+    box.appendChild(d); return;
+  }
+  list.forEach(e => {
+    const card = document.createElement('div');
+    card.className = 'rounded-xl border border-slate-700 bg-slate-900/60 p-3';
+    const top = document.createElement('div');
+    top.className = 'flex justify-between items-center gap-2';
+    const w = document.createElement('span'); w.className = 'font-bold text-indigo-300 text-sm'; w.textContent = e.w;
+    top.appendChild(w);
+    if (e.l) { const l = document.createElement('code'); l.dir = 'ltr'; l.className = 'text-amber-300 font-mono text-xs'; l.textContent = e.l; top.appendChild(l); }
+    const d = document.createElement('p'); d.className = 'text-xs text-slate-200 mt-1 leading-6'; d.textContent = e.d;
+    card.append(top, d);
+    if (e.more) { const m = document.createElement('p'); m.className = 'text-[11px] text-slate-400'; m.textContent = e.more; card.appendChild(m); }
+    const pre = document.createElement('pre');
+    pre.dir = 'auto'; pre.className = 'mt-2 bg-[#0d1117] rounded-lg p-2 text-xs font-mono overflow-x-auto text-slate-200';
+    pre.style.unicodeBidi = 'plaintext'; pre.style.textAlign = 'start';
+    pre.textContent = e.ex;
+    if (help.tab !== 'keys') {
+      const row = document.createElement('div'); row.className = 'flex justify-between items-center mt-2';
+      const lb = document.createElement('span'); lb.className = 'text-[11px] text-slate-400'; lb.textContent = 'مثال';
+      const cb = document.createElement('button'); cb.className = 'px-2 py-1 rounded-md bg-slate-700 hover:bg-indigo-600 text-slate-100 text-[11px] flex items-center gap-1';
+      cb.innerHTML = '<i class="fa-regular fa-copy"></i><span>نسخ</span>'; cb.onclick = () => copyText(e.ex, 'تم نسخ الكود');
+      row.append(lb, cb); card.appendChild(row);
+    }
+    card.appendChild(pre);
+    box.appendChild(card);
+  });
+}
+
+/* ----- طباعة / PDF ----- */
+function printHelp() {
+  let h = '<h1>دليل اختصارات محرر الأكواد المباشر</h1><p class="pa-sub">اكتب أول حرفين من الكلمة العربية ثم اضغط Enter أو Tab ليكتب المحرر الكود لك</p>';
+  HELP_ORDER.forEach(k => {
+    h += `<h2>${HELP_TABS[k]}</h2>`;
+    helpEntries(k).forEach(e => {
+      h += `<div class="pa-item"><div class="pa-top"><b>${escHtml(e.w)}</b><code>${escHtml(e.l)}</code></div><p>${escHtml(e.d)}</p>` +
+        (e.more ? `<p class="pa-more">${escHtml(e.more)}</p>` : '') + `<pre>${escHtml(e.ex)}</pre></div>`;
+    });
+  });
+  $('printArea').innerHTML = h;
+  showToast('اختر "حفظ كـ PDF" من نافذة الطباعة');
+  setTimeout(() => window.print(), 350);
+}
+
+/* ----- مشاركة كنص ----- */
+async function shareHelp() {
+  const text = helpAsText();
+  if (navigator.share) {
+    try { await navigator.share({ title: 'دليل اختصارات المحرر', text }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const ok = () => showToast('تم نسخ النص — الصقه في أي تطبيق');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok).catch(() => fallbackCopy(text, ok));
+  else fallbackCopy(text, ok);
+}
+
+/* ----- حفظ PNG (رسم مباشر على canvas بدون مكتبات) ----- */
+function rrect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function wrapWords(c, text, maxW) {
+  const lines = []; let cur = '';
+  text.split(' ').forEach(w => {
+    const t = cur ? cur + ' ' + w : w;
+    if (cur && c.measureText(t).width > maxW) { lines.push(cur); cur = w; } else cur = t;
+  });
+  if (cur) lines.push(cur);
+  return lines;
+}
+function wrapChars(c, text, maxW) {
+  const out = []; let cur = '';
+  for (const ch of text) {
+    if (cur && c.measureText(cur + ch).width > maxW) { out.push(cur); cur = ch; } else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+const AR_START = /^\s*[\u0600-\u06FF]/;
+
+function sheet(c, entries, title, W, P, draw, H) {
+  const CW = W - 2 * P, IN = 22, R = P + CW - IN, L = P + IN;
+  const FD = '400 16px Tajawal, sans-serif', FM = "500 14px 'Fira Code', monospace";
+  c.textBaseline = 'alphabetic';
+  if (draw) {
+    c.fillStyle = '#0b0f19'; c.fillRect(0, 0, W, H);
+    c.direction = 'rtl'; c.textAlign = 'right';
+    c.fillStyle = '#ffffff'; c.font = '800 30px Tajawal, sans-serif';
+    c.fillText('دليل اختصارات المحرر — ' + title, W - P, P + 30);
+    c.fillStyle = '#94a3b8'; c.font = FD;
+    c.fillText('اكتب أول حرفين من الكلمة العربية ثم اضغط Enter أو Tab', W - P, P + 62);
+  }
+  let y = P + 90;
+  entries.forEach(e => {
+    c.direction = 'rtl'; c.font = FD;
+    const dl = wrapWords(c, e.d, CW - 2 * IN);
+    const ml = e.more ? wrapWords(c, e.more, CW - 2 * IN) : [];
+    c.direction = 'ltr'; c.font = FM;
+    const cl = [];
+    e.ex.split('\n').forEach(line => wrapChars(c, line, CW - 2 * IN - 24).forEach(x => cl.push(x)));
+    const h = IN + 26 + 10 + dl.length * 26 + (ml.length ? ml.length * 22 + 4 : 0) + 10 + cl.length * 22 + 20 + IN;
+    if (draw) {
+      rrect(c, P, y, CW, h, 14); c.fillStyle = '#1e293b'; c.fill();
+      c.strokeStyle = '#334155'; c.lineWidth = 1; c.stroke();
+      c.direction = 'rtl'; c.textAlign = 'right';
+      c.fillStyle = '#a5b4fc'; c.font = '700 20px Tajawal, sans-serif';
+      c.fillText(e.w, R, y + IN + 20);
+      if (e.l) {
+        c.direction = 'ltr'; c.textAlign = 'left'; c.fillStyle = '#fbbf24';
+        c.font = "600 15px 'Fira Code', monospace"; c.fillText(e.l, L, y + IN + 20);
+      }
+      let t = y + IN + 26 + 10;
+      c.direction = 'rtl'; c.textAlign = 'right'; c.fillStyle = '#e2e8f0'; c.font = FD;
+      dl.forEach((ln, i) => c.fillText(ln, R, t + 18 + i * 26));
+      t += dl.length * 26;
+      if (ml.length) {
+        t += 4; c.fillStyle = '#94a3b8'; c.font = '400 14px Tajawal, sans-serif';
+        ml.forEach((ln, i) => c.fillText(ln, R, t + 15 + i * 22));
+        t += ml.length * 22;
+      }
+      t += 10;
+      rrect(c, L, t, CW - 2 * IN, cl.length * 22 + 20, 8); c.fillStyle = '#0d1117'; c.fill();
+      c.font = FM; c.fillStyle = '#e6edf3';
+      cl.forEach((ln, i) => {
+        if (AR_START.test(ln)) { c.direction = 'rtl'; c.textAlign = 'right'; c.fillText(ln, R - 12, t + 25 + i * 22); }
+        else { c.direction = 'ltr'; c.textAlign = 'left'; c.fillText(ln, L + 12, t + 25 + i * 22); }
+      });
+    }
+    y += h + 14;
+  });
+  return y + P - 14;
+}
+
+async function savePng() {
+  const tab = help.tab, entries = helpEntries(tab), W = 1000, P = 36;
+  try { await document.fonts.load('700 20px Tajawal'); await document.fonts.load("500 14px 'Fira Code'"); } catch (e) {}
+  const H = sheet(document.createElement('canvas').getContext('2d'), entries, HELP_TABS[tab], W, P, false);
+  const scale = Math.min(2, Math.sqrt(16e6 / (W * H)));
+  const cv = document.createElement('canvas');
+  cv.width = Math.floor(W * scale); cv.height = Math.floor(H * scale);
+  const ctx = cv.getContext('2d');
+  ctx.scale(scale, scale);
+  sheet(ctx, entries, HELP_TABS[tab], W, P, true, H);
+  cv.toBlob(blob => {
+    if (!blob) return showToast('تعذر إنشاء الصورة، جرّب الطباعة PDF', true);
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = `shortcuts-${tab}.png`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    showToast(`تم حفظ صورة قسم "${HELP_TABS[tab]}"`);
+  }, 'image/png');
+}
+/* ---------- نهاية دليل الاختصارات ---------- */
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('helpModal').classList.contains('hidden')) closeHelp();
+});
+window.addEventListener('DOMContentLoaded', () => {
+  $('hpSearch').addEventListener('input', ev => { help.q = ev.target.value; helpRender(); });
+});
+
+/* ---------- تلوين الأكواد ---------- */
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const sp = (c, s) => `<span class="t-${c}">${esc(s)}</span>`;
+function hlHTML(src) {
+  return src.replace(/(<!--[\s\S]*?(?:-->|$))|(<\/?)([A-Za-z][\w:-]*)((?:"[^"]*"|'[^']*'|[^<>"'])*)(>?)|(<!DOCTYPE[^>]*>?)|([^<]+|<)/gi, (m, c, o, n, a, e, d) => {
+    if (c) return sp('c', c);
+    if (d) return sp('k', d);
+    if (n) return sp('t', o + n) + a.replace(/("[^"]*"?|'[^']*'?)|([^\s=\/"']+)|([\s\S])/g, (x, q, w) => q ? sp('s', x) : w ? sp('a', x) : esc(x)) + sp('t', e);
+    return esc(m);
+  });
+}
+function hlCSS(src) {
+  const stack = []; let pre = '';
+  return src.replace(/(\/\*[\s\S]*?(?:\*\/|$))|("(?:\\.|[^"\\\n])*"?|'(?:\\.|[^'\\\n])*'?)|(#[0-9a-fA-F]{3,8}\b)|(-?\d*\.?\d+(?:%|[a-z]+)?)|([.#][A-Za-z_][\w-]*)|(@[\w-]+)|([\w-]+)(?=\s*:(?!:))|([\w-]+)|([{};])|([\s\S])/g, (m, c, s, h, n, cl, at, p, w, b) => {
+    const decl = stack.length && stack[stack.length - 1] === 1;
+    if (b) { if (b === '{') stack.push(/^\s*@/.test(pre) ? 0 : 1); else if (b === '}') stack.pop(); pre = ''; return esc(b); }
+    pre += m;
+    if (c) return sp('c', c); if (s) return sp('s', s);
+    if (h) return decl ? sp('n', h) : sp('f', h);
+    if (n) return sp('n', n);
+    if (cl) return decl ? esc(m) : sp('f', cl);
+    if (at) return sp('k', at);
+    if (p) return decl ? sp('p', p) : sp('t', p);
+    if (w) return decl ? sp('v', w) : sp('t', w);
+    return esc(m);
+  });
+}
+const JS_KW = new Set('var let const function return if else for while do switch case break continue new delete typeof instanceof in of class extends super this try catch finally throw async await yield import export from default static get set void'.split(' '));
+const JS_LIT = new Set(['true', 'false', 'null', 'undefined', 'NaN', 'Infinity']);
+function hlJS(src) {
+  return src.replace(/(\/\/[^\n]*|\/\*[\s\S]*?(?:\*\/|$))|("(?:\\.|[^"\\\n])*"?|'(?:\\.|[^'\\\n])*'?|`(?:\\[\s\S]|[^`\\])*`?)|(\b0x[\da-f]+\b|\b\d[\d_.]*(?:e[+-]?\d+)?\b)|([A-Za-z_$][\w$]*)(\s*\()?/gi, (m, c, s, n, w, par) => {
+    if (c) return sp('c', c); if (s) return sp('s', s); if (n) return sp('n', n);
+    if (w) {
+      const cls = JS_KW.has(w) ? 'k' : JS_LIT.has(w) ? 'n' : par ? 'f' : /^[A-Z]/.test(w) ? 't' : null;
+      return (cls ? sp(cls, w) : esc(w)) + (par ? esc(par) : '');
+    }
+    return esc(m);
+  });
+}
+function updateSyntax(t) {
+  const el = $('syn-' + t); if (!el) return;
+  el.innerHTML = (t === 'html' ? hlHTML : t === 'css' ? hlCSS : hlJS)(getCode(t)) + '\n';
+  const ta = $('code-' + t); el.scrollTop = ta.scrollTop; el.scrollLeft = ta.scrollLeft;
+}
+
+/* ---------- إغلاق الوسوم تلقائياً ---------- */
+const VOID = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'];
+function htmlAutoClose(e, ta) {
+  if (e.inputType !== 'insertText' || e.data !== '>') return;
+  const pos = ta.selectionStart, before = ta.value.slice(0, pos);
+  const m = before.match(/<([A-Za-z][\w:-]*)(?:\s(?:"[^"]*"|'[^']*'|[^<>"'])*)?>$/);
+  if (!m || /\/>$/.test(before) || VOID.includes(m[1].toLowerCase())) return;
+  const close = `</${m[1]}>`;
+  if (ta.value.slice(pos).startsWith(close)) return;
+  ac.suppress = true;
+  if (!(document.execCommand && document.execCommand('insertText', false, close))) ta.setRangeText(close, pos, pos, 'end');
+  ac.suppress = false;
+  ta.setSelectionRange(pos, pos);
+  acHide();
+}
+
+/* ---------- نسخ نص ---------- */
+function copyText(text, msg) {
+  const ok = () => showToast(msg || 'تم النسخ');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok).catch(() => fallbackCopy(text, ok));
+  else fallbackCopy(text, ok);
+}
+
+/* ---------- كشف الأخطاء مع الحلول ---------- */
+const dg = { open: false }, dgOpen = dg, dgLines = { html: new Set(), css: new Set(), js: new Set() };
+let dgTimer = null, dgPrev = 0;
+const OPT_END = ['p', 'li', 'td', 'th', 'tr', 'option', 'thead', 'tbody', 'tfoot', 'dt', 'dd'];
+const lineOf = (s, i) => s.slice(0, i).split('\n').length;
+const blank = x => x.replace(/[^\n]/g, ' ');
+function lev(a, b) {
+  const m = [];
+  for (let i = 0; i <= a.length; i++) m[i] = [i];
+  for (let j = 1; j <= b.length; j++) m[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return m[a.length][b.length];
+}
+function nearest(w, list) { let b = null, bd = 3; list.forEach(x => { const d = lev(w, x); if (d < bd) { bd = d; b = x; } }); return b; }
+
+function chkHTML(raw) {
+  const out = [], st = [], src = raw.replace(/<!--[\s\S]*?-->|<(script|style)[\s\S]*?<\/\1>/gi, blank);
+  const re = /<(\/?)([A-Za-z][\w:-]*)((?:"[^"]*"|'[^']*'|[^<>"'])*)>/g; let m;
+  while ((m = re.exec(src))) {
+    const n = m[2].toLowerCase(), ln = lineOf(src, m.index);
+    if (!m[1]) { if (!VOID.includes(n) && !/\/\s*$/.test(m[3])) st.push({ n, ln }); continue; }
+    let k = st.length - 1; while (k >= 0 && st[k].n !== n) k--;
+    if (k < 0) { out.push({ ln, sev: 'e', msg: `وسم الإغلاق </${n}> ليس له وسم فتح`, fix: `احذف </${n}> أو أضف <${n}> قبله.` }); continue; }
+    while (st.length - 1 > k) { const x = st.pop(); if (!OPT_END.includes(x.n)) out.push({ ln: x.ln, sev: 'e', msg: `الوسم <${x.n}> لم يُغلق`, fix: `أضف </${x.n}> قبل </${n}> (سطر ${ln}).` }); }
+    st.pop();
+  }
+  st.forEach(x => { if (!OPT_END.includes(x.n)) out.push({ ln: x.ln, sev: 'e', msg: `الوسم <${x.n}> غير مغلق`, fix: `أضف </${x.n}> في المكان المناسب.` }); });
+  const bad = /<\/?[A-Za-z][^<>]*(?=<|$)/g;
+  while ((m = bad.exec(src))) out.push({ ln: lineOf(src, m.index), sev: 'e', msg: 'وسم غير مكتمل: ينقصه علامة >', fix: 'أضف > في نهاية الوسم (وتأكد من إغلاق علامات الاقتباس).' });
+  const ids = {};
+  src.replace(/\sid\s*=\s*["']([^"']+)["']/gi, (x, v, i) => { (ids[v] = ids[v] || []).push(lineOf(src, i)); });
+  Object.keys(ids).forEach(v => ids[v].length > 1 && out.push({ ln: ids[v][1], sev: 'w', msg: `المعرّف id="${v}" مكرر`, fix: 'اجعل لكل عنصر id مختلفاً.' }));
+  return out;
+}
+
+function chkCSS(raw) {
+  const out = [], s = raw.replace(/\/\*[\s\S]*?\*\//g, blank), stack = [];
+  let seg = '', start = 1, line = 1, q = null, pd = 0;
+  const names = CSS_ITEMS.map(x => x.l);
+  const decl = (txt, ln) => {
+    const t = txt.trim(), top = stack[stack.length - 1];
+    if (!t || !top || top.g) return;
+    const i = t.indexOf(':');
+    if (i < 0) return out.push({ ln, sev: 'e', msg: `سطر غير مكتمل: "${t.slice(0, 30)}"`, fix: 'اكتب: الخاصية ثم : ثم القيمة ثم ; مثال: color: red;' });
+    const p = t.slice(0, i).trim(), v = t.slice(i + 1).trim();
+    if (p.startsWith('--') || p.startsWith('-')) return;
+    const mm = v.match(/\n\s*[a-z-]+\s*:/i);
+    if (mm) return out.push({ ln: ln + v.slice(0, mm.index).split('\n').length - 1, sev: 'e', msg: 'ينقص ; في نهاية السطر', fix: 'أضف ; بعد القيمة قبل الخاصية التالية.' });
+    if (!/^[a-z-]+$/i.test(p)) return out.push({ ln, sev: 'e', msg: `اسم خاصية غير صالح: "${p.slice(0, 25)}"`, fix: 'تأكد من كتابة الخاصية بدون رموز أو مسافات، ووجود ; في السطر السابق.' });
+    if (!(window.CSS && CSS.supports)) return;
+    if (!CSS.supports(p, 'inherit')) { const sg = nearest(p, names); return out.push({ ln, sev: 'e', msg: `خاصية غير معروفة: ${p}`, fix: sg ? `هل تقصد ${sg}؟ راجع الإملاء.` : 'راجع الإملاء.' }); }
+    const val = v.replace(/!important\s*$/i, '').trim();
+    if (!val) return out.push({ ln, sev: 'e', msg: `الخاصية ${p} بدون قيمة`, fix: `اكتب قيمة مثل ${p}: ... ;` });
+    if (!CSS.supports(p, val)) out.push({ ln, sev: 'w', msg: `قيمة غير صالحة لـ ${p}: ${val.slice(0, 30)}`, fix: 'راجع القيمة أو الوحدة (مثل px) أو الإملاء.' });
+  };
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (q) { seg += ch; if (ch === '\\') seg += s[++i] || ''; else if (ch === q || ch === '\n') q = null; if (ch === '\n') line++; continue; }
+    if (ch === '"' || ch === "'") { q = ch; if (!seg.trim()) start = line; seg += ch; continue; }
+    if (ch === '(') pd++; else if (ch === ')') pd = Math.max(0, pd - 1);
+    if (ch === '{') { stack.push({ g: seg.trim()[0] === '@', ln: line }); seg = ''; continue; }
+    if (ch === '}') { if (!stack.length) out.push({ ln: line, sev: 'e', msg: 'قوس إغلاق } زائد', fix: 'احذف } الزائدة أو أضف { المفقودة قبلها.' }); else { decl(seg, start); stack.pop(); } seg = ''; continue; }
+    if (ch === ';' && !pd) { decl(seg, start); seg = ''; continue; }
+    if (ch === '\n') line++;
+    if (!seg.trim() && ch.trim()) start = line;
+    seg += ch;
+  }
+  stack.forEach(x => out.push({ ln: x.ln, sev: 'e', msg: 'قوس { لم يُغلق', fix: 'أضف } لإغلاق هذه القاعدة.' }));
+  return out;
+}
+
+const JS_ERR = [
+  [/(\S+) is not defined/, m => [`"${m[1]}" غير معرّف`, 'تأكد من الإملاء وحالة الأحرف، وعرّفه بـ let أو const قبل استخدامه.']],
+  [/Cannot (?:read|set) propert/, () => ['تستخدم عنصراً غير موجود (null/undefined)', 'تأكد أن id أو selector يطابق عنصراً موجوداً في HTML، وأن السكربت يعمل بعد وجود العنصر.']],
+  [/(\S+) is not a function/, m => [`"${m[1]}" ليست دالة`, 'راجع اسم الدالة وحالة الأحرف وتأكد أنها معرّفة وأن الأقواس صحيحة.']],
+  [/Unexpected end of input/, () => ['انتهى الكود قبل اكتماله', 'يوجد قوس ناقص: أغلق كل { بـ } وكل ( بـ ) وكل [ بـ ].']],
+  [/Invalid or unexpected token/, () => ['رمز غير صالح أو علامة اقتباس غير مغلقة', 'تحقق من إغلاق " " أو \' \' ومن عدم وجود رمز غريب.']],
+  [/missing \) after argument list/, () => ['ينقص ) أو فاصلة ,', 'أضف , بين القيم أو أغلق القوس ).']],
+  [/Unexpected identifier/, () => ['كلمة في غير مكانها', 'غالباً ينقص ; أو , قبلها، أو خطأ إملائي.']],
+  [/Unexpected (?:token|string|number)/, () => ['رمز غير متوقع', 'راجع السطر: قوس أو فاصلة أو ; زائدة أو ناقصة.']],
+  [/Assignment to constant/, () => ['تعديل قيمة معرّفة بـ const', 'غيّر const إلى let لو تريد تغيير القيمة.']],
+  [/Identifier '(.+)' has already been declared/, m => [`الاسم "${m[1]}" معرّف مرتين`, 'غيّر أحد الاسمين أو احذف التعريف المكرر.']],
+  [/Missing initializer/, () => ['const بدون قيمة', 'اكتب القيمة مثل: const x = 5;']]
+];
+function jsInfo(msg) {
+  msg = String(msg);
+  for (const [re, f] of JS_ERR) { const m = msg.match(re); if (m) { const r = f(m); return [r[0], r[1] + ' (الأصل: ' + msg.replace('Uncaught ', '') + ')']; } }
+  return [msg, 'راجع السطر المذكور وتأكد من الإملاء والأقواس.'];
+}
+window.addEventListener('message', ev => {
+  const d = ev.data;
+  if (!d || !d.__lce || ev.source !== $('previewFrame').contentWindow) return;
+  const l = d.line - jsOffset, ln = l >= 1 && l <= getCode('js').split('\n').length ? l : 0, [msg, fix] = jsInfo(d.message);
+  if (jsErrors.some(x => x.msg === msg && x.ln === ln)) return;
+  jsErrors.push({ ln, sev: 'e', msg, fix });
+  runDiagnostics();
+});
+
+function renderGutter(type) {
+  const n = getCode(type).split('\n').length, er = dgLines[type]; let s = '';
+  for (let i = 1; i <= n; i++) s += (er.has(i) ? `<span class="ln-err">${i}</span>` : i) + '<br>';
+  $('lines-' + type).innerHTML = s;
+  syncScroll(type);
+}
+function scheduleDiag() { clearTimeout(dgTimer); dgTimer = setTimeout(runDiagnostics, 500); }
+function setDiag(v) {
+  dg.open = v; const l = $('diagList');
+  l.classList.toggle('hidden', !v); l.classList.toggle('flex', v);
+}
+function goLine(t, ln) {
+  switchTab(t);
+  const ta = $('code-' + t), lines = ta.value.split('\n');
+  let pos = 0; for (let i = 0; i < ln - 1; i++) pos += lines[i].length + 1;
+  ta.focus(); ta.setSelectionRange(pos, pos + (lines[ln - 1] || '').length);
+  ta.scrollTop = Math.max(0, (ln - 3) * 24);
+}
+function runDiagnostics() {
+  const safe = f => { try { return f(); } catch (e) { return []; } };
+  const all = { html: safe(() => chkHTML(getCode('html'))), css: safe(() => chkCSS(getCode('css'))), js: jsErrors };
+  const box = $('diagList'); box.innerHTML = ''; let total = 0;
+  TYPES.forEach(t => {
+    const list = all[t]; total += list.length;
+    dgLines[t] = new Set(list.map(x => x.ln).filter(Boolean));
+    const b = $('badge-' + t); b.textContent = list.length; b.classList.toggle('hidden', !list.length);
+    renderGutter(t);
+    list.forEach(x => {
+      const w = x.sev === 'w', d = document.createElement('div');
+      d.className = 'rounded-lg border p-2 cursor-pointer ' + (w ? 'border-amber-700/60 bg-amber-950/30' : 'border-rose-800/60 bg-rose-950/30');
+      const h = document.createElement('div'); h.className = 'font-bold ' + (w ? 'text-amber-300' : 'text-rose-300');
+      h.textContent = `${t.toUpperCase()}${x.ln ? ' — سطر ' + x.ln : ''}: ${x.msg}`;
+      const f = document.createElement('div'); f.className = 'text-slate-300 mt-0.5 leading-5'; f.textContent = '💡 الحل: ' + x.fix;
+      d.append(h, f); d.onclick = () => x.ln && goLine(t, x.ln); box.appendChild(d);
+    });
+  });
+  const s = $('diagSummary');
+  s.textContent = total ? `⚠️ ${total} مشكلة — اضغط لعرض الحلول` : '✓ لا توجد أخطاء';
+  s.className = total ? 'text-rose-300 font-semibold' : 'text-emerald-400';
+  if (total > dgPrev && !dg.open) setDiag(true);
+  if (!total) setDiag(false);
+  dgPrev = total;
+}
+window.addEventListener('DOMContentLoaded', () => {
+  TYPES.forEach(t => {
+    const s = document.createElement('div'); s.className = 'syn'; s.id = 'syn-' + t;
+    const hl = $('hl-' + t); hl.parentNode.insertBefore(s, hl); updateSyntax(t);
+  });
+  runDiagnostics();
+});
+</script>
+</body>
+</html>
 
