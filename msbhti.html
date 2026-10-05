@@ -1,1 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e0e5ec">
+  <title>مسبحتي الذكية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+:root { --bg:#e0e5ec; --dark:#a3b1c6; --light:#fff; --green:#2e7d5b; --glow:0,255,102; }
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  display: flex; flex-direction: column; align-items: center;
+  min-height: 100vh; margin: 0; padding: 20px 12px 32px; gap: 18px;
+  -webkit-user-select: none; user-select: none;
+}
+h1 { margin: 0; color: var(--green); font-size: 28px; }
+.total { margin: 0; color: #7a8494; font-weight: bold; }
+.total b { color: var(--green); font-size: 20px; }
+
+#list { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 420px; }
+
+/* البطاقة */
+.card {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: 20px; background: var(--bg); cursor: pointer;
+  box-shadow: 6px 6px 12px rgba(163,177,198,.6), -6px -6px 12px rgba(255,255,255,.8);
+  position: relative; overflow: hidden; transition: box-shadow .2s;
+}
+.card.active {
+  box-shadow: inset 4px 4px 8px rgba(163,177,198,.6), inset -4px -4px 8px rgba(255,255,255,.8),
+              0 0 0 2px rgba(var(--glow), .5);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+.count {
+  background: #202b28; color: #00ff66; border-radius: 15px;
+  padding: 10px 14px; min-width: 84px; text-align: center;
+  font: 28px 'Courier New', monospace; text-shadow: 0 0 8px rgba(var(--glow), .6);
+  box-shadow: inset 6px 6px 12px rgba(0,0,0,.6), inset -6px -6px 12px rgba(255,255,255,.1);
+}
+.phrase { text-align: center; color: #4d4d4d; font-weight: bold; font-size: 19px; }
+.bar { position: absolute; inset: auto 0 0 0; height: 4px; background: rgba(163,177,198,.4); }
+.bar i { display: block; height: 100%; width: var(--p, 0%); background: rgb(var(--glow)); transition: width .2s; }
+
+/* الأزرار */
+button, select {
+  font: inherit; font-weight: bold; color: #4d4d4d; border: 0; outline: 0; cursor: pointer;
+  background: var(--bg); -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  transition: transform .15s, box-shadow .2s, color .2s;
+}
+button:focus-visible, select:focus-visible { outline: 3px solid rgba(var(--glow), .7); outline-offset: 3px; }
+
+.reset, .tool, select {
+  padding: 8px 14px; border-radius: 14px; font-size: 14px; color: #7a8494;
+  box-shadow: inset 5px 5px 10px rgba(163,177,198,.75), inset -5px -5px 10px rgba(255,255,255,.95);
+  text-shadow: 1px 1px 1px rgba(255,255,255,.9);
+}
+.reset:hover, #button2:hover { color: #c0392b; }
+.reset:active, .tool:active { transform: scale(.96); }
+.tool[aria-pressed="true"] { color: var(--green); }
+.tool[aria-pressed="false"] { text-decoration: line-through; opacity: .7; }
+#mode[aria-pressed="false"] { text-decoration: none; opacity: 1; }
+[hidden] { display: none !important; }
+
+/* زر التسبيح الدائري */
+#button1 {
+  width: 160px; height: 160px; padding: 0; border-radius: 50%;
+  font-size: 22px; color: var(--green);
+  background: linear-gradient(145deg, #f0f5fb, #cdd3dc);
+  box-shadow: 10px 10px 22px rgba(163,177,198,.8), -10px -10px 22px rgba(255,255,255,.9),
+              0 0 0 8px var(--bg), 0 0 0 10px rgba(var(--glow), .25);
+  text-shadow: 0 0 6px rgba(var(--glow), .35);
+}
+#button1:hover { transform: translateY(-3px); box-shadow: 14px 14px 28px rgba(163,177,198,.9), -14px -14px 28px #fff, 0 0 0 8px var(--bg), 0 0 0 10px rgba(var(--glow), .55), 0 0 25px rgba(var(--glow), .45); }
+#button1:active { transform: scale(.94); background: linear-gradient(145deg, #cdd3dc, #f0f5fb); box-shadow: inset 8px 8px 16px rgba(163,177,198,.8), inset -8px -8px 16px rgba(255,255,255,.9), 0 0 0 8px var(--bg), 0 0 0 10px rgba(var(--glow), .8), 0 0 30px rgba(var(--glow), .6); }
+
+.tools { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; max-width: 420px; }
+.tools label { color: #7a8494; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+
+@keyframes pulse {
+  50% { box-shadow: inset 4px 4px 8px rgba(163,177,198,.6), inset -4px -4px 8px rgba(255,255,255,.8), 0 0 0 2px rgba(var(--glow), .5), 0 0 18px rgba(var(--glow), .35); }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+.intent { margin: 0; color: var(--green); font-weight: bold; text-align: center; max-width: 420px; }
+.share { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 20px; background: var(--bg);
+  box-shadow: 6px 6px 12px rgba(163,177,198,.6), -6px -6px 12px rgba(255,255,255,.8); }
+.share input, textarea { -webkit-user-select: text; user-select: text; font: inherit; padding: 10px 14px; border: 0; outline: 0; border-radius: 14px; background: var(--bg); color: #4d4d4d;
+  box-shadow: inset 5px 5px 10px rgba(163,177,198,.75), inset -5px -5px 10px rgba(255,255,255,.95); }
+.share input:focus-visible { outline: 3px solid rgba(var(--glow), .7); }
+.share .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.msg { margin: 0; min-height: 1.2em; text-align: center; color: var(--green); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>مسبحتي الذكية📿</h1>
+  <p class="total">المجموع: <b id="total">0</b></p>
+
+  <p id="intent" class="intent" hidden></p>
+
+  <main id="list" aria-label="الأذكار"></main>
+
+  <button id="button1" aria-label="سبّح">انقر هنا</button>
+
+  <div class="tools">
+    <label>المسبحة
+      <select id="preset">
+        <option value="three">الأذكار الثلاثة</option>
+        <option value="four">الأذكار الأربعة</option>
+        <option value="istighfar">استغفار</option>
+        <option value="custom">ذكر مخصص</option>
+      </select>
+    </label>
+    <button id="mode" class="tool" aria-pressed="false">تدوير الأذكار</button>
+    <label>الهدف
+      <select id="target">
+        <option value="33">33</option>
+        <option value="100">100</option>
+        <option value="0">مفتوح</option>
+      </select>
+    </label>
+    <button id="vib" class="tool" aria-pressed="true">الاهتزاز</button>
+    <button id="snd" class="tool" aria-pressed="false">الصوت</button>
+    <button id="giftBtn" class="tool">صدقة ومشاركة</button>
+    <button id="undo" class="tool">تراجع</button>
+    <button id="button2" class="tool">تصفير الكل</button>
+  </div>
+
+  <section id="share" class="share" hidden>
+    <input id="me" placeholder="اسمك (اختياري)" maxlength="40" autocomplete="off">
+    <input id="forWho" placeholder="صدقة عن (اسم المتوفى أو الشخص)" maxlength="40" autocomplete="off">
+    <div class="row">
+      <button id="shareTxt" class="tool">مشاركة نص</button>
+      <button id="savePng" class="tool">حفظ صورة</button>
+      <button id="sharePng" class="tool" hidden>مشاركة الصورة</button>
+    </div>
+    <p id="msg" class="msg" role="status"></p>
+  </section>
+
+  <script>
+// منع القائمة الجانبية والنسخ وتحديد الكل
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (!window.allowCopy) e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.target.matches && e.target.matches('input, textarea')) return;
+  if (e.ctrlKey && ['c', 'a'].includes(e.key.toLowerCase())) e.preventDefault();
+});
+
+const KEY = 'masbahati-v2';
+const PRESETS = {
+  three: ['سبحان الله', 'الحمد لله', 'لا إله إلا الله'],
+  four: ['سبحان الله', 'الحمد لله', 'لا إله إلا الله', 'الله أكبر'],
+  istighfar: ['أستغفر الله'],
+  custom: ['سبحان الله وبحمده']
+};
+let st = {
+  preset: 'three', cycle: false, target: 33, vib: true, snd: false,
+  custom: PRESETS.custom[0], active: 0,
+  me: '', forWho: '',
+  sets: { three: [0, 0, 0], four: [0, 0, 0, 0], istighfar: [0], custom: [0] }
+};
+const history = [];
+
+try {
+  const s = JSON.parse(localStorage.getItem(KEY));
+  if (s && PRESETS[s.preset]) {
+    st = { ...st, ...s, sets: { ...st.sets, ...s.sets } };
+    st.custom = String(st.custom || PRESETS.custom[0]);
+  }
+} catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+
+const $ = id => document.getElementById(id);
+const list = $('list');
+const dhikr = () => st.preset === 'custom' ? [st.custom] : PRESETS[st.preset];
+const counts = () => {
+  const n = dhikr().length, a = st.sets[st.preset] || [];
+  st.sets[st.preset] = Array.from({ length: n }, (_, i) => Math.max(0, parseInt(a[i]) || 0));
+  return st.sets[st.preset];
+};
+
+let cards = [];
+function build() {
+  list.innerHTML = '';
+  if (!(st.active in dhikr())) st.active = 0;
+  cards = dhikr().map((text, i) => {
+    const c = document.createElement('section');
+    c.className = 'card';
+    c.innerHTML = '<span class="count">0</span><div class="phrase"></div>' +
+      '<button class="reset">⟲</button><div class="bar"><i></i></div>';
+    c.querySelector('.phrase').textContent = text;
+    c.addEventListener('click', () => { st.active = i; save(); render(); });
+    c.querySelector('.reset').addEventListener('click', e => {
+      e.stopPropagation(); counts()[i] = 0; save(); render();
+    });
+    list.appendChild(c);
+    return c;
+  });
+  render();
+}
+
+function render() {
+  const c = counts();
+  cards.forEach((card, i) => {
+    card.querySelector('.count').textContent = c[i];
+    card.classList.toggle('active', i === st.active);
+    const p = st.target ? Math.min(100, c[i] / st.target * 100) : 0;
+    card.querySelector('.bar i').style.setProperty('--p', p + '%');
+  });
+  $('total').textContent = c.reduce((a, b) => a + b, 0);
+  $('preset').value = st.preset;
+  $('target').value = String(st.target);
+  $('vib').setAttribute('aria-pressed', st.vib);
+  $('snd').setAttribute('aria-pressed', st.snd);
+  $('mode').setAttribute('aria-pressed', st.cycle);
+  $('mode').hidden = dhikr().length < 2;
+  const t = sentence();
+  $('intent').textContent = t; $('intent').hidden = !t;
+}
+
+const buzz = p => { if (st.vib && navigator.vibrate) navigator.vibrate(p); };
+let audio;
+function tick() {
+  if (!st.snd) return;
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.frequency.value = 660; g.gain.value = 0.08;
+    o.connect(g); g.connect(audio.destination);
+    o.start(); o.stop(audio.currentTime + 0.04);
+  } catch (e) {}
+}
+
+$('button1').addEventListener('click', () => {
+  const c = counts(), n = c.length, i = st.active;
+  c[i]++;
+  history.push([st.preset, i]); if (history.length > 100) history.shift();
+  buzz(15); tick();
+  if (st.cycle) {
+    st.active = (i + 1) % n;              // الوضع القديم: كل نقرة للذكر التالي
+  } else if (st.target && c[i] === st.target) {
+    buzz([80, 60, 80]);                   // بلغ الهدف
+    if (n > 1) st.active = (i + 1) % n;
+  }
+  save(); render();
+});
+
+$('undo').addEventListener('click', () => {
+  const last = history.pop();
+  if (!last || last[0] !== st.preset) return;
+  const c = counts();
+  c[last[1]] = Math.max(0, c[last[1]] - 1);
+  st.active = last[1]; save(); render();
+});
+
+$('button2').addEventListener('click', () => {
+  if (!confirm('تصفير جميع عدادات هذه المسبحة؟')) return;
+  st.sets[st.preset] = dhikr().map(() => 0); st.active = 0; history.length = 0;
+  save(); render();
+});
+
+$('preset').addEventListener('change', e => {
+  const v = e.target.value;
+  if (v === 'custom') {
+    const t = (prompt('اكتب الذكر:', st.custom) || '').trim();
+    if (t) { if (t !== st.custom) st.sets.custom = [0]; st.custom = t; }
+  }
+  st.preset = v; st.active = 0; history.length = 0;
+  save(); build();
+});
+$('mode').addEventListener('click', () => { st.cycle = !st.cycle; save(); render(); });
+$('target').addEventListener('change', e => { st.target = parseInt(e.target.value) || 0; save(); render(); });
+$('vib').addEventListener('click', () => { st.vib = !st.vib; save(); render(); });
+$('snd').addEventListener('click', () => { st.snd = !st.snd; save(); render(); });
+
+// ===== صدقة ومشاركة =====
+function sentence() {
+  const me = (st.me || '').trim(), f = (st.forWho || '').trim();
+  if (me && f) return `${me} سبّح صدقةً عن ${f}`;
+  if (f) return `تسبيح صدقةً عن ${f}`;
+  if (me) return `${me} سبّح`;
+  return '';
+}
+function shareText() {
+  const c = counts(), L = ['بسم الله'], s = sentence();
+  if (s) L.push(s);
+  dhikr().forEach((t, i) => { if (c[i] > 0) L.push(`${t}: ${c[i]}`); });
+  L.push(`المجموع: ${c.reduce((a, b) => a + b, 0)}`, 'تقبّل الله منا ومنكم');
+  return L.join('\n');
+}
+function msg(t) { $('msg').textContent = t; }
+
+function drawCard() {
+  const c = counts(), items = dhikr().map((t, i) => [t, c[i]]).filter(x => x[1] > 0);
+  const W = 1080, H = Math.max(900, 560 + items.length * 130 + 140);
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const x = cv.getContext('2d'); x.direction = 'rtl';
+  const F = "'Cairo', 'Segoe UI', Tahoma, sans-serif";
+  x.fillStyle = '#e0e5ec'; x.fillRect(0, 0, W, H);
+  const text = (t, px, y, size, color, align = 'center', font = F) => {
+    let s = size;
+    do { x.font = `bold ${s}px ${font}`; s -= 2; } while (x.measureText(t).width > W - 300 && s > 20);
+    x.fillStyle = color; x.textAlign = align; x.fillText(t, px, y);
+  };
+  text('مسبحتي', W / 2, 140, 72, '#2e7d5b');
+  text('بسم الله', W / 2, 230, 44, '#7a8494');
+  text(sentence() || 'تسبيح', W / 2, 340, 52, '#4d4d4d');
+  let y = 430;
+  items.forEach(([t, n]) => {
+    x.fillStyle = '#202b28';
+    if (x.roundRect) { x.beginPath(); x.roundRect(120, y, W - 240, 100, 24); x.fill(); } else x.fillRect(120, y, W - 240, 100);
+    text(t, W - 160, y + 68, 46, '#e0e5ec', 'right');
+    text(String(n), 160, y + 68, 48, '#00ff66', 'left', "'Courier New', monospace");
+    y += 130;
+  });
+  text(`المجموع: ${c.reduce((a, b) => a + b, 0)}`, W / 2, y + 60, 54, '#2e7d5b');
+  text('تقبّل الله منا ومنكم', W / 2, y + 140, 40, '#7a8494');
+  return cv;
+}
+const pngBlob = async () => {
+  try { await Promise.all([document.fonts.load("bold 40px 'Cairo'"), document.fonts.load("40px 'Cairo'")]); } catch (e) {}
+  return new Promise(r => drawCard().toBlob(r, 'image/png'));
+};
+
+function legacyCopy(t) {
+  const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select();
+  window.allowCopy = true;
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+  window.allowCopy = false; a.remove(); return ok;
+}
+$('shareTxt').addEventListener('click', async () => {
+  const t = shareText();
+  try {
+    if (navigator.share) { await navigator.share({ text: t }); return; }
+    await navigator.clipboard.writeText(t); msg('تم نسخ النص، الصقه حيث تريد');
+  } catch (e) {
+    if (e.name === 'AbortError') return;
+    msg(legacyCopy(t) ? 'تم نسخ النص، الصقه حيث تريد' : 'تعذّرت المشاركة');
+  }
+});
+$('savePng').addEventListener('click', async () => {
+  const b = await pngBlob(), a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = 'masbahati.png'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000); msg('تم حفظ الصورة');
+});
+try {
+  const test = new File([''], 'a.png', { type: 'image/png' });
+  if (navigator.canShare && navigator.canShare({ files: [test] })) $('sharePng').hidden = false;
+} catch (e) {}
+$('sharePng').addEventListener('click', async () => {
+  try {
+    const f = new File([await pngBlob()], 'masbahati.png', { type: 'image/png' });
+    await navigator.share({ files: [f] });
+  } catch (e) { if (e.name !== 'AbortError') msg('تعذّرت المشاركة'); }
+});
+$('giftBtn').addEventListener('click', () => { $('share').hidden = !$('share').hidden; });
+['me', 'forWho'].forEach(id => {
+  $(id).value = st[id] || '';
+  $(id).addEventListener('input', e => { st[id] = e.target.value; save(); render(); });
+});
+
+build();
+  </script>
+</body>
+</html>
 
