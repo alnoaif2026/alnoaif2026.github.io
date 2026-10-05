@@ -286,7 +286,7 @@ function sentence() {
   return '';
 }
 function shareText() {
-  const c = counts(), L = ['بسم الله'], s = sentence();
+  const c = counts(), L = ['بسم الله الرحمن الرحيم'], s = sentence();
   if (s) L.push(s);
   dhikr().forEach((t, i) => { if (c[i] > 0) L.push(`${t}: ${c[i]}`); });
   L.push(`المجموع: ${c.reduce((a, b) => a + b, 0)}`, 'تقبّل الله منا ومنكم');
@@ -306,8 +306,8 @@ function drawCard() {
     do { x.font = `bold ${s}px ${font}`; s -= 2; } while (x.measureText(t).width > W - 300 && s > 20);
     x.fillStyle = color; x.textAlign = align; x.fillText(t, px, y);
   };
-  text('مسبحتي', W / 2, 140, 72, '#2e7d5b');
-  text('بسم الله', W / 2, 230, 44, '#7a8494');
+  text('مسبحتي الذكية📿', W / 2, 140, 72, '#2e7d5b');
+  text('بسم الله الرحمن الرحيم', W / 2, 230, 44, '#7a8494');
   text(sentence() || 'تسبيح', W / 2, 340, 52, '#4d4d4d');
   let y = 430;
   items.forEach(([t, n]) => {
@@ -367,4 +367,4 @@ build();
   </script>
 </body>
 </html>
-
+ 
