@@ -1,1 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>قوافي — آخر حرفين</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3F2; --surface:#FFFFFF; --ink:#13293A; --muted:#5B6F7C; --line:#D3DEDC;
+  --accent:#0E7C7B; --accent-ink:#FFFFFF; --hit:#B9791A; --chip:#E2EBE9;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1820; --surface:#14232D; --ink:#E6EEF0; --muted:#8FA4AF; --line:#25394A;
+    --accent:#3CC2BE; --accent-ink:#06201F; --hit:#F0B64D; --chip:#1B2E3A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1820; --surface:#14232D; --ink:#E6EEF0; --muted:#8FA4AF; --line:#25394A;
+  --accent:#3CC2BE; --accent-ink:#06201F; --hit:#F0B64D; --chip:#1B2E3A; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tajawal",system-ui,sans-serif;line-height:1.6}
+main{max-width:640px;margin:0 auto;padding:28px 18px 56px}
+h1{font-family:"Amiri",serif;font-size:2.6rem;line-height:1.2;margin:0 0 4px;font-weight:700}
+.sub{color:var(--muted);margin:0 0 22px;font-size:1rem}
+.field{display:flex;gap:8px}
+input[type=text]{flex:1;min-width:0;font:inherit;font-family:"Amiri",serif;font-size:1.6rem;padding:10px 16px;border:2px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink)}
+input[type=text]:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;margin:12px 0 0;background:var(--chip);border-radius:12px;padding:4px}
+.seg button{flex:1;font:inherit;font-size:.95rem;border:0;background:transparent;color:var(--muted);padding:8px;border-radius:9px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--ink);font-weight:700}
+.head{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 10px;gap:10px}
+.head .end{font-family:"Amiri",serif;font-size:2rem;color:var(--hit);font-weight:700}
+.head .count{color:var(--muted);font-size:.95rem}
+.words{display:flex;flex-wrap:wrap;gap:8px}
+.w{font-family:"Amiri",serif;font-size:1.45rem;padding:4px 14px 6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--ink);cursor:pointer}
+.w b{color:var(--hit);font-weight:700}
+.w:active{transform:scale(.97)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:"Amiri",serif;font-size:1.3rem;padding:2px 14px 4px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:var(--ink);cursor:pointer}
+.chip small{font-family:"Tajawal",sans-serif;font-size:.75rem;color:var(--muted);margin-inline-start:6px}
+.empty{color:var(--muted);padding:14px 0}
+h2{font-size:1rem;margin:30px 0 10px;color:var(--muted);font-weight:500}
+.add{display:flex;gap:8px}
+.add{align-items:stretch}
+.add textarea{flex:1;min-width:0;min-height:84px;resize:vertical;font-family:"Amiri",serif;font-size:1.3rem;line-height:1.6;padding:8px 14px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+.add textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{font:inherit;font-weight:700;border:0;background:var(--accent);color:var(--accent-ink);padding:0 18px;border-radius:12px;cursor:pointer}
+.toast{position:fixed;inset-inline:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));margin:auto;width:max-content;max-width:90%;background:var(--ink);color:var(--bg);padding:8px 18px;border-radius:999px;font-size:.95rem;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+[hidden]{display:none!important}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-family:"Amiri",serif;font-size:1.15rem}
+.del{font:inherit;font-family:"Tajawal",sans-serif;font-size:.85rem;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:4px 12px;border-radius:8px;cursor:pointer;flex:none}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}.w:active{transform:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>قوافي</h1>
+  <p class="sub">اكتب كلمة، وتظهر لك الكلمات التي تشترك معها في آخر حرفين.</p>
+
+  <div class="field">
+    <input type="text" id="q" placeholder="مثال: حنان" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="الكلمة">
+  </div>
+  <div class="seg" role="group" aria-label="عدد الأحرف">
+    <button id="n2" aria-pressed="true">آخر حرفين</button>
+    <button id="n3" aria-pressed="false">آخر ثلاثة أحرف</button>
+  </div>
+
+  <div id="out"></div>
+
+  <h2>تصفح كل القوافي</h2>
+  <p class="empty" id="total" style="margin:-4px 0 8px;padding:0"></p>
+  <div class="chips" id="chips"></div>
+
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const BASE = `حنان زمان مكان أمان إنسان لسان ميزان بستان عنوان ألوان أحزان أوطان ميدان فنجان نيسان رمضان شيطان سلطان ديوان بنيان إيمان جبان عطشان نعسان فرسان غزلان أغصان أجفان كتمان نسيان هجران شان بيان
+عين حنين أنين حزين يمين ثمين سنين دين مسكين سكين جبين رزين أمين ياسمين تين طين لين دفين شاهين عرين قرين وتين يقين رنين مبين متين بنين مهين
+نار دار نهار أسرار أنهار غبار انتظار اختيار قرار مزار جدار حوار اعتبار انتصار انكسار فخار وقار أفكار أشجار أمطار أقدار صغار كبار ستار خيار شعار عيار مسار إصرار اعتذار انتشار
+ليل خيل سبيل جميل دليل رحيل نخيل قليل طويل ثقيل أصيل بديل عليل نبيل كفيل وكيل خليل زميل جليل هديل صهيل
+نور طور بحور صدور سرور غرور شعور عبور ظهور حضور عصور قصور زهور جمهور شكور صبور غفور وقور بدور دور سور
+جمال خيال كمال ظلال رجال جبال آمال أحوال سؤال خلال هلال وصال جلال رمال اعتدال انتقال استقبال ارتحال زوال ليال مثال
+سلام كلام غرام حمام مقام نظام أيام أحلام ظلام ختام كرام حرام احترام ابتسام انتقام اهتمام التزام شام عام
+يوم نوم قوم هموم نجوم علوم غيوم رسوم سموم مفهوم محروم مظلوم معلوم مهموم
+كريم نسيم قديم رحيم عظيم حليم سليم نعيم مقيم غريم رجيم قويم نديم يتيم مستقيم
+سماء ماء هواء دعاء وفاء رجاء شفاء صفاء ضياء مساء عزاء بكاء جزاء ذكاء لقاء نقاء بهاء حياء
+خير سير طير نذير بصير كبير صغير منير سرير ضمير مصير أمير وزير عبير شعير تقدير تفكير
+أوقات سنوات لحظات ذكريات أمنيات كلمات ابتسامات أصوات صفات بنات نبات ثبات
+عيون جنون فنون ظنون شجون سكون حنون مجنون مفتون قانون ميمون
+حبيب قريب طبيب غريب نصيب عجيب رقيب أديب مجيب حسيب
+قلوب ذنوب غروب حروب دروب شعوب جنوب حبوب خطوب هبوب ثقوب
+صباح جناح رياح أرواح نجاح مفتاح سلاح ارتياح جراح ملاح فلاح مزاح
+ريح صحيح مليح جريح فصيح قبيح صريح شحيح مريح
+روح جروح فتوح بوح سفوح وضوح طموح جموح لوح
+بعيد سعيد جديد وحيد شهيد عيد نشيد وعيد مجيد شديد عنيد فريد حديد مفيد بريد
+ورود عهود وعود خلود صمود شهود جود حدود جنود سود عمود
+شفاه جاه نواه ماه شاه الله إله هواه مناه رضاه
+بلاد فؤاد ميعاد اتحاد اجتهاد عناد رماد سواد وداد جهاد اعتماد امتداد
+كتاب سراب شباب عذاب حساب سحاب باب ثواب جواب تراب غياب اقتراب اغتراب عتاب
+صيف طيف سيف خريف ضيف لطيف شريف ضعيف نظيف خفيف
+صوت موت بيوت حوت سكوت ثبوت ملكوت بيت زيت
+شوق ذوق سوق فوق طوق اشتياق فراق عناق مذاق أخلاق عشاق سباق اتفاق
+صديق طريق رفيق عميق عتيق رشيق شقيق
+دموع جموع ربوع خشوع رجوع طلوع وقوع ضلوع
+ربيع سريع بديع جميع رفيع وسيع مطيع شفيع
+ضياع شعاع وداع صراع شراع قناع اجتماع استماع
+خوف صوف سيوف حروف ضيوف كهوف أطراف إنصاف اعتراف انحراف شفاف جفاف
+نفوس شموس عروس طقوس دروس فلوس ناس أنفاس إحساس أساس نحاس كاس لباس رئيس جليس أنيس
+كنوز فوز رموز عجوز لوز ممتاز مجاز طراز إنجاز امتياز
+رياض بياض فياض اعتراض نهوض غموض حوض نشاط بساط صراط احتياط خيوط سقوط هبوط محيط بسيط وسيط
+فراغ دماغ بلاغ عيناك هناك ملاك تاج سراج علاج موج أمواج نقاش ارتعاش ملوك سلوك
+قول عقول رسول وصول طول أصول خيول فضول
+حلم علم سلم ظلم قلم ألم أمل عمل رمل جمل قرب حرب غرب عرب شرب كرب صبر قبر
+عمر قمر سمر ثمر فجر شجر حجر سحر نحر بحر شعر فخر صخر شكر فكر ذكر سكر بدر صدر قدر نجم شمس همس لمس
+ذكرى دنيا هوى ندى مدى سنا رجا علا حلوى نجوى شكوى سلوى أسى رؤى كبرى صغرى ليلى سلمى بشرى أخرى عظمى فوضى عليا ثريا
+قصيدة حبيبة وردة سعادة مدينة حكاية رواية بداية نهاية ابتسامة علامة ذاكرة جميلة شمعة دمعة فرحة بسمة همسة لمسة قلعة كلمة نسمة غيمة نجمة حكمة قيمة`;
+
+const DIALECT = `وش ليش كيف شلون ايش هلا يالله حياك سلامات ياهلا زين شين طيب واجد وايد هواي زود يبه يمه ابوي خوي اخوي ربعي صاحبي يالغالي غالي غلا الغلا دلوعه دلال دلع هيبه شيم ونيس ونه لهفه لهيب
+وناسه ونس سنع سنعه شيله شيلات هجيني هجن ربع طاروق عزوه فزعه نشمي نشامى طرب سمر سهر سهره رمسه دردشه رقصه دحه عرضه سامري خبيتي زامل قصايد قلطه قهوه دله فنجال هيل مجلس ديوان ديره شعبي بدو حضر باديه نفود صحاري
+يبغى ابغى يبي ابي ودي ابشر تبشر ولله هاه ياخي ياصاح يالربع اسمع شوف ركز هرج هرجه سولف سالفه سوالف لفه طقه وناسه دبكه حفله طلعه مشوار طفره بشت شماغ غتره عقال ثوب عباية دشداشه كندوره خنجر جنبيه
+بخور عود دهن مسك عنبر زعفران تمر رطب لقيمات كبسه مندي مطبق جريش مرقوق قرصان مطازيز عصيده شاي كرك
+رياض جده مكه دمام ظهران خبر قصيم حايل تبوك جازان نجران عسير ابها طايف باحه جوف ينبع حجاز نجد شرقيه احساء دبي ابوظبي شارقه عجمان كويت بحرين منامه قطر دوحه عمان مسقط صلاله
+كشخه مرتب شهم شهامه رجوله مروءه كرم جود وفا طيبه عز عزه فخر ثقه شموخ سمو علو رفعه شرف خطير خرافي اسطوري جنان عظمه روعه
+يعطيك تسلم يسلمك يخليك يرحمك يعافيك يحفظك يوفقك يسعدك يهديك يحييك يبقيك يرزقك يجبرك يبارك يعزك يديمك يكفيك يرضيك
+غالي عالي ليالي لآلي موالي تالي خالي والي حالي بالي مالي دلالي جمالي خيالي وصالي آمالي حلالي
+ثاني أماني معاني أغاني ثواني أناني فاني حاني داني قاني رماني جفاني سقاني هداني نساني وفاني لقاني عاني يماني حناني زماني مكاني لساني أحزاني أوطاني إنساني عناني بياني ألحاني جناني
+حبيبي طبيبي قريبي نصيبي غريبي عجيبي لبيبي رقيبي حسيبي
+عيوني جنوني شجوني ظنوني فنوني سكوني حنوني ديوني عيني حنيني أنيني يميني سنيني وتيني جبيني حزيني سكيني ديني مسكيني
+هواك رضاك سواك لقاك جفاك وفاك نساك عساك فداك بلاك دعاك رعاك حماك شقاك سقاك نداك يداك خطاك أراك هناك ملاك عيناك حياك سماك رجاك مناك ضناك رباك كفاك خلاك دواك غلاك
+عيونك جنونك ظنونك شجونك يمينك حنينك دينك سنينك قلبك حبك ذنبك دربك عتبك صحبك غضبك ربك شوقك ذوقك عشقك رزقك خلقك صدقك فرقك شرقك طوقك بيتك صوتك وقتك موتك قوتك صحتك ليلك ويلك خيلك أهلك عقلك ظلك دلك سلك فلك ملك مثلك كلك
+ولهان حيران سهران غضبان زعلان خجلان كسلان شبعان ريان ظمآن عجلان فزعان فرحان تعبان جوعان ندمان سكران ضيفان فتيان سودان عمران عثمان سلمان عدنان مروان
+نواف فهد سعود خالد ماجد تركي بندر فيصل نايف مشعل نوره ساره ريم هيا منيره لولوه موضي شمه مها
+ليله قبيله جميله طويله قليله ثقيله أصيله نخله وسيله فضيله قافله عايله شايله حاله ماله مثله ظله أهله
+غاليه عاليه ساقيه باقيه راضيه ناسيه حانيه قاسيه ماضيه آتيه ساميه
+جماعه شجاعه قناعه بضاعه ساعه طاعه براعه وداعه شراعه
+سلامه كرامه غرامه ندامه زعامه علامه قيامه إقامه ملامه حمامه شهامه ظلامه استقامه عمامه
+غربه قربه كربه حربه تربه عربه شربه خطبه نخبه صحبه حبه رتبه لعبه عتبه ذنبه قلبه دربه كلبه
+شرفه لهفه طرفه غرفه ثقافه ضيافه نظافه لطافه خلافه إضافه خرافه
+دقه سرقه رفقه شفقه حديقه طريقه صديقه رفيقه عميقه شقيقه حقيقه فريقه دقيقه وثيقه رقيقه
+كبيره صغيره قصيره غزيره جزيره سريره ضميره بصيره عشيره سيره مسيره أميره وزيره بحيره ذخيره شهيره حقيره خطيره كثيره نظيره سفيره حصيره
+كريمه رحيمه قديمه عظيمه سليمه نسيمه غنيمه يتيمه وليمه هزيمه عزيمه قيمه حكيمه نعيمه مقيمه
+حبيبه قريبه غريبه طيبه عجيبه نصيبه رقيبه مصيبه خطيبه كئيبه لبيبه أديبه رهيبه صليبه نجيبه
+مدينه سفينه سكينه ثمينه حزينه أمينه دفينه رزينه متينه خزينه ضغينه يمينه
+قصيده جديده سعيده وحيده بعيده شديده عقيده فريده مفيده مجيده عنيده حميده رشيده شهيده
+سعاده سياده قياده زياده عباده إراده شهاده ولاده إفاده استفاده ريـاده عاده بلاده إجاده سجاده قلاده وساده
+رساله أصاله جلاله دلاله بساله عداله كفاله ضلاله سلاله محاله حواله غزاله خياله وكاله بطاله
+حضاره إشاره إداره عباره زياره تجاره حجاره خساره طهاره سياره عماره إماره مغاره استشاره استعاره نضاره بشاره حراره
+أمانه خيانه ديانه صيانه إهانه مكانه رزانه جبانه سلطانه رمانه زمانه ريحانه لسانه حنانه خزانه عنانه كنانه شيطانه بيانه إعانه`;
+const MORE = `حفظ لفظ وعظ يقظ حظ غيظ لحظ أخذ نفذ نبذ ملاذ معاذ إنقاذ أستاذ لذيذ
+حديث بحث غيث ميراث إرث ليث حدث عبث بعث وارث ثلث ثلاث تراث أثاث غياث لهاث
+تاريخ شيخ طبخ بطيخ مطبخ صرخ سلخ فخ صراخ مناخ شاخ شيوخ رسوخ شموخ فروخ
+بالغ فارغ نابغ سائغ بليغ صبغ دماغ فراغ بلاغ مبلغ نبوغ بزوغ سابغ
+نبض بغض خفض رفض عرض أرض فرض مرض غرض بيض نهض مفترض
+خلاص قصص نقص رصاص قميص نصوص خصوص رخيص حريص ناقص مخلص خالص فصوص رقص قفص حرص غصص
+عزيز خبز كنز عجز فوز غمز حرز جائز فائز لغز رمز همز بروز ركيزة غريزة معزز
+عرش فرش ريش عيش جيش قرش دهش وحش عطش رعش نقش خدش بطش رشاش حشيش طيش
+خط شرط سقط وسط خلط ضبط ربط خيط شريط شط لقط سخط قنوط
+بطيء بريء جريء هنيء ضوء سوء شيء جزء بدء ملء دفء هدوء نشوء وضوء بطء خطأ ملجأ مبدأ منشأ مرفأ نبأ لؤلؤ تواطؤ تكافؤ مبتدأ
+كبيرا قريبا جميلا شكرا عفوا أهلا سهلا مرحبا غدا أبدا دوما جدا حقا صبرا فجرا نورا ليلا نهارا سلاما كلاما ظلما علما حلما أملا عمرا قمرا شعرا بحرا
+لنا منا عنا إنا أنا قلبنا حبنا بيتنا ربنا دربنا ديننا وطننا زماننا مكاننا
+يوما قدما رغما دما فما كلما ربما لما نعما عندما حينما بينما إنما أينما مهما
+قالوا كانوا جاءوا ذهبوا رجعوا سمعوا فعلوا عرفوا شكروا حفظوا كتبوا قرأوا سألوا ضحكوا بكوا مشوا ركضوا وصلوا
+يا دنيا ثريا عليا حيا رؤيا هيا مرايا هدايا حكايا خفايا سجايا بقايا عطايا نوايا زوايا قضايا ضحايا وصايا`;
+const TASHKEEL=/[\u064B-\u065F\u0670\u0640]/g;
+const plain=s=>s.replace(TASHKEEL,'').replace(/[^\u0621-\u064A]/g,'');
+const norm=s=>plain(s).replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ا').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
+const fmt=n=>n.toLocaleString('ar-EG');
+
+const DB_URL='https://haraj-f4400.firebaseio.com';
+const cloudCache={};let stats=null,token=0;
+async function loadEnding(k){
+  if(cloudCache[k])return cloudCache[k];
+  try{
+    const r=await fetch(DB_URL+'/words/'+encodeURIComponent(k)+'.json?shallow=true');
+    if(!r.ok)throw 0;
+    const j=await r.json();cloudCache[k]=j?Object.keys(j):[];
+    return cloudCache[k];
+  }catch(e){return []}
+}
+async function loadStats(){
+  try{
+    const r=await fetch(DB_URL+'/stats.json');if(!r.ok)throw 0;
+    const j=await r.json();
+    if(j&&Object.keys(j).length){stats=j;renderChips()}
+  }catch(e){}
+}
+let words=[];
+function rebuild(){words=[...new Set((BASE+' '+DIALECT+' '+MORE).split(/\s+/).map(plain).filter(w=>w.length>=3))]}
+rebuild();
+
+let N=2;
+const $=id=>document.getElementById(id);
+const q=$('q'),out=$('out');
+
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function wordHTML(w){
+  const k=Math.min(N,w.length);
+  return `<button class="w" data-w="${esc(w)}">${esc(w.slice(0,-k))}<b>${esc(w.slice(-k))}</b></button>`;
+}
+
+function render(){
+  const input=norm(q.value);
+  let key='';
+  if(input.length>=N) key=input.slice(-N);
+  if(!key){
+    out.innerHTML=`<p class="empty">${input.length?'اكتب '+(N===2?'حرفين':'ثلاثة أحرف')+' على الأقل.':'ابدأ بكتابة كلمة، أو اختر قافية من الأسفل.'}</p>`;
+    return;
+  }
+  const my=++token;
+  const match=w=>{const n=norm(w);return n.length>=N&&n.slice(-N)===key&&n!==input};
+  const shown=plain(q.value).slice(-N)||key;
+  const draw=cloud=>{
+    if(my!==token)return;
+    const res=[...new Set(words.filter(match).concat(cloud.filter(match)))].sort((a,b)=>a.localeCompare(b,'ar'));
+    const head=`<div class="head"><span class="end">ـ${esc(shown)}</span><span class="count">${fmt(res.length)} كلمة</span></div>`;
+    out.innerHTML=head+(res.length?`<div class="words">${res.map(wordHTML).join('')}</div>`
+      :`<p class="empty">ما وجدنا كلمات بهذه القافية. جرّب آخر حرفين فقط.</p>`);
+  };
+  draw([]);
+  loadEnding(key.slice(-2)).then(c=>{if(c.length)draw(c)});
+}
+
+function renderChips(){
+  let top,total;
+  if(stats&&N===2){
+    top=Object.entries(stats).filter(e=>e[1]>0).sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+    total=top.reduce((s,e)=>s+e[1],0);
+  }else{
+    const c={};
+    words.forEach(w=>{const n=norm(w);if(n.length>=N){const k=n.slice(-N);c[k]=(c[k]||0)+1}});
+    top=Object.entries(c).sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+    total=words.length;
+  }
+  $('total').textContent=fmt(total)+' كلمة في '+fmt(top.length)+' قافية';
+  $('chips').innerHTML=top.map(([k,n])=>`<button class="chip" data-k="${k}">ـ${k}<small>${fmt(n)}</small></button>`).join('');
+}
+
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1400)}
+
+out.addEventListener('click',async e=>{
+  const b=e.target.closest('.w');if(!b)return;
+  try{await navigator.clipboard.writeText(b.dataset.w);toast('نُسخت: '+b.dataset.w)}catch(err){toast(b.dataset.w)}
+});
+$('chips').addEventListener('click',e=>{
+  const b=e.target.closest('.chip');if(!b)return;
+  q.value=b.dataset.k;render();window.scrollTo({top:0,behavior:'smooth'});
+});
+function setN(n){N=n;$('n2').setAttribute('aria-pressed',n===2);$('n3').setAttribute('aria-pressed',n===3);render();renderChips()}
+$('n2').onclick=()=>setN(2);
+$('n3').onclick=()=>setN(3);
+q.addEventListener('input',render);
+render();renderChips();loadStats();
+
+</script>
+</body>
+</html>
 
