@@ -1,86 +1,674 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>قوافي — آخر حرفين</title>
+<meta name="description" content="قاموس القوافي من تصميم وبرمجة علي المالكي، موقع للشعراء ومحبي الشعر النبطي والفصيح للبحث عن القوافي والكلمات العربية والعامية والخليجية والسعودية.">
+<meta name="author" content="علي المالكي - أبو نايف">
+<meta name="theme-color" content="#E4EAE9">
+<title>قاموس القوافي | تصميم وبرمجة علي المالكي</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
 <style>
-:root{
-  --bg:#EEF3F2; --surface:#FFFFFF; --ink:#13293A; --muted:#5B6F7C; --line:#D3DEDC;
-  --accent:#0E7C7B; --accent-ink:#FFFFFF; --hit:#B9791A; --chip:#E2EBE9;
-  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+:root {
+  --bg:#E4EAE9;
+  --ink:#13293A;
+  --muted:#566B78;
+  --accent:#0E7C7B;
+  --accent-ink:#FFFFFF;
+  --hit:#9A6212;
+  --sh-d:#BAC6C4;
+  --sh-l:#FFFFFF;
+  --raise:7px 7px 15px var(--sh-d),-7px -7px 15px var(--sh-l);
+  --raise-s:4px 4px 9px var(--sh-d),-4px -4px 9px var(--sh-l);
+  --inset:inset 5px 5px 10px var(--sh-d),inset -5px -5px 10px var(--sh-l);
+  --inset-s:inset 3px 3px 6px var(--sh-d),inset -3px -3px 6px var(--sh-l);
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#0D1820; --surface:#14232D; --ink:#E6EEF0; --muted:#8FA4AF; --line:#25394A;
-    --accent:#3CC2BE; --accent-ink:#06201F; --hit:#F0B64D; --chip:#1B2E3A; color-scheme:dark;
+
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#1B2A34;
+    --ink:#E6EEF0;
+    --muted:#93A8B3;
+    --accent:#3CC2BE;
+    --accent-ink:#06201F;
+    --hit:#F0B64D;
+    --sh-d:#111C23;
+    --sh-l:#273A47;
+    color-scheme:dark;
   }
 }
-:root[data-theme="dark"]{
-  --bg:#0D1820; --surface:#14232D; --ink:#E6EEF0; --muted:#8FA4AF; --line:#25394A;
-  --accent:#3CC2BE; --accent-ink:#06201F; --hit:#F0B64D; --chip:#1B2E3A; color-scheme:dark;
+
+:root[data-theme="dark"] {
+  --bg:#1B2A34;
+  --ink:#E6EEF0;
+  --muted:#93A8B3;
+  --accent:#3CC2BE;
+  --accent-ink:#06201F;
+  --hit:#F0B64D;
+  --sh-d:#111C23;
+  --sh-l:#273A47;
+  color-scheme:dark;
 }
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tajawal",system-ui,sans-serif;line-height:1.6}
-main{max-width:640px;margin:0 auto;padding:28px 18px 56px}
-h1{font-family:"Amiri",serif;font-size:2.6rem;line-height:1.2;margin:0 0 4px;font-weight:700}
-.sub{color:var(--muted);margin:0 0 22px;font-size:1rem}
-.field{display:flex;gap:8px}
-input[type=text]{flex:1;min-width:0;font:inherit;font-family:"Amiri",serif;font-size:1.6rem;padding:10px 16px;border:2px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink)}
-input[type=text]:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.seg{display:flex;margin:12px 0 0;background:var(--chip);border-radius:12px;padding:4px}
-.seg button{flex:1;font:inherit;font-size:.95rem;border:0;background:transparent;color:var(--muted);padding:8px;border-radius:9px;cursor:pointer}
-.seg button[aria-pressed=true]{background:var(--surface);color:var(--ink);font-weight:700}
-.head{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 10px;gap:10px}
-.head .end{font-family:"Amiri",serif;font-size:2rem;color:var(--hit);font-weight:700}
-.head .count{color:var(--muted);font-size:.95rem}
-.words{display:flex;flex-wrap:wrap;gap:8px}
-.w{font-family:"Amiri",serif;font-size:1.45rem;padding:4px 14px 6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--ink);cursor:pointer}
-.w b{color:var(--hit);font-weight:700}
-.w:active{transform:scale(.97)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{font-family:"Amiri",serif;font-size:1.3rem;padding:2px 14px 4px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:var(--ink);cursor:pointer}
-.chip small{font-family:"Tajawal",sans-serif;font-size:.75rem;color:var(--muted);margin-inline-start:6px}
-.empty{color:var(--muted);padding:14px 0}
-h2{font-size:1rem;margin:30px 0 10px;color:var(--muted);font-weight:500}
-.add{display:flex;gap:8px}
-.add{align-items:stretch}
-.add textarea{flex:1;min-width:0;min-height:84px;resize:vertical;font-family:"Amiri",serif;font-size:1.3rem;line-height:1.6;padding:8px 14px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
-.add textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.btn{font:inherit;font-weight:700;border:0;background:var(--accent);color:var(--accent-ink);padding:0 18px;border-radius:12px;cursor:pointer}
-.toast{position:fixed;inset-inline:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));margin:auto;width:max-content;max-width:90%;background:var(--ink);color:var(--bg);padding:8px 18px;border-radius:999px;font-size:.95rem;opacity:0;pointer-events:none;transition:opacity .2s}
-.toast.on{opacity:1}
-[hidden]{display:none!important}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-family:"Amiri",serif;font-size:1.15rem}
-.del{font:inherit;font-family:"Tajawal",sans-serif;font-size:.85rem;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:4px 12px;border-radius:8px;cursor:pointer;flex:none}
-@media (prefers-reduced-motion:reduce){.toast{transition:none}.w:active{transform:none}}
+
+html {
+  scroll-padding-top:env(safe-area-inset-top,0px);
+  scroll-behavior:smooth;
+}
+
+* {
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Tajawal",system-ui,sans-serif;
+  line-height:1.6;
+}
+
+main {
+  max-width:640px;
+  margin:0 auto;
+  padding:32px 20px 64px;
+}
+
+h1 {
+  font-family:"Amiri",serif;
+  font-size:2.8rem;
+  line-height:1.2;
+  margin:0 0 4px;
+  font-weight:700;
+  text-shadow:2px 2px 4px var(--sh-d),-2px -2px 4px var(--sh-l);
+}
+
+.sub {
+  color:var(--muted);
+  margin:0 0 26px;
+  font-size:1rem;
+}
+
+.field {
+  display:flex;
+  gap:8px;
+}
+
+input[type=text] {
+  flex:1;
+  min-width:0;
+  font-family:"Amiri",serif;
+  font-size:1.7rem;
+  padding:12px 22px;
+  border:0;
+  border-radius:20px;
+  background:var(--bg);
+  color:var(--ink);
+  box-shadow:var(--inset);
+}
+
+input[type=text]::placeholder {
+  color:var(--muted);
+  opacity:.7;
+}
+
+input[type=text]:focus-visible,
+button:focus-visible {
+  outline:3px solid var(--accent);
+  outline-offset:3px;
+}
+
+.seg {
+  display:flex;
+  margin:18px 0 0;
+  background:var(--bg);
+  border-radius:18px;
+  padding:6px;
+  gap:6px;
+  box-shadow:var(--inset-s);
+}
+
+.seg button {
+  flex:1;
+  font:inherit;
+  font-size:.95rem;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  padding:10px;
+  border-radius:13px;
+  cursor:pointer;
+  transition:box-shadow .2s,color .2s;
+}
+
+.seg button[aria-pressed=true] {
+  background:var(--bg);
+  color:var(--accent);
+  font-weight:700;
+  box-shadow:var(--raise-s);
+}
+
+.head {
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin:34px 0 14px;
+  gap:10px;
+}
+
+.head .end {
+  font-family:"Amiri",serif;
+  font-size:2.1rem;
+  color:var(--hit);
+  font-weight:700;
+}
+
+.head .count {
+  color:var(--muted);
+  font-size:.95rem;
+  padding:2px 14px;
+  border-radius:999px;
+  box-shadow:var(--inset-s);
+}
+
+.words {
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  padding:4px;
+}
+
+.w {
+  font-family:"Amiri",serif;
+  font-size:1.45rem;
+  padding:5px 18px 7px;
+  background:var(--bg);
+  border:0;
+  border-radius:14px;
+  color:var(--ink);
+  cursor:pointer;
+  box-shadow:var(--raise-s);
+  transition:box-shadow .15s;
+}
+
+.w b {
+  color:var(--hit);
+  font-weight:700;
+}
+
+.w:active {
+  box-shadow:var(--inset-s);
+}
+
+.chips {
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  padding:4px;
+}
+
+.chip {
+  font-family:"Amiri",serif;
+  font-size:1.3rem;
+  padding:4px 16px 6px;
+  border-radius:999px;
+  border:0;
+  background:var(--bg);
+  color:var(--ink);
+  cursor:pointer;
+  box-shadow:var(--raise-s);
+  transition:box-shadow .15s;
+}
+
+.chip:active {
+  box-shadow:var(--inset-s);
+}
+
+.chip small {
+  font-family:"Tajawal",sans-serif;
+  font-size:.75rem;
+  color:var(--muted);
+  margin-inline-start:6px;
+}
+
+.empty {
+  color:var(--muted);
+  padding:18px 22px;
+  border-radius:18px;
+  box-shadow:var(--inset-s);
+  margin-top:26px;
+}
+
+h2 {
+  font-size:1rem;
+  margin:42px 0 12px;
+  color:var(--muted);
+  font-weight:500;
+}
+
+.toast {
+  position:fixed;
+  inset-inline:0;
+  bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  margin:auto;
+  width:max-content;
+  max-width:90%;
+  background:var(--bg);
+  color:var(--accent);
+  font-weight:700;
+  padding:10px 22px;
+  border-radius:999px;
+  font-size:.95rem;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s;
+  box-shadow:var(--raise);
+  z-index:100;
+}
+
+.toast.on {
+  opacity:1;
+}
+
+[hidden] {
+  display:none!important;
+}
+
+#total.empty {
+  box-shadow:none;
+  padding:0;
+  margin:-4px 0 14px;
+}
+
+/* التعريف بالموقع */
+
+.about-section {
+  margin-top:55px;
+  padding:28px 23px;
+  border-radius:25px;
+  background:var(--bg);
+  box-shadow:var(--raise);
+  text-align:right;
+}
+
+.about-title {
+  font-family:"Amiri",serif;
+  font-size:2rem;
+  font-weight:700;
+  color:var(--accent);
+  margin:0 0 15px;
+}
+
+.about-text {
+  font-size:1.04rem;
+  line-height:2.15;
+  color:var(--ink);
+  margin:0 0 16px;
+  text-align:justify;
+}
+
+.about-highlight {
+  color:var(--accent);
+  font-weight:700;
+}
+
+.about-divider {
+  height:2px;
+  border:0;
+  margin:26px 0;
+  background:linear-gradient(
+    to left,
+    transparent,
+    var(--accent),
+    transparent
+  );
+  opacity:.45;
+}
+
+.features-title {
+  font-family:"Amiri",serif;
+  font-size:1.55rem;
+  color:var(--hit);
+  margin:0 0 14px;
+}
+
+.feature-item {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:12px 0;
+  font-size:1rem;
+  line-height:1.9;
+  color:var(--ink);
+}
+
+.feature-icon {
+  color:var(--accent);
+  font-weight:700;
+  font-size:1.2rem;
+  flex-shrink:0;
+}
+
+.poetry-quote {
+  font-family:"Amiri",serif;
+  font-size:1.3rem;
+  text-align:center;
+  color:var(--accent);
+  line-height:2;
+  padding:16px 12px;
+  margin-top:22px;
+  border-radius:18px;
+  box-shadow:var(--inset-s);
+}
+
+/* الحقوق */
+
+.site-footer {
+  margin-top:45px;
+  padding:28px 12px 12px;
+  text-align:center;
+  border-top:1px solid var(--muted);
+}
+
+.footer-brand {
+  font-family:"Amiri",serif;
+  font-size:1.75rem;
+  font-weight:700;
+  color:var(--accent);
+}
+
+.footer-credit {
+  font-size:.95rem;
+  color:var(--muted);
+  line-height:2;
+  margin-top:10px;
+}
+
+.footer-credit strong {
+  color:var(--ink);
+  font-size:1.08rem;
+}
+
+.footer-copy {
+  font-size:.85rem;
+  color:var(--muted);
+  line-height:1.9;
+  margin-top:16px;
+}
+
+@media(max-width:480px) {
+  main {
+    padding:26px 16px 50px;
+  }
+
+  .about-section {
+    padding:23px 18px;
+  }
+
+  .about-title {
+    font-size:1.8rem;
+  }
+
+  .about-text {
+    font-size:1rem;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .toast,.w,.chip,.seg button {
+    transition:none;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <main>
-  <h1>قوافي</h1>
-  <p class="sub">اكتب كلمة، وتظهر لك الكلمات التي تشترك معها في آخر حرفين.</p>
+
+  <header>
+    <h1>قاموس القوافي</h1>
+    <p class="sub">رفيق الشاعر في البحث عن القافية والكلمة</p>
+  </header>
+
+  <!-- البحث -->
 
   <div class="field">
-    <input type="text" id="q" placeholder="مثال: حنان" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="الكلمة">
-  </div>
-  <div class="seg" role="group" aria-label="عدد الأحرف">
-    <button id="n2" aria-pressed="true">آخر حرفين</button>
-    <button id="n3" aria-pressed="false">آخر ثلاثة أحرف</button>
+    <input
+      type="text"
+      id="q"
+      placeholder="مثال: حبيبي"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      aria-label="الكلمة"
+    >
   </div>
 
-  <div id="out"></div>
+  <div class="seg" role="group" aria-label="عدد الأحرف">
+    <button id="n2" aria-pressed="true">
+      آخر حرفين
+    </button>
+
+    <button id="n3" aria-pressed="false">
+      آخر ثلاثة أحرف
+    </button>
+  </div>
+
+  <div id="out" aria-live="polite"></div>
+
+  <!-- تصفح القوافي -->
 
   <h2>تصفح كل القوافي</h2>
-  <p class="empty" id="total" style="margin:-4px 0 8px;padding:0"></p>
+  <p class="empty" id="total"></p>
   <div class="chips" id="chips"></div>
 
+  <!-- عن الموقع -->
+
+  <section class="about-section" aria-labelledby="about-heading">
+
+    <h2 class="about-title" id="about-heading">
+      عن قاموس القوافي
+    </h2>
+
+    <p class="about-text">
+      <span class="about-highlight">قاموس القوافي</span>
+      هو موقع إلكتروني متكامل مخصص للشعراء
+      وكتّاب القصائد ومحبي الشعر النبطي والفصيح،
+      قام بتصميمه وبرمجته
+      <span class="about-highlight">علي المالكي</span>،
+      بهدف توفير أداة لغوية سهلة وسريعة
+      تساعد الشعراء على اكتشاف الكلمات
+      المتشابهة في نهاياتها، والعثور على
+      القافية المناسبة بكل سهولة وإبداع.
+    </p>
+
+    <p class="about-text">
+      يضم الموقع قاموسًا واسعًا من الكلمات
+      العربية الفصيحة والعامية والخليجية
+      والسعودية، بما فيها المفردات الشعبية
+      المستخدمة في الشعر النبطي،
+      ليكون مرجعًا مساعدًا لكل شاعر يبحث
+      عن تنوع القوافي وجمال الألفاظ
+      وانسجام الكلمات مع الأبيات الشعرية.
+    </p>
+
+    <p class="about-text">
+      سواء كنت شاعرًا متمرسًا أو في بداية
+      رحلتك مع الشعر، فإن قاموس القوافي
+      يساعدك على توسيع حصيلتك اللغوية
+      واكتشاف كلمات جديدة تتناسب مع
+      قافية قصيدتك، دون الحاجة إلى
+      البحث المطوّل في المعاجم التقليدية.
+    </p>
+
+    <p class="about-text">
+      يجمع الموقع بين أصالة اللغة العربية
+      وروح الشعر الشعبي وسهولة التقنية
+      الحديثة، ليمنح الشاعر تجربة مريحة
+      وسريعة في البحث عن الكلمات والقوافي.
+    </p>
+
+    <hr class="about-divider">
+
+    <h3 class="features-title">
+      مميزات قاموس القوافي
+    </h3>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        البحث عن الكلمات المتشابهة في
+        آخر حرفين أو آخر ثلاثة أحرف.
+      </span>
+    </div>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        مجموعة متنوعة من الكلمات العربية
+        الفصيحة والعامية والخليجية والسعودية.
+      </span>
+    </div>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        مفردات شعبية مناسبة للشعر النبطي
+        والقصائد باللهجات المحلية.
+      </span>
+    </div>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        عرض الكلمات المطابقة للقافية
+        وترتيبها بطريقة منظمة.
+      </span>
+    </div>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        إمكانية نسخ أي كلمة بضغطة واحدة
+        لاستخدامها في كتابة القصائد.
+      </span>
+    </div>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        تصفح القوافي المختلفة ومعرفة
+        عدد الكلمات المتاحة لكل قافية.
+      </span>
+    </div>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        واجهة عربية أنيقة ومتجاوبة
+        مع الهواتف والأجهزة اللوحية والكمبيوتر.
+      </span>
+    </div>
+
+    <div class="feature-item">
+      <span class="feature-icon">✦</span>
+      <span>
+        دعم المظهر الليلي والنهاري
+        تلقائيًا حسب إعدادات الجهاز.
+      </span>
+    </div>
+
+    <hr class="about-divider">
+
+    <h3 class="features-title">
+      طريقة استخدام قاموس القوافي
+    </h3>
+
+    <p class="about-text">
+      لاستخدام الموقع، اكتب الكلمة التي
+      تريد البحث عن قافيتها في خانة البحث،
+      ثم حدد طريقة المطابقة باختيار
+      آخر حرفين أو آخر ثلاثة أحرف.
+    </p>
+
+    <p class="about-text">
+      سيعرض الموقع الكلمات التي تتشابه
+      مع نهاية الكلمة المدخلة، مع إظهار
+      عدد النتائج المتاحة. ويمكنك الضغط
+      على أي كلمة لنسخها مباشرة.
+    </p>
+
+    <p class="about-text">
+      كما يمكنك تصفح جميع القوافي
+      المعروضة في الصفحة، واختيار أي
+      قافية للاطلاع على الكلمات
+      المرتبطة بها.
+    </p>
+
+    <hr class="about-divider">
+
+    <h3 class="features-title">
+      رسالتنا
+    </h3>
+
+    <p class="about-text">
+      نؤمن بأن الشعر موهبة وفن أصيل،
+      وأن الكلمة الجميلة هي أساس
+      البيت الشعري المميز.
+      ومن هذا المنطلق جاء قاموس القوافي
+      ليكون عونًا للشعراء في اختيار
+      الألفاظ المناسبة، وإثراء القصائد،
+      والمحافظة على جمال الشعر العربي
+      والنبطي ومفرداته الأصيلة.
+    </p>
+
+    <div class="poetry-quote">
+      لكل شاعر قافية
+      <br>
+      ولكل قافية حكاية
+    </div>
+
+  </section>
+
+  <!-- الحقوق -->
+
+  <footer class="site-footer">
+
+    <div class="footer-brand">
+      قاموس القوافي
+    </div>
+
+    <div class="footer-credit">
+      فكرة وتصميم وبرمجة
+      <br>
+      <strong>علي المالكي - أبو نايف</strong>
+    </div>
+
+    <div class="footer-copy">
+      جميع الحقوق محفوظة ©
+      <span id="copyrightYear"></span>
+      <br>
+      يُمنع نسخ أو إعادة نشر تصميم الموقع
+      أو شفرته البرمجية دون إذن مسبق
+      من صاحب الحقوق.
+    </div>
+
+  </footer>
+
 </main>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script>
+
+/* قاعدة الكلمات العربية */
+
 const BASE = `حنان زمان مكان أمان إنسان لسان ميزان بستان عنوان ألوان أحزان أوطان ميدان فنجان نيسان رمضان شيطان سلطان ديوان بنيان إيمان جبان عطشان نعسان فرسان غزلان أغصان أجفان كتمان نسيان هجران شان بيان
 عين حنين أنين حزين يمين ثمين سنين دين مسكين سكين جبين رزين أمين ياسمين تين طين لين دفين شاهين عرين قرين وتين يقين رنين مبين متين بنين مهين
 نار دار نهار أسرار أنهار غبار انتظار اختيار قرار مزار جدار حوار اعتبار انتصار انكسار فخار وقار أفكار أشجار أمطار أقدار صغار كبار ستار خيار شعار عيار مسار إصرار اعتذار انتشار
@@ -122,6 +710,8 @@ const BASE = `حنان زمان مكان أمان إنسان لسان ميزان
 ذكرى دنيا هوى ندى مدى سنا رجا علا حلوى نجوى شكوى سلوى أسى رؤى كبرى صغرى ليلى سلمى بشرى أخرى عظمى فوضى عليا ثريا
 قصيدة حبيبة وردة سعادة مدينة حكاية رواية بداية نهاية ابتسامة علامة ذاكرة جميلة شمعة دمعة فرحة بسمة همسة لمسة قلعة كلمة نسمة غيمة نجمة حكمة قيمة`;
 
+/* الكلمات العامية والخليجية */
+
 const DIALECT = `وش ليش كيف شلون ايش هلا يالله حياك سلامات ياهلا زين شين طيب واجد وايد هواي زود يبه يمه ابوي خوي اخوي ربعي صاحبي يالغالي غالي غلا الغلا دلوعه دلال دلع هيبه شيم ونيس ونه لهفه لهيب
 وناسه ونس سنع سنعه شيله شيلات هجيني هجن ربع طاروق عزوه فزعه نشمي نشامى طرب سمر سهر سهره رمسه دردشه رقصه دحه عرضه سامري خبيتي زامل قصايد قلطه قهوه دله فنجال هيل مجلس ديوان ديره شعبي بدو حضر باديه نفود صحاري
 يبغى ابغى يبي ابي ودي ابشر تبشر ولله هاه ياخي ياصاح يالربع اسمع شوف ركز هرج هرجه سولف سالفه سوالف لفه طقه وناسه دبكه حفله طلعه مشوار طفره بشت شماغ غتره عقال ثوب عباية دشداشه كندوره خنجر جنبيه
@@ -153,6 +743,9 @@ const DIALECT = `وش ليش كيف شلون ايش هلا يالله حياك �
 رساله أصاله جلاله دلاله بساله عداله كفاله ضلاله سلاله محاله حواله غزاله خياله وكاله بطاله
 حضاره إشاره إداره عباره زياره تجاره حجاره خساره طهاره سياره عماره إماره مغاره استشاره استعاره نضاره بشاره حراره
 أمانه خيانه ديانه صيانه إهانه مكانه رزانه جبانه سلطانه رمانه زمانه ريحانه لسانه حنانه خزانه عنانه كنانه شيطانه بيانه إعانه`;
+
+/* كلمات إضافية */
+
 const MORE = `حفظ لفظ وعظ يقظ حظ غيظ لحظ أخذ نفذ نبذ ملاذ معاذ إنقاذ أستاذ لذيذ
 حديث بحث غيث ميراث إرث ليث حدث عبث بعث وارث ثلث ثلاث تراث أثاث غياث لهاث
 تاريخ شيخ طبخ بطيخ مطبخ صرخ سلخ فخ صراخ مناخ شاخ شيوخ رسوخ شموخ فروخ
@@ -168,97 +761,294 @@ const MORE = `حفظ لفظ وعظ يقظ حظ غيظ لحظ أخذ نفذ نب�
 يوما قدما رغما دما فما كلما ربما لما نعما عندما حينما بينما إنما أينما مهما
 قالوا كانوا جاءوا ذهبوا رجعوا سمعوا فعلوا عرفوا شكروا حفظوا كتبوا قرأوا سألوا ضحكوا بكوا مشوا ركضوا وصلوا
 يا دنيا ثريا عليا حيا رؤيا هيا مرايا هدايا حكايا خفايا سجايا بقايا عطايا نوايا زوايا قضايا ضحايا وصايا`;
+
+/* معالجة الكلمات */
+
 const TASHKEEL=/[\u064B-\u065F\u0670\u0640]/g;
-const plain=s=>s.replace(TASHKEEL,'').replace(/[^\u0621-\u064A]/g,'');
-const norm=s=>plain(s).replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ا').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
+
+const plain=s=>s
+  .replace(TASHKEEL,'')
+  .replace(/[^\u0621-\u064A]/g,'');
+
+const norm=s=>plain(s)
+  .replace(/[أإآٱ]/g,'ا')
+  .replace(/ى/g,'ا')
+  .replace(/ة/g,'ه')
+  .replace(/ؤ/g,'و')
+  .replace(/ئ/g,'ي');
+
 const fmt=n=>n.toLocaleString('ar-EG');
 
+/* Firebase */
+
 const DB_URL='https://haraj-f4400.firebaseio.com';
-const cloudCache={};let stats=null,token=0;
-async function loadEnding(k){
-  if(cloudCache[k])return cloudCache[k];
-  try{
-    const r=await fetch(DB_URL+'/words/'+encodeURIComponent(k)+'.json?shallow=true');
-    if(!r.ok)throw 0;
-    const j=await r.json();cloudCache[k]=j?Object.keys(j):[];
+
+const cloudCache={};
+let stats=null;
+let token=0;
+
+async function loadEnding(k) {
+  if(Object.prototype.hasOwnProperty.call(cloudCache,k)) {
     return cloudCache[k];
-  }catch(e){return []}
-}
-async function loadStats(){
-  try{
-    const r=await fetch(DB_URL+'/stats.json');if(!r.ok)throw 0;
+  }
+
+  try {
+    const r=await fetch(
+      DB_URL+'/words/'+encodeURIComponent(k)+'.json?shallow=true'
+    );
+
+    if(!r.ok) throw new Error('Fetch failed');
+
     const j=await r.json();
-    if(j&&Object.keys(j).length){stats=j;renderChips()}
-  }catch(e){}
+
+    cloudCache[k]=j?Object.keys(j):[];
+
+    return cloudCache[k];
+
+  } catch(e) {
+    return [];
+  }
 }
+
+async function loadStats() {
+  try {
+    const r=await fetch(DB_URL+'/stats.json');
+
+    if(!r.ok) throw new Error('Fetch failed');
+
+    const j=await r.json();
+
+    if(j&&Object.keys(j).length) {
+      stats=j;
+      renderChips();
+    }
+
+  } catch(e) {}
+}
+
+/* بناء القاموس */
+
 let words=[];
-function rebuild(){words=[...new Set((BASE+' '+DIALECT+' '+MORE).split(/\s+/).map(plain).filter(w=>w.length>=3))]}
+
+function rebuild() {
+  words=[
+    ...new Set(
+      (BASE+' '+DIALECT+' '+MORE)
+      .split(/\s+/)
+      .map(plain)
+      .filter(w=>w.length>=3)
+    )
+  ];
+}
+
 rebuild();
 
 let N=2;
-const $=id=>document.getElementById(id);
-const q=$('q'),out=$('out');
 
-function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
-function wordHTML(w){
+const $=id=>document.getElementById(id);
+const q=$('q');
+const out=$('out');
+
+function esc(s) {
+  return s.replace(/[&<>"]/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;'
+  }[c]));
+}
+
+function wordHTML(w) {
   const k=Math.min(N,w.length);
+
   return `<button class="w" data-w="${esc(w)}">${esc(w.slice(0,-k))}<b>${esc(w.slice(-k))}</b></button>`;
 }
 
-function render(){
+/* البحث عن القافية */
+
+function render() {
   const input=norm(q.value);
+  const my=++token;
+
   let key='';
-  if(input.length>=N) key=input.slice(-N);
-  if(!key){
-    out.innerHTML=`<p class="empty">${input.length?'اكتب '+(N===2?'حرفين':'ثلاثة أحرف')+' على الأقل.':'ابدأ بكتابة كلمة، أو اختر قافية من الأسفل.'}</p>`;
+
+  if(input.length>=N) {
+    key=input.slice(-N);
+  }
+
+  if(!key) {
+    out.innerHTML=`
+      <p class="empty">
+        ${
+          input.length
+          ? 'اكتب '+(N===2?'حرفين':'ثلاثة أحرف')+' على الأقل.'
+          : 'ابدأ بكتابة كلمة، أو اختر قافية من الأسفل.'
+        }
+      </p>
+    `;
     return;
   }
-  const my=++token;
-  const match=w=>{const n=norm(w);return n.length>=N&&n.slice(-N)===key&&n!==input};
-  const shown=plain(q.value).slice(-N)||key;
-  const draw=cloud=>{
-    if(my!==token)return;
-    const res=[...new Set(words.filter(match).concat(cloud.filter(match)))].sort((a,b)=>a.localeCompare(b,'ar'));
-    const head=`<div class="head"><span class="end">ـ${esc(shown)}</span><span class="count">${fmt(res.length)} كلمة</span></div>`;
-    out.innerHTML=head+(res.length?`<div class="words">${res.map(wordHTML).join('')}</div>`
-      :`<p class="empty">ما وجدنا كلمات بهذه القافية. جرّب آخر حرفين فقط.</p>`);
+
+  const match=w=>{
+    const n=norm(w);
+
+    return n.length>=N
+      &&n.slice(-N)===key
+      &&n!==input;
   };
+
+  const shown=plain(q.value).slice(-N)||key;
+
+  const draw=cloud=>{
+    if(my!==token) return;
+
+    const res=[
+      ...new Set(
+        words.filter(match)
+        .concat(cloud.filter(match))
+      )
+    ].sort((a,b)=>a.localeCompare(b,'ar'));
+
+    const head=`
+      <div class="head">
+        <span class="end">ـ${esc(shown)}</span>
+        <span class="count">${fmt(res.length)} كلمة</span>
+      </div>
+    `;
+
+    out.innerHTML=head+(
+      res.length
+      ? `<div class="words">${res.map(wordHTML).join('')}</div>`
+      : `<p class="empty">
+          ما وجدنا كلمات بهذه القافية.
+          جرّب آخر حرفين فقط.
+         </p>`
+    );
+  };
+
   draw([]);
-  loadEnding(key.slice(-2)).then(c=>{if(c.length)draw(c)});
+
+  loadEnding(key.slice(-2)).then(c=>{
+    if(c.length) draw(c);
+  });
 }
 
-function renderChips(){
+/* عرض القوافي */
+
+function renderChips() {
   let top,total;
-  if(stats&&N===2){
-    top=Object.entries(stats).filter(e=>e[1]>0).sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+
+  if(stats&&N===2) {
+    top=Object.entries(stats)
+      .filter(e=>e[1]>0)
+      .sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+
     total=top.reduce((s,e)=>s+e[1],0);
-  }else{
+
+  } else {
     const c={};
-    words.forEach(w=>{const n=norm(w);if(n.length>=N){const k=n.slice(-N);c[k]=(c[k]||0)+1}});
-    top=Object.entries(c).sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+
+    words.forEach(w=>{
+      const n=norm(w);
+
+      if(n.length>=N) {
+        const k=n.slice(-N);
+        c[k]=(c[k]||0)+1;
+      }
+    });
+
+    top=Object.entries(c)
+      .sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+
     total=words.length;
   }
-  $('total').textContent=fmt(total)+' كلمة في '+fmt(top.length)+' قافية';
-  $('chips').innerHTML=top.map(([k,n])=>`<button class="chip" data-k="${k}">ـ${k}<small>${fmt(n)}</small></button>`).join('');
+
+  $('total').textContent=
+    fmt(total)+' كلمة في '+fmt(top.length)+' قافية';
+
+  $('chips').innerHTML=top.map(([k,n])=>`
+    <button class="chip" data-k="${esc(k)}">
+      ـ${esc(k)}
+      <small>${fmt(n)}</small>
+    </button>
+  `).join('');
 }
 
-function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1400)}
+/* رسالة النسخ */
+
+function toast(t) {
+  const e=$('toast');
+
+  e.textContent=t;
+  e.classList.add('on');
+
+  clearTimeout(toast.t);
+
+  toast.t=setTimeout(()=>{
+    e.classList.remove('on');
+  },1400);
+}
+
+/* نسخ الكلمات */
 
 out.addEventListener('click',async e=>{
-  const b=e.target.closest('.w');if(!b)return;
-  try{await navigator.clipboard.writeText(b.dataset.w);toast('نُسخت: '+b.dataset.w)}catch(err){toast(b.dataset.w)}
+  const b=e.target.closest('.w');
+
+  if(!b) return;
+
+  try {
+    await navigator.clipboard.writeText(b.dataset.w);
+    toast('نُسخت: '+b.dataset.w);
+  } catch(err) {
+    toast('الكلمة: '+b.dataset.w);
+  }
 });
+
+/* اختيار قافية */
+
 $('chips').addEventListener('click',e=>{
-  const b=e.target.closest('.chip');if(!b)return;
-  q.value=b.dataset.k;render();window.scrollTo({top:0,behavior:'smooth'});
+  const b=e.target.closest('.chip');
+
+  if(!b) return;
+
+  q.value=b.dataset.k;
+  render();
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
 });
-function setN(n){N=n;$('n2').setAttribute('aria-pressed',n===2);$('n3').setAttribute('aria-pressed',n===3);render();renderChips()}
+
+/* اختيار عدد الأحرف */
+
+function setN(n) {
+  N=n;
+
+  $('n2').setAttribute('aria-pressed',n===2);
+  $('n3').setAttribute('aria-pressed',n===3);
+
+  render();
+  renderChips();
+}
+
 $('n2').onclick=()=>setN(2);
 $('n3').onclick=()=>setN(3);
+
 q.addEventListener('input',render);
-render();renderChips();loadStats();
+
+/* تحديث سنة الحقوق */
+
+document.getElementById('copyrightYear').textContent=
+  new Date().getFullYear();
+
+/* تشغيل الموقع */
+
+render();
+renderChips();
+loadStats();
 
 </script>
+
 </body>
 </html>
-
